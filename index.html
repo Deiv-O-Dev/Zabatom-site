@@ -3,52 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zabatom 5.2 – Ferramentas do Mestre</title>
+    <title>Zabatom 5.2 – Core Rules</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', 'Segoe UI', monospace;
             background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
             color: #eee;
             min-height: 100vh;
+        }
+
+        /* Header com logo */
+        .header {
+            background: rgba(10, 10, 26, 0.95);
             padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h1 {
             text-align: center;
+            border-bottom: 2px solid #e94560;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
             font-size: 2.5rem;
-            margin-bottom: 5px;
+            font-weight: bold;
             color: #e94560;
-            text-shadow: 0 0 10px rgba(233,69,96,0.5);
+            text-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+            letter-spacing: 4px;
         }
-        
-        .subtitle {
-            text-align: center;
+
+        .logo small {
+            font-size: 0.8rem;
             color: #888;
-            margin-bottom: 30px;
-            font-style: italic;
+            display: block;
+            letter-spacing: normal;
         }
-        
-        /* Menu de abas */
-        .tab-menu {
+
+        /* Menu de botões */
+        .nav-menu {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #333;
         }
-        
-        .tab-btn {
+
+        .nav-btn {
             background: #0f0f1f;
             border: 1px solid #e94560;
             color: #e94560;
@@ -57,428 +65,545 @@
             border-radius: 8px;
             font-family: monospace;
             font-weight: bold;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
-        
-        .tab-btn:hover {
+
+        .nav-btn:hover {
             background: #e94560;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
         }
-        
-        .tab-btn.active {
+
+        .nav-btn.active {
             background: #e94560;
             color: white;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
         }
-        
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
         /* Conteúdo das abas */
         .tab-content {
             display: none;
             background: #0f0f1f;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 30px;
             border-left: 4px solid #e94560;
             animation: fadeIn 0.3s ease;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* Estilos gerais */
-        .btn {
-            background: #e94560;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            width: 100%;
+
+        /* Títulos */
+        h1 {
+            color: #e94560;
             margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-left: 3px solid #e94560;
+            padding-left: 15px;
         }
-        
-        .btn:hover { background: #ff6b6b; }
-        
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #1a1a2e;
-            border-radius: 8px;
-            border-left: 3px solid #ffd93d;
+
+        h2 {
+            color: #ffd93d;
+            margin: 20px 0 15px 0;
+            font-size: 1.3rem;
         }
-        
-        .result h3 { color: #ffd93d; margin-bottom: 15px; }
-        .result p { margin: 8px 0; line-height: 1.5; }
-        .result .label { color: #ffd93d; font-weight: bold; }
-        
+
+        h3 {
+            color: #e94560;
+            margin: 15px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        /* Tabelas */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
+            font-size: 0.9rem;
         }
-        
+
         th, td {
             border: 1px solid #333;
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
-        
-        th { background: #1a1a2e; color: #ffd93d; }
-        
-        .dice-roll {
+
+        th {
+            background: #1a1a2e;
+            color: #ffd93d;
+        }
+
+        /* Cards e blocos */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.2);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #e94560;
+        }
+
+        /* Rolador de dados */
+        .dice-section {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+            border: 1px solid #e94560;
+        }
+
+        .dice-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .dice-btn {
+            background: #e94560;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .dice-btn:hover {
+            background: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        .dice-result {
             font-size: 1.5rem;
             font-weight: bold;
             color: #ffd93d;
             margin-top: 15px;
-            text-align: center;
+            padding: 15px;
+            background: #0f0f1f;
+            border-radius: 8px;
         }
-        
+
+        /* Badges e destaques */
+        .badge {
+            display: inline-block;
+            background: #e94560;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            margin-right: 8px;
+        }
+
+        .note {
+            background: #1a1a2e;
+            border-left: 3px solid #ffd93d;
+            padding: 12px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #ccc;
+        }
+
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
+            padding: 20px;
             color: #666;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
+            border-top: 1px solid #333;
+            margin-top: 30px;
         }
-        
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .tab-btn { padding: 6px 12px; font-size: 0.8rem; }
-            th, td { font-size: 0.7rem; padding: 4px; }
+
+        @media (max-width: 768px) {
+            .nav-btn { padding: 6px 12px; font-size: 0.7rem; }
+            .tab-content { padding: 20px; }
+            th, td { font-size: 0.7rem; padding: 6px; }
+            .logo { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="logo">
+            ⚔️ ZABATOM 5.2 ⚔️
+            <small>Core Rules – Edição Definitiva Final</small>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+    <button class="nav-btn active" onclick="openTab('inicio')">🏠 INÍCIO</button>
+    <button class="nav-btn" onclick="window.location.href='criar-personagem.html'">🎭 CRIAR PERSONAGEM</button>
+    <button class="nav-btn" onclick="window.location.href='gerador-masmorra.html'">🏰 GERAR MASMORRA</button>
+    <button class="nav-btn" onclick="openTab('combate')">⚔️ COMBATE</button>
+    <button class="nav-btn" onclick="openTab('magia')">🔮 MAGIA</button>
+    <button class="nav-btn" onclick="openTab('status')">📊 STATUS</button>
+    <button class="nav-btn" onclick="openTab('progressao')">📈 PROGRESSÃO</button>
+    <button class="nav-btn" onclick="openTab('equipamentos')">🛡️ EQUIPAMENTOS</button>
+    <button class="nav-btn" onclick="openTab('pericias')">📚 PERÍCIAS</button>
+    <button class="nav-btn" onclick="openTab('penalidade')">🩸 PENALIDADE</button>
+</div>
+
     <div class="container">
-        <h1>⚔️ ZABATOM 5.2 ⚔️</h1>
-        <div class="subtitle">Ferramentas do Mestre – Geradores e Tabelas</div>
-        
-        <!-- Menu de Abas -->
-        <div class="tab-menu">
-            <button class="tab-btn active" onclick="openTab('masmorra')">🏰 MASMORRA</button>
-            <button class="tab-btn" onclick="openTab('aventura')">📖 AVENTURA</button>
-            <button class="tab-btn" onclick="openTab('oneshot')">🎲 ONE SHOT</button>
-            <button class="tab-btn" onclick="openTab('npc')">🎭 NPC</button>
-            <button class="tab-btn" onclick="openTab('combate')">⚔️ COMBATE</button>
-            <button class="tab-btn" onclick="openTab('magia')">🔮 MAGIA</button>
-            <button class="tab-btn" onclick="openTab('monstros')">🐉 BESTIÁRIO</button>
-        </div>
-        
-        <!-- ABA 1: GERADOR DE MASMORRA -->
-        <div id="masmorra" class="tab-content active">
-            <h2>🏰 GERADOR DE MASMORRA</h2>
-            <p>Baseado no Apêndice E do Livro 6</p>
-            <button class="btn" onclick="gerarMasmorra()">🎲 GERAR NOVA MASMORRA</button>
-            <div id="masmorra-result" class="result">
-                <p>Clique no botão acima para gerar uma masmorra</p>
-            </div>
-        </div>
-        
-        <!-- ABA 2: GERADOR DE AVENTURA -->
-        <div id="aventura" class="tab-content">
-            <h2>📖 GERADOR DE AVENTURA</h2>
-            <p>Baseado no Livro 5 – 50 Aventuras Prontas</p>
-            <button class="btn" onclick="gerarAventura()">🎲 GERAR NOVA AVENTURA</button>
-            <div id="aventura-result" class="result">
-                <p>Clique no botão acima para gerar uma aventura</p>
-            </div>
-        </div>
-        
-        <!-- ABA 3: GERADOR DE ONE SHOT -->
-        <div id="oneshot" class="tab-content">
-            <h2>🎲 GERADOR DE ONE SHOT</h2>
-            <p>Aventuras para uma sessão (2-4 horas)</p>
-            <button class="btn" onclick="gerarOneShot()">🎲 GERAR ONE SHOT</button>
-            <div id="oneshot-result" class="result">
-                <p>Clique no botão acima para gerar uma one shot</p>
-            </div>
-        </div>
-        
-        <!-- ABA 4: GERADOR DE NPC -->
-        <div id="npc" class="tab-content">
-            <h2>🎭 GERADOR DE NPC</h2>
-            <p>Crie aliados, inimigos e mercadores instantaneamente</p>
-            <button class="btn" onclick="gerarNPC()">🎲 GERAR NPC</button>
-            <div id="npc-result" class="result">
-                <p>Clique no botão acima para gerar um NPC</p>
-            </div>
-        </div>
-        
-        <!-- ABA 5: TABELAS DE COMBATE -->
-        <div id="combate" class="tab-content">
-            <h2>⚔️ TABELAS DE COMBATE</h2>
+        <!-- ABA INÍCIO -->
+        <div id="inicio" class="tab-content active">
+            <h1>⚔️ BEM-VINDO AO MUNDO DE ZABATOM</h1>
+            <p>Zabatom era um mundo de equilíbrio. Sete reinos sustentados por forças espirituais e físicas em harmonia. Até que o céu se rasgou.</p>
+            <p>Abadon não é um deus. Não é um demônio. É algo mais antigo e mais terrível: um Devorador do Exterior, uma entidade cósmica contraditória que não conquista — consome.</p>
             
-            <h3>📊 PENALIDADE POR FERIMENTOS</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🎭 Criação de Personagem</h3>
+                    <p>Escolha sua raça, classe e atributos. Role 3d6 para FIS, DES, MNT e ESP.</p>
+                    <span class="badge">Novo jogador?</span> Comece por aqui!
+                </div>
+                <div class="card">
+                    <h3>⚔️ Sistema de Combate</h3>
+                    <p>ATK vs DEF, críticos, resistência (RES) e muito mais. Táticas em grid de xadrez.</p>
+                    <span class="badge">Destaque</span> Movimento único por classe
+                </div>
+                <div class="card">
+                    <h3>🔮 Magia e Milagres</h3>
+                    <p>Magia corrompe (PUR). Milagres são dom divino. Escolha seu caminho.</p>
+                    <span class="badge">Lore</span> A diferença entre poder e fé
+                </div>
+            </div>
+
+            <div class="note">
+                💡 <strong>Dica do Mestre:</strong> Use os botões acima para navegar pelas regras. Consulte a seção de Penalidade por Ferimentos para combates mais realistas.
+            </div>
+        </div>
+
+        <!-- ABA CRIAÇÃO DE PERSONAGEM -->
+        <div id="criacao" class="tab-content">
+            <h1>🎭 CRIAÇÃO DE PERSONAGEM</h1>
+            <p><strong>Ordem obrigatória:</strong> Nome → Atributos (3d6) → Raça → Classe → Perícia → Caráter → Acampamento → Quest</p>
+            
+            <h2>📊 ATRIBUTOS BASE</h2>
+            <table>
+                <tr><th>Atributo</th><th>Função</th><th>Subatributo</th></tr>
+                <tr><td>FIS</td><td>Força, HP, resistência física</td><td>FORÇA</td></tr>
+                <tr><td>DES</td><td>Agilidade, esquiva, percepção física</td><td>FINESSE</td></tr>
+                <tr><td>MNT</td><td>Inteligência, magia, foco</td><td>FOCO</td></tr>
+                <tr><td>ESP</td><td>Vontade, fé, intuição</td><td>FÉ</td></tr>
+            </table>
+            <p><em>Percepção física usa DES. Intuição usa ESP.</em></p>
+
+            <h2>🧬 RAÇAS (11)</h2>
+            <table>
+                <tr><th>Raça</th><th>Mods</th><th>HP</th><th>PUR</th><th>Habilidade Única</th></tr>
+                <tr><td>Celestial</td><td>ESP+2, FIS-1</td><td>3d6+7</td><td>+3</td><td>Voo Sagrado, Santidade</td></tr>
+                <tr><td>Elfo</td><td>DES+2, ESP+1</td><td>3d6+6</td><td>+1</td><td>+2 DEF vs magia</td></tr>
+                <tr><td>Humano</td><td>Todos +1</td><td>3d6+4</td><td>-1</td><td>Adaptável, escolhe Proeminência</td></tr>
+                <tr><td>Anão</td><td>FIS+3, ESP-2</td><td>3d6+6</td><td>-1</td><td>+1 ATK com armas fabricadas</td></tr>
+                <tr><td>Void</td><td>ESP+3, FIS-2</td><td>3d6+4</td><td>-2</td><td>Drenagem Arcano</td></tr>
+                <tr><td>Draconiano</td><td>Todos+1</td><td>3d6+7</td><td>-4</td><td>Escamas do Caos, Malevolência</td></tr>
+            </table>
+
+            <h2>⚔️ CLASSES GENÉRICAS</h2>
+            <table>
+                <tr><th>Classe</th><th>Atributo Primário</th><th>Kit Básico</th></tr>
+                <tr><td>Soldado</td><td>FIS</td><td>Espada Longa + Escudo Pesado</td></tr>
+                <tr><td>Bárbaro</td><td>FIS</td><td>Machado Grande + Rações</td></tr>
+                <tr><td>Ladino</td><td>DES</td><td>Duas Adagas + Gancho e corda</td></tr>
+                <tr><td>Espiritualista</td><td>ESP</td><td>Cajado Mágico + Pergaminho de Cura</td></tr>
+                <tr><td>Especialista</td><td>MNT</td><td>Besta + Amuleto de Foco</td></tr>
+            </table>
+        </div>
+
+        <!-- ABA COMBATE -->
+        <div id="combate" class="tab-content">
+            <h1>⚔️ SISTEMA DE COMBATE</h1>
+            
+            <h2>🎲 AÇÕES POR TURNO (PA)</h2>
+            <table>
+                <tr><th>1d6</th><th>Ações</th><th>Bônus</th></tr>
+                <tr><td>1</td><td>1 ação</td><td>Falha! Não pode usar cartas com custo >0</td></tr>
+                <tr><td>2-5</td><td>2 ações</td><td>—</td></tr>
+                <tr><td>6</td><td>3 ações</td><td>Bônus de classe + recupera 1 carta</td></tr>
+            </table>
+
+            <h2>📊 ATK e DEF</h2>
+            <p><strong>ATK</strong> = Atributo Primário + Mod Subatributo + Arma</p>
+            <p><strong>DEF</strong> = 10 + Mod DES + Armadura + Escudo</p>
+
+            <h2>🎯 TABELA DE ATAQUE (1d12 + ATK vs DEF)</h2>
+            <table>
+                <tr><th>Resultado</th><th>Tipo</th><th>Dano</th></tr>
+                <tr><td>Falha por 5+</td><td>Falha Crítica</td><td>0, perde 1 PA, -1 KAR</td></tr>
+                <tr><td>Falha por 1-4</td><td>Golpe Fraco</td><td>50% Dano Base</td></tr>
+                <tr><td>Acerto 0-3</td><td>Golpe Médio</td><td>Dano Base</td></tr>
+                <tr><td>Acerto 4-7</td><td>Golpe Forte</td><td>Dano Base +2</td></tr>
+                <tr><td>Acerto 8-19</td><td>Golpe Cheio</td><td>Dano Base +4</td></tr>
+                <tr><td>Acerto 20+</td><td>Crítico</td><td>Efeito especial</td></tr>
+            </table>
+
+            <h2>🛡️ RESISTÊNCIA (RES)</h2>
+            <p><strong>RES = (HP ÷ 5) + (FOR ÷ 2)</strong> (máx 10)</p>
+            <p>• Dano Físico: Dano Final = Dano Base - RES</p>
+            <p>• Dano Mágico: Dano Final = Dano Base - (RES ÷ 2)</p>
+        </div>
+
+        <!-- ABA MAGIA -->
+        <div id="magia" class="tab-content">
+            <h1>🔮 MAGIA E MILAGRES</h1>
+            
+            <h2>📖 CORRUPÇÃO POR MAGIA</h2>
+            <table>
+                <tr><th>Círculo</th><th>PUR</th><th>Exemplo</th></tr>
+                <tr><td>1º</td><td>-1</td><td>Luz, Detectar Magia</td></tr>
+                <tr><td>2º</td><td>-2</td><td>Bola de Fogo, Raio</td></tr>
+                <tr><td>3º</td><td>-3</td><td>Parede de Gelo, Teleporte</td></tr>
+                <tr><td>4º</td><td>-4</td><td>Terremoto, Parar Tempo</td></tr>
+                <tr><td>5º</td><td>-5</td><td>Chuva de Meteoros</td></tr>
+                <tr><td>6º</td><td>-6</td><td>Desejo, Portal Dimensional</td></tr>
+                <tr><td>Milagres</td><td>0</td><td>Todos os milagres</td></tr>
+            </table>
+
+            <h2>⚡ SOBRECARGA ARCANA</h2>
+            <table>
+                <tr><th>Uso Consecutivo</th><th>Magia</th><th>Milagre</th></tr>
+                <tr><td>1ª</td><td>Normal</td><td>Normal</td></tr>
+                <tr><td>2ª</td><td>DV +1</td><td>-1 no teste</td></tr>
+                <tr><td>3ª</td><td>DV +2</td><td>-2 no teste</td></tr>
+                <tr><td>4ª</td><td>DV +3</td><td>-3 no teste</td></tr>
+            </table>
+        </div>
+
+        <!-- ABA STATUS -->
+        <div id="status" class="tab-content">
+            <h1>📊 STATUS: PUR, KAR, HUMOR E LOUCURA</h1>
+            
+            <h2>✨ PUREZA (PUR) – Eixo -10 a +10</h2>
+            <table>
+                <tr><th>Valor</th><th>Nome</th><th>Efeito</th></tr>
+                <tr><td>+10 a +6</td><td>Santidade Máxima</td><td>+2 ESP, DEF ×2 (Celestial)</td></tr>
+                <tr><td>+1</td><td>Puro</td><td>—</td></tr>
+                <tr><td>-1</td><td>Corrompido</td><td>-1 ESP</td></tr>
+                <tr><td>-6 a -10</td><td>Caótico</td><td>HP/2, +5 Loucura</td></tr>
+            </table>
+            <p><em>Não existe PUR 0. Você está em Santidade ou Corrupção.</em></p>
+
+            <h2>🍀 KARMA (Sorte e Azar)</h2>
+            <p>• KAR positivo: melhores drops, rerrolar testes</p>
+            <p>• KAR negativo: +5 em infortúnios, baús viram mímicos</p>
+
+            <h2>😊 HUMOR (Eixo -6 a +3)</h2>
+            <table>
+                <tr><th>Valor</th><th>Efeito</th></tr>
+                <tr><td>3 a 0</td><td>Normal</td></tr>
+                <tr><td>-1 a -5</td><td>-1 testes sociais, vícios aparecem</td></tr>
+                <tr><td>-6</td><td>-2 todos testes, vícios forçados</td></tr>
+            </table>
+
+            <h2>🧠 LOUCURA</h2>
+            <table>
+                <tr><th>Valor</th><th>Efeito</th></tr>
+                <tr><td>-1 a -3</td><td>Loucura Leve: -1 testes sociais, ilusões</td></tr>
+                <tr><td>-4 a -6</td><td>Loucura Moderada: 1d6: 1 = ataca aliado</td></tr>
+                <tr><td>-7 a -9</td><td>Loucura Grave: ações decididas pelo Mestre</td></tr>
+                <tr><td>-10</td><td>Ruína da Mente: NPC temporário</td></tr>
+            </table>
+        </div>
+
+        <!-- ABA PROGRESSÃO -->
+        <div id="progressao" class="tab-content">
+            <h1>📈 PROGRESSÃO DE PERSONAGEM</h1>
+            
+            <h2>🎯 NÍVEIS E XP</h2>
+            <table>
+                <tr><th>Nível</th><th>XP</th><th>Recompensas</th></tr>
+                <tr><td>1</td><td>0</td><td>—</td></tr>
+                <tr><td>2</td><td>150</td><td>+1 Pt. Hab., Especialização</td></tr>
+                <tr><td>3</td><td>300</td><td>Segunda Classe, Vocação</td></tr>
+                <tr><td>4</td><td>500</td><td>+1 atributo, +1d4 HP</td></tr>
+                <tr><td>5</td><td>800</td><td>Profissões, +1d4 HP</td></tr>
+                <tr><td>6</td><td>1200</td><td>Classe de Raça, +1 Carta</td></tr>
+                <tr><td>12</td><td>5700</td><td>+2d4 HP e +1 em todos atributos</td></tr>
+            </table>
+
+            <h2>📚 PONTOS DE HABILIDADE</h2>
+            <p>• 100 XP = 1 Pt. Hab.</p>
+            <p>• 2 Pt. Hab. = +1 em atributo normal</p>
+            <p>• 1 Pt. Hab. = +2 em atributo com Proeminência</p>
+            <p>• 4 Pt. Hab. = +1 em atributo com Deficiência</p>
+        </div>
+
+        <!-- ABA EQUIPAMENTOS -->
+        <div id="equipamentos" class="tab-content">
+            <h1>🛡️ ARMAS E ARMADURAS</h1>
+            
+            <h2>⚔️ ARMAS</h2>
+            <table>
+                <tr><th>Arma</th><th>Dano</th><th>Efeito</th></tr>
+                <tr><td>Espada Longa</td><td>1d8</td><td>Golpes Fortes +1 dano</td></tr>
+                <tr><td>Machado Grande</td><td>1d10</td><td>Crítico FIS +2 e sangramento</td></tr>
+                <tr><td>Duas Adagas</td><td>2d4</td><td>Crítico DES +2 e sangramento</td></tr>
+                <tr><td>Besta</td><td>1d8</td><td>Ignora bônus de DEF de armaduras</td></tr>
+                <tr><td>Cajado Mágico</td><td>1d4 + FÉ</td><td>Alcance 6 tiles</td></tr>
+            </table>
+
+            <h2>🛡️ ARMADURAS</h2>
+            <table>
+                <tr><th>Armadura</th><th>Bônus DEF</th><th>Penalidade DES</th><th>Custo</th></tr>
+                <tr><td>Couro Batido</td><td>+1</td><td>0</td><td>10 ouro</td></tr>
+                <tr><td>Cota de Malha</td><td>+4</td><td>-1</td><td>75 ouro</td></tr>
+                <tr><td>Armadura de Placas</td><td>+7</td><td>-3</td><td>1500 ouro</td></tr>
+            </table>
+        </div>
+
+        <!-- ABA PERÍCIAS -->
+        <div id="pericias" class="tab-content">
+            <h1>📚 PERÍCIAS E HABILIDADES</h1>
+            <p>Cada personagem começa com 1 perícia. Limite máximo: 4 a 7 perícias.</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h3>⚔️ Combate</h3>
+                    <p>Acrobacia, Armas sem Lâmina, Artes Marciais, Atletismo, Briga, Furtividade</p>
+                </div>
+                <div class="card">
+                    <h3>🧠 Conhecimento</h3>
+                    <p>Alquimia, Arrombamento, Ciências Proibidas, Estratégia Militar, Investigação, Medicina</p>
+                </div>
+                <div class="card">
+                    <h3>💬 Sociais</h3>
+                    <p>Diplomacia, Intimidação, Manipulação</p>
+                </div>
+                <div class="card">
+                    <h3>🌿 Sobrevivência</h3>
+                    <p>Resistência a Venenos, Sobrevivência, Vontade</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA PENALIDADE POR FERIMENTOS -->
+        <div id="penalidade" class="tab-content">
+            <h1>🩸 PENALIDADE POR FERIMENTOS (OPCIONAL)</h1>
+            <p>Quando um personagem está ferido, sua capacidade de lutar diminui. Este sistema adiciona realismo e tensão aos combates.</p>
+            
+            <h2>📊 TABELA DE PENALIDADE</h2>
             <table>
                 <tr><th>HP Restante</th><th>Dado de Ataque</th><th>Efeito</th></tr>
-                <tr><td>Acima de 90%</td><td>3d6 + ATK</td><td>Força total</td> </tr>
-                <tr><td>Entre 50% e 90%</td><td>2d6 + ATK</td><td>Ferido, mas combativo</td> </tr>
-                <tr><td>Entre 25% e 50%</td><td>2d6 + ATK (desvantagem*)</td><td>Ferido grave</td> </tr>
-                <tr><td>Abaixo de 25%</td><td>1d6 + ATK</td><td>Agonizante</td> </tr>
+                <tr><td>Acima de 90%</td><td>3d6 + ATK</td><td>Força total</td></tr>
+                <tr><td>Entre 50% e 90%</td><td>2d6 + ATK</td><td>Ferido, mas combativo</td></tr>
+                <tr><td>Entre 25% e 50%</td><td>2d6 + ATK (desvantagem*)</td><td>Ferido grave</td></tr>
+                <tr><td>Abaixo de 25%</td><td>1d6 + ATK</td><td>Agonizante</td></tr>
             </table>
-            <p><small>*Desvantagem: rola 3d6, descarta o maior</small></p>
-            <p><strong>Crítico:</strong> Total (dado + ATK) ≥ 20 | <strong>Último Suspiro:</strong> 1 Ponto Heroico → mantém 2d6 por 1 rodada</p>
-            
-            <h3>🔮 PENALIDADE PARA CONJURADORES</h3>
-            <table>
-                <tr><th>HP Restante</th><th>Magia (DV Modificado)</th><th>Milagres (DV Modificado)</th> </tr>
-                <tr><td>Acima de 90%</td><td>DV normal</td><td>DV normal</td> </tr>
-                <tr><td>Entre 50% e 90%</td><td>DV +1</td><td>DV normal</td> </tr>
-                <tr><td>Entre 25% e 50%</td><td>DV +2</td><td>DV +1</td> </tr>
-                <tr><td>Abaixo de 25%</td><td>DV +3</td><td>DV +2</td> </tr>
-            </table>
-            
-            <h3>🛡️ RESISTÊNCIA (RES)</h3>
-            <p><strong>RES = (HP ÷ 5) + (FOR ÷ 2)</strong> (máx 10)</p>
-            <p>Dano Físico: Dano Final = Dano Base - RES</p>
-            <p>Dano Mágico: Dano Final = Dano Base - (RES ÷ 2)</p>
-        </div>
-        
-        <!-- ABA 6: MAGIAS E MILAGRES -->
-        <div id="magia" class="tab-content">
-            <h2>🔮 MAGIAS E MILAGRES</h2>
-            
-            <h3>📖 CORRUPÇÃO POR MAGIA</h3>
-            <table>
-                <tr><th>Círculo</th><th>PUR</th><th>Exemplo</th> </tr>
-                <tr><td>1º</td><td>-1</td><td>Luz, Detectar Magia</td> </tr>
-                <tr><td>2º</td><td>-2</td><td>Bola de Fogo, Raio</td> </tr>
-                <tr><td>3º</td><td>-3</td><td>Parede de Gelo, Teleporte</td> </tr>
-                <tr><td>4º</td><td>-4</td><td>Terremoto, Parar Tempo</td> </tr>
-                <tr><td>5º</td><td>-5</td><td>Chuva de Meteoros</td> </tr>
-                <tr><td>6º</td><td>-6</td><td>Desejo, Portal Dimensional</td> </tr>
-                <tr><td>Milagres</td><td>0</td><td>Todos os milagres</td> </tr>
-            </table>
-            
-            <h3>⚡ FALHAS ARCANAS (1d10)</h3>
-            <table>
-                <tr><th>1</th><td>Explosão Arcana – 2d6 dano em área</td></tr>
-                <tr><th>2</th><td>Corrupção Acelerada – PUR -1d4</td></tr>
-                <tr><th>3</th><td>Inversão de Alvo – atinge aliado</td></tr>
-                <tr><th>4</th><td>Eco do Abismo – -2 testes, -1 Humor</td></tr>
-                <tr><th>5</th><td>Chamas do Sol Negro – 1d6 dano</td></tr>
-                <tr><th>6</th><td>Distorção Temporal – perde próximo turno</td></tr>
-                <tr><th>7</th><td>Invocação Indesejada – invoca fragmento do Caos</td></tr>
-                <tr><th>8</th><td>Dreno de Vida – -1d6 HP máximo</td></tr>
-                <tr><th>9</th><td>Marca Ofídica – +1 PUR permanente</td></tr>
-                <tr><th>10</th><td>Portal Efêmero – algo pode passar</td></tr>
-            </table>
-        </div>
-        
-        <!-- ABA 7: BESTIÁRIO RÁPIDO -->
-        <div id="monstros" class="tab-content">
-            <h2>🐉 BESTIÁRIO RÁPIDO</h2>
-            
-            <h3>🗺️ ENCONTROS POR BIOMA (1d12)</h3>
-            <table>
-                <tr><th>Bioma</th><th>1-3</th><th>4-6</th><th>7-9</th><th>10-12</th></tr>
-                <tr><td>Bosque</td><td>Goblins</td><td>Lobos</td><td>Slimes</td><td>Bandidos</td></tr>
-                <tr><td>Floresta</td><td>Orcs</td><td>Elfos Negros</td><td>Aranhas</td><td>Dragão Verde</td></tr>
-                <tr><td>Pântano</td><td>Trolls</td><td>Bruxas</td><td>Wendigos</td><td>Dragão Negro</td></tr>
-                <tr><td>Cavernas</td><td>Aranhas</td><td>Reptilianos</td><td>Basiliscos</td><td>Gárgulas</td></tr>
-                <tr><td>Masmorra Viva</td><td>Ínferos</td><td>Helldogs</td><td>Draconianos</td><td>Mojos</td></tr>
-                <tr><td>Zeol</td><td>Voids</td><td>Desmortos</td><td>Espectros</td><td>Lich</td></tr>
-            </table>
-            
-            <h3>📊 NÍVEL DE DESAFIO (ND)</h3>
-            <table>
-                <tr><th>ND</th><th>XP</th><th>Exemplo</th></tr>
-                <tr><td>1/2</td><td>50</td><td>Goblin, Slime</td></tr>
-                <tr><td>1</td><td>100</td><td>Ladrão, Esqueleto</td></tr>
-                <tr><td>2</td><td>150</td><td>Orc, Helldog</td></tr>
-                <tr><td>3</td><td>200</td><td>Gárgula, Mímico</td></tr>
-                <tr><td>4</td><td>300</td><td>Basilisco, Troll</td></tr>
-                <tr><td>5</td><td>400</td><td>Minotauro, Vampiro</td></tr>
-                <tr><td>6</td><td>600</td><td>Wendigo</td></tr>
-                <tr><td>8</td><td>1.000</td><td>Lich Menor</td></tr>
-                <tr><td>10</td><td>2.000</td><td>Ariadne</td></tr>
-                <tr><td>12</td><td>3.000</td><td>Zah'rak</td></tr>
-                <tr><td>14</td><td>5.000</td><td>Abrakxas</td></tr>
-                <tr><td>18</td><td>6.500</td><td>Akunashy</td></tr>
-            </table>
-        </div>
-        
-        <!-- ROLADOR DE DADOS -->
-        <div style="background: #0f0f1f; border-radius: 12px; padding: 20px; margin-top: 20px;">
-            <h3 style="color: #e94560;">🎲 ROLADOR DE DADOS RÁPIDO</h3>
-            <div>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d20')">1d20</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d12')">1d12</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d10')">1d10</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d8')">1d8</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d6')">1d6</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('d4')">1d4</button>
-                <button class="btn" style="width: auto; margin-right: 10px; display: inline-block;" onclick="rolarDado('3d6')">3d6</button>
-                <button class="btn" style="width: auto; display: inline-block;" onclick="rolarDado('2d10')">2d10</button>
+            <p><em>*Desvantagem: rola 3d6, descarta o maior resultado.</em></p>
+
+            <h2>🎯 CRÍTICO</h2>
+            <p>Crítico ocorre quando o <strong>resultado total (dado + ATK) ≥ 20</strong>.</p>
+
+            <h2>💪 ÚLTIMO SUSPIRO</h2>
+            <p>Uma vez por combate, ao cair para 1d6 (HP ≤ 25%), gaste <strong>1 Ponto Heroico</strong> para manter 2d6 por 1 rodada.</p>
+
+            <div class="note">
+                🔥 <strong>Dica:</strong> Bárbaros em Fúria ignoram a penalidade. Trolls nunca caem para 1d6.
             </div>
-            <div id="dice-result" class="dice-roll">Clique em um dado para rolar</div>
         </div>
-        
+
+        <!-- ROLADOR DE DADOS -->
+        <div class="dice-section">
+            <h2>🎲 ROLADOR DE DADOS</h2>
+            <div class="dice-buttons">
+                <button class="dice-btn" onclick="rolarDado('d20')">1d20</button>
+                <button class="dice-btn" onclick="rolarDado('d12')">1d12</button>
+                <button class="dice-btn" onclick="rolarDado('d10')">1d10</button>
+                <button class="dice-btn" onclick="rolarDado('d8')">1d8</button>
+                <button class="dice-btn" onclick="rolarDado('d6')">1d6</button>
+                <button class="dice-btn" onclick="rolarDado('d4')">1d4</button>
+                <button class="dice-btn" onclick="rolarDado('3d6')">3d6</button>
+                <button class="dice-btn" onclick="rolarDado('2d10')">2d10</button>
+            </div>
+            <div id="dice-result" class="dice-result">Clique em um dado para rolar</div>
+        </div>
+
         <footer>
-            Zabatom 5.2 – Edição Definitiva Final<br>
-            Todas as tabelas e geradores baseados nos livros oficiais.
+            Zabatom 5.2 – Core Rules | Edição Definitiva Final<br>
+            Baseado nos livros oficiais. Para consulta durante o jogo.
         </footer>
     </div>
-    
+
     <script>
-        // ==================== FUNÇÕES DOS GERADORES ====================
-        
-        // Dados para geradores
-        const tipos = ['Ofídica', 'Élfica', 'Ínfera', 'Anã', 'Feral', 'Masmorra Viva'];
-        const profundidades = ['Superfície', 'Raso', 'Médio', 'Profundo', 'Muito Profundo', 'Núcleo'];
-        
-        const habitantes = {
-            'Ofídica': 'Nagas, constructos ofídicos, escaravelhos, dragão adormecido',
-            'Élfica': 'Elfos da caverna, fadas, dríades corrompidas, aranhas gigantes, Ariadne',
-            'Ínfera': 'Ínferos, cultistas do Caos, helldogs, mojos',
-            'Anã': 'Constructos anões, goblins saqueadores, trolls das minas, golem de pedra',
-            'Feral': 'Minotauro, harpias, centauros sombrios, ciclope, esfinge',
-            'Masmorra Viva': 'Mojos, fungos do caos, íníferos, draconianos'
-        };
-        
-        const tesouros = {
-            'Ofídica': 'Pergaminhos antigos, escamas de dragão, amuletos ofídicos, gemas da lágrima arcana',
-            'Élfica': 'Cristais luminescentes, sementes da Árvore Mãe, poeira de fada, arcos élficos',
-            'Ínfera': 'Grimórios proibidos, fragmentos de Abadon, armaduras infernais, contratos de sangue',
-            'Anã': 'Minério raro (1d100×10 ouro), joias lapidadas, armas anãs (+1 ATK), coroa do clã',
-            'Feral': 'Chifres de minotauro, ovos de grifo, penas de harpias, olhos de ciclope',
-            'Masmorra Viva': 'Fragmentos de Abadon, carne viva, sangue corrompido, núcleos pulsantes'
-        };
-        
-        const eventos = {
-            'Ofídica': 'Hieróglifos brilham – revelam uma pista sobre o passado',
-            'Élfica': 'Flores adormecem – teste ESP DV 13 ou perde 1 rodada',
-            'Ínfera': 'Sussurros no escuro – -2 em testes mentais por 1d4 rodadas',
-            'Anã': 'Desmoronamento – 1d6 de dano, teste DES DV 12 para evitar',
-            'Feral': 'Névoa densa – -2 em testes de percepção',
-            'Masmorra Viva': 'Paredes se movem – role 1d6 para nova direção'
-        };
-        
-        const aventuras = [
-            { titulo: "A Morte Temporária", arco: "1,2,5", resumo: "Os PCs acordam no Reino dos Mortos (Zeol) sem saber como chegaram. Precisam encontrar um antigo paladino morto para recuperar um artefato." },
-            { titulo: "O Duplo Assassino", arco: "4,5", resumo: "Um doppelganger é contratado para eliminar membros de uma família nobre de Zyon." },
-            { titulo: "A Cidade dos Dois Olhos", arco: "2,7", resumo: "Uma cidade é dominada por dois beholders que fazem todos os habitantes ressuscitarem." },
-            { titulo: "A Companhia dos Ghouls", arco: "3,6", resumo: "Mercenários isolados foram forçados a comer seus mortos. Agora são ghouls." },
-            { titulo: "O Baile das Máscaras", arco: "4,5", resumo: "Uma cidade onde todos usam máscaras e vivem em eterna festa. A cidade se alimenta de emoções." },
-            { titulo: "Os Deuses Piratas", arco: "4", resumo: "Piratas naufragados encontram itens mágicos e se fazem passar por deuses." },
-            { titulo: "A Lança do Sacrifício", arco: "6,7", resumo: "Uma lança que mata qualquer criatura – mas exige que o portador mate quem mais ama." },
-            { titulo: "O Unicórnio Apaixonado", arco: "2", resumo: "Uma floresta está morrendo porque o unicórnio se apaixonou e abandonou seu dever." },
-            { titulo: "O Dragão de Pedra", arco: "3,6", resumo: "Avisos falam de um dragão. Na verdade, 'Dragão' é o nome de um antigo navio voador." },
-            { titulo: "A Palavra que Mata", arco: "4,7", resumo: "Um imperador possui uma 'arma' que é uma palavra. Pronunciá-la pode destruir exércitos." }
-        ];
-        
-        const oneShots = [
-            { titulo: "O Último Trem", arco: "4", niveis: "3-5", duracao: "3h", gancho: "O último trem para Zyon parte ao anoitecer. Dentro, uma carga que não pode cair em mãos erradas." },
-            { titulo: "A Última Sentinela", arco: "1", niveis: "1-3", duracao: "2h", gancho: "Um celestial ferido guarda um fragmento da Pedra de Arkamor. Ínferos estão no encalço." },
-            { titulo: "A Flor que Chora", arco: "2", niveis: "3-5", duracao: "3h", gancho: "Uma flor sagrada está morrendo. Apenas a lágrima de uma fada pode salvá-la." },
-            { titulo: "A Forja no Fim do Mundo", arco: "3", niveis: "5-7", duracao: "4h", gancho: "Um ferreiro anão precisa de ferro estelar. O meteoro trouxe algo que nunca deveria ter vindo." },
-            { titulo: "O Navio Fantasma", arco: "4", niveis: "8-10", duracao: "3h", gancho: "Um navio desaparecido voltou coberto de algas. A tripulação está catatônica." },
-            { titulo: "A Caravana do Silêncio", arco: "5", niveis: "9-11", duracao: "3h", gancho: "Uma caravana foi encontrada no deserto. Os corpos intactos. As almas sumiram." },
-            { titulo: "O Coração na Caverna", arco: "6", niveis: "11-12", duracao: "4h", gancho: "A masmorra viva está crescendo. Destrua o coração antes que ela engula tudo." },
-            { titulo: "O Julgamento do Herege", arco: "1", niveis: "2-4", duracao: "2h", gancho: "O inquisidor Azrael acusa Mirethiel de heresia. Vocês têm até o amanhecer para provar sua inocência." },
-            { titulo: "O Labirinto Vivo", arco: "2", niveis: "4-6", duracao: "3h", gancho: "Uma criança foi levada para o labirinto vegetal. O labirinto muda a cada hora." },
-            { titulo: "O Último Golem", arco: "3", niveis: "5-7", duracao: "3h", gancho: "Um golem antigo despertou. Ele busca vingança contra o clã que o abandonou." }
-        ];
-        
-        const nomes = ["Elara", "Kael", "Theron", "Yura", "Brom", "Lyra", "Osvark", "Mirethiel", "Vex", "Zara", "Aldric", "Seraphis", "Thalion", "Nyx", "Lys", "Thorgrim", "Helga", "Korr", "Mara", "Draven"];
-        const racas = ["Humano", "Elfo", "Anão", "Feral", "Celestial", "Monstruoso", "Void", "Ínfero"];
-        const classes = ["Guerreiro", "Ladino", "Mago", "Clérigo", "Caçador", "Mercador", "Guia", "Ferreiro"];
-        const carateres = ["Honesto", "Duvidoso", "Desonesto"];
-        const motivacoes = ["Busca vingança", "Quer um posto na Guilda", "Proteger sua família", "Encontrar um tesouro", "Redimir um erro", "Servir a um poder maior"];
-        const aparencias = ["Cicatriz no rosto", "Tatuagem mística", "Sotaque estrangeiro", "Olhos que brilham", "Cabelo prateado", "Presença intimidadora"];
-        
-        // Função gerar masmorra
-        function gerarMasmorra() {
-            const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-            const profundidade = profundidades[Math.floor(Math.random() * profundidades.length)];
-            
-            let modEncontros = '';
-            switch(profundidade) {
-                case 'Superfície': modEncontros = '-2'; break;
-                case 'Raso': modEncontros = '-1'; break;
-                case 'Médio': modEncontros = '0'; break;
-                case 'Profundo': modEncontros = '+1'; break;
-                case 'Muito Profundo': modEncontros = '+2'; break;
-                case 'Núcleo': modEncontros = '+3'; break;
+        // Função para alternar abas
+        function openTab(tabName) {
+            const contents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
             }
             
-            document.getElementById('masmorra-result').innerHTML = `
-                <h3>🏰 ${tipo}</h3>
-                <p><span class="label">📊 Profundidade:</span> ${profundidade} (Mod Encontros: ${modEncontros})</p>
-                <p><span class="label">👥 Habitantes:</span> ${habitantes[tipo]}</p>
-                <p><span class="label">💰 Tesouros:</span> ${tesouros[tipo]}</p>
-                <p><span class="label">✨ Evento Especial:</span> ${eventos[tipo]}</p>
-                <p><small>📚 Para detalhes completos, consulte o Livro 6, Apêndice E</small></p>
-            `;
-        }
-        
-        // Função gerar aventura
-        function gerarAventura() {
-            const idx = Math.floor(Math.random() * aventuras.length);
-            const a = aventuras[idx];
-            const xp = Math.floor(Math.random() * 150) + 50;
+            const buttons = document.getElementsByClassName('nav-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
             
-            document.getElementById('aventura-result').innerHTML = `
-                <h3>📜 ${a.titulo}</h3>
-                <p><span class="label">🎭 Arcos:</span> ${a.arco}</p>
-                <p><span class="label">📖 Resumo:</span> ${a.resumo}</p>
-                <p><span class="label">💰 Recompensa Sugerida:</span> ${xp} a ${xp+100} XP, 50-150 ouro</p>
-                <p><small>📚 Para mais aventuras, consulte o Livro 5, Seção 9</small></p>
-            `;
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
         }
-        
-        // Função gerar one shot
-        function gerarOneShot() {
-            const idx = Math.floor(Math.random() * oneShots.length);
-            const o = oneShots[idx];
-            
-            document.getElementById('oneshot-result').innerHTML = `
-                <h3>🎭 ${o.titulo}</h3>
-                <p><span class="label">🎭 Arco:</span> ${o.arco} | <span class="label">📊 Níveis:</span> ${o.niveis} | <span class="label">⏱️ Duração:</span> ${o.duracao}</p>
-                <p><span class="label">📖 Gancho:</span> "${o.gancho}"</p>
-                <p><span class="label">🎲 Estrutura:</span> Ato 1 (Apresentação) → Ato 2 (Desenvolvimento) → Ato 3 (Clímax)</p>
-                <p><small>📚 Para one shots completas, consulte o Livro 5, Apêndice C</small></p>
-            `;
-        }
-        
-        // Função gerar NPC
-        function gerarNPC() {
-            const nome = nomes[Math.floor(Math.random() * nomes.length)];
-            const raca = racas[Math.floor(Math.random() * racas.length)];
-            const classe = classes[Math.floor(Math.random() * classes.length)];
-            const carater = carateres[Math.floor(Math.random() * carateres.length)];
-            const motivacao = motivacoes[Math.floor(Math.random() * motivacoes.length)];
-            const aparencia = aparencias[Math.floor(Math.random() * aparencias.length)];
-            const hp = Math.floor(Math.random() * 20) + 10;
-            
-            document.getElementById('npc-result').innerHTML = `
-                <h3>🎭 ${nome}</h3>
-                <p><span class="label">🧬 Raça:</span> ${raca} | <span class="label">⚔️ Função:</span> ${classe}</p>
-                <p><span class="label">🎭 Caráter:</span> ${carater} | <span class="label">✨ Aparência:</span> ${aparencia}</p>
-                <p><span class="label">💭 Motivação:</span> ${motivacao}</p>
-                <p><span class="label">⚡ Estatísticas:</span> HP: ${hp}, ATK: ${Math.floor(Math.random() * 8) + 5}, DEF: ${Math.floor(Math.random() * 6) + 8}</p>
-                <p><small>📚 Para mais NPCs, consulte o Livro 2, Seção 5</small></p>
-            `;
-        }
-        
-        // Função rolar dados
+
+        // Função para rolar dados
         function rolarDado(tipo) {
             let resultado, texto;
             
             switch(tipo) {
-                case 'd20': resultado = Math.floor(Math.random() * 20) + 1; texto = `🎲 1d20 = ${resultado}`; break;
-                case 'd12': resultado = Math.floor(Math.random() * 12) + 1; texto = `🎲 1d12 = ${resultado}`; break;
-                case 'd10': resultado = Math.floor(Math.random() * 10) + 1; texto = `🎲 1d10 = ${resultado}`; break;
-                case 'd8': resultado = Math.floor(Math.random() * 8) + 1; texto = `🎲 1d8 = ${resultado}`; break;
-                case 'd6': resultado = Math.floor(Math.random() * 6) + 1; texto = `🎲 1d6 = ${resultado}`; break;
-                case 'd4': resultado = Math.floor(Math.random() * 4) + 1; texto = `🎲 1d4 = ${resultado}`; break;
+                case 'd20':
+                    resultado = Math.floor(Math.random() * 20) + 1;
+                    texto = `🎲 1d20 = ${resultado}`;
+                    break;
+                case 'd12':
+                    resultado = Math.floor(Math.random() * 12) + 1;
+                    texto = `🎲 1d12 = ${resultado}`;
+                    break;
+                case 'd10':
+                    resultado = Math.floor(Math.random() * 10) + 1;
+                    texto = `🎲 1d10 = ${resultado}`;
+                    break;
+                case 'd8':
+                    resultado = Math.floor(Math.random() * 8) + 1;
+                    texto = `🎲 1d8 = ${resultado}`;
+                    break;
+                case 'd6':
+                    resultado = Math.floor(Math.random() * 6) + 1;
+                    texto = `🎲 1d6 = ${resultado}`;
+                    break;
+                case 'd4':
+                    resultado = Math.floor(Math.random() * 4) + 1;
+                    texto = `🎲 1d4 = ${resultado}`;
+                    break;
                 case '3d6':
                     const d1 = Math.floor(Math.random() * 6) + 1;
                     const d2 = Math.floor(Math.random() * 6) + 1;
@@ -492,35 +617,12 @@
                     resultado = d10_1 + d10_2;
                     texto = `🎲 2d10 = ${d10_1} + ${d10_2} = ${resultado}`;
                     break;
-                default: texto = 'Clique em um dado para rolar';
+                default:
+                    texto = 'Clique em um dado para rolar';
             }
             
             document.getElementById('dice-result').innerHTML = texto;
         }
-        
-        // Função para alternar abas
-        function openTab(tabName) {
-            // Esconde todos os conteúdos
-            const contents = document.getElementsByClassName('tab-content');
-            for (let i = 0; i < contents.length; i++) {
-                contents[i].classList.remove('active');
-            }
-            
-            // Remove active de todos os botões
-            const buttons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            
-            // Mostra a aba selecionada
-            document.getElementById(tabName).classList.add('active');
-            
-            // Marca o botão como ativo
-            event.target.classList.add('active');
-        }
-        
-        // Gerar uma masmorra ao carregar
-        gerarMasmorra();
     </script>
 </body>
 </html>
