@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Gerador de Masmorra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        /* Painel principal */
+        .main-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        /* Botão gerar */
+        .generate-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: monospace;
+            width: 100%;
+            margin-bottom: 25px;
+            transition: all 0.2s;
+        }
+
+        .generate-btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.3);
+        }
+
+        /* Resultado da masmorra */
+        .dungeon-result {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .dungeon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .dungeon-type {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .dungeon-depth {
+            background: #2a2a4a;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .info-card {
+            background: #0f0f1f;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid #e94560;
+        }
+
+        .info-card h3 {
+            color: #ffd93d;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .info-card p {
+            color: #ccc;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .event-special {
+            background: #2a1a2a;
+            border-left-color: #ffd93d;
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #ffd93d;
+        }
+
+        /* Sistema de fuga */
+        .escape-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e94560;
+        }
+
+        .escape-btn {
+            background: #2a2a4a;
+            color: #ffd93d;
+            border: 1px solid #ffd93d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+
+        .escape-btn:hover {
+            background: #3a3a6a;
+        }
+
+        .escape-result {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            margin-right: 5px;
+        }
+
+        .badge-ofidica { background: #8b5a2b; }
+        .badge-elfica { background: #2d5a2d; }
+        .badge-infera { background: #5a2a2a; }
+        .badge-ana { background: #4a3a2a; }
+        .badge-feral { background: #3a5a4a; }
+        .badge-viva { background: #4a2a5a; }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 768px) {
+            .dungeon-header { flex-direction: column; gap: 10px; text-align: center; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏰 ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="main-panel">
+            <h1>🏰 GERADOR DE MASMORRA</h1>
+            <div class="subtitle">Baseado no Apêndice E do Livro 6 – Gere masmorras ofídicas, élficas, íníferas, anãs, ferais e vivas</div>
+
+            <button class="generate-btn" onclick="gerarMasmorra()">🎲 GERAR NOVA MASMORRA</button>
+
+            <div id="dungeonResult" class="dungeon-result">
+                <div style="text-align: center; padding: 40px; color: #888;">
+                    Clique no botão acima para gerar uma masmorra
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Gerador de Masmorra | Baseado no Livro 6, Apêndice E
+        </footer>
+    </div>
+
+    <script>
+        // Tipos de masmorra e seus dados
+        const tipos = [
+            { nome: 'Ofídica', icone: '🐍', cor: 'ofidica', descricao: 'Tumbas egípcias, obeliscos, hieróglifos de magia antiga, dragões adormecidos' },
+            { nome: 'Élfica', icone: '🌿', cor: 'elfica', descricao: 'Ruínas élficas, labirintos vegetais, cavernas de elfos sombrios, florestas negras' },
+            { nome: 'Ínfera', icone: '🔥', cor: 'infera', descricao: 'Calabouços, prisões, câmaras de culto, invocações sinistras, portais para o Umbral' },
+            { nome: 'Anã', icone: '⛏️', cor: 'ana', descricao: 'Cavernas profundas, minas abandonadas, cidades subterrâneas, salões reais' },
+            { nome: 'Feral', icone: '🏛️', cor: 'feral', descricao: 'Labirintos gregos, planícies vastas, colinas sagradas, moradas de criaturas míticas' },
+            { nome: 'Masmorra Viva', icone: '🩸', cor: 'viva', descricao: 'Estrutura pulsante de carne e pedra, corredores que se movem, núcleo de Abadon' }
+        ];
+
+        const profundidades = [
+            { nome: 'Superfície', modEncontros: -2, modTesouro: -1, descricao: 'Entrada, inimigos fracos, guardiões' },
+            { nome: 'Raso', modEncontros: -1, modTesouro: 0, descricao: 'Corredores iniciais, armadilhas simples' },
+            { nome: 'Médio', modEncontros: 0, modTesouro: 1, descricao: 'Salões principais, inimigos variados' },
+            { nome: 'Profundo', modEncontros: 1, modTesouro: 2, descricao: 'Câmaras antigas, guardiões élite' },
+            { nome: 'Muito Profundo', modEncontros: 2, modTesouro: 3, descricao: 'Túmulos reais, dragões adormecidos' },
+            { nome: 'Núcleo/Coração', modEncontros: 3, modTesouro: 4, descricao: 'Câmara central, chefe final' }
+        ];
+
+        // Habitantes por tipo
+        const habitantes = {
+            'Ofídica': 'Nagas, constructos ofídicos, escaravelhos gigantes, dragão ofídico adormecido',
+            'Élfica': 'Elfos da caverna, fadas, dríades corrompidas, aranhas gigantes, Ariadne',
+            'Ínfera': 'Ínferos menores e soldados, cultistas do Caos, helldogs, mojos',
+            'Anã': 'Constructos anões, goblins saqueadores, trolls das minas, golem de pedra',
+            'Feral': 'Minotauro, harpias, centauros sombrios, ciclope, esfinge',
+            'Masmorra Viva': 'Mojos comuns e agarradores, fungos do caos, íníferos, draconianos'
+        };
+
+        // Tesouros por tipo
+        const tesouros = {
+            'Ofídica': 'Pergaminhos antigos, escamas de dragão, amuletos ofídicos, gemas da lágrima arcana',
+            'Élfica': 'Cristais luminescentes, sementes da Árvore Mãe, poeira de fada, arcos élficos',
+            'Ínfera': 'Grimórios proibidos, fragmentos de Abadon, armaduras infernais, contratos de sangue',
+            'Anã': 'Minério raro (1d100×10 ouro), joias lapidadas, armas anãs (+1 ATK), coroa do clã',
+            'Feral': 'Chifres de minotauro, ovos de grifo, penas de harpias, olhos de ciclope',
+            'Masmorra Viva': 'Fragmentos de Abadon, carne viva, sangue corrompido, núcleos pulsantes'
+        };
+
+        // Eventos especiais por tipo
+        const eventos = {
+            'Ofídica': 'Hieróglifos brilham – revelam uma pista sobre o passado',
+            'Élfica': 'Flores adormecem – teste ESP DV 13 ou perde 1 rodada',
+            'Ínfera': 'Sussurros no escuro – -2 em testes mentais por 1d4 rodadas',
+            'Anã': 'Desmoronamento – 1d6 de dano, teste DES DV 12 para evitar',
+            'Feral': 'Névoa densa – -2 em testes de percepção',
+            'Masmorra Viva': 'Paredes se movem – role 1d6 para nova direção'
+        };
+
+        // Armadilhas por tipo
+        const armadilhas = {
+            'Ofídica': 'Flechas envenenadas (DV 14, 1d6 dano + veneno)',
+            'Élfica': 'Teias mágicas (DES DV 13, preso 1 rodada)',
+            'Ínfera': 'Piso que se abre para fossa de lava (DES DV 15, 2d6 dano)',
+            'Anã': 'Martelo pendular (DES DV 14, 1d8 dano)',
+            'Feral': 'Estátua que ganha vida (ATK vs DEF 14)',
+            'Masmorra Viva': 'Paredes que se fecham (DES DV 16, 2d6 dano)'
+        };
+
+        // Encontros especiais por tipo (1d10)
+        const encontrosEspeciais = {
+            'Ofídica': ['Escaravelho Gigante', 'Constructo Ofídico', 'Naga', 'Basilisco', 'Múmia Ofídica', 'Yuga Jovem', 'Dragão Ofídico', 'Lich Ofídico', 'Harpias do Deserto', 'Voids Ofídicos'],
+            'Élfica': ['Fada', 'Pixie', 'Dríade Corrompida', 'Elfo da Caverna', 'Elfo do Pântano', 'Aranha Gigante', 'Centauro Sombrio', 'Wendigo', 'Elfo Aranha', 'Ariadne'],
+            'Ínfera': ['Cultista do Caos', 'Ínfero Menor', 'Ínfero Soldado', 'Helldog', 'Espectro', 'Ínfero Arauto', 'Mojo Parasita', 'Ínfero Lorde', 'Draconiano', 'Akunashy'],
+            'Anã': ['Goblin Saqueador', 'Orc Escravizador', 'Troll das Minas', 'Constructo Anão', 'Ínfero', 'Desmorto Anão', 'Golem de Pedra', 'Dragão Ancião', 'Helldog', 'Golem Colosso'],
+            'Feral': ['Harpia', 'Grifo', 'Minotauro', 'Centauro Sombrio', 'Ciclope', 'Górgona', 'Esfinge', 'Basilisco', 'Cocatriz', 'Quimera'],
+            'Masmorra Viva': ['Mojo Comum', 'Mojo Agarrador', 'Mojo Injetor', 'Fungo Andante', 'Fungo Explosivo', 'Ínfero Soldado', 'Helldog', 'Draconiano Jovem', 'Mojo Ancião', 'Akunashy']
+        };
+
+        // Função para rolar dados
+        function rolarDado(max) {
+            return Math.floor(Math.random() * max) + 1;
+        }
+
+        // Função para gerar encontro aleatório
+        function gerarEncontro(tipo) {
+            const lista = encontrosEspeciais[tipo];
+            const idx = rolarDado(10) - 1;
+            return lista[idx];
+        }
+
+        // Função para gerar masmorra
+        function gerarMasmorra() {
+            const tipoIdx = rolarDado(tipos.length) - 1;
+            const tipo = tipos[tipoIdx];
+            
+            const profundIdx = rolarDado(profundidades.length) - 1;
+            const profundidade = profundidades[profundIdx];
+            
+            const encontro = gerarEncontro(tipo.nome);
+            
+            // Gerar XP e ouro sugeridos
+            const xpBase = 50 + (profundIdx * 25) + (tipoIdx * 10);
+            const ouroBase = 30 + (profundIdx * 20) + (tipoIdx * 15);
+            
+            const html = `
+                <div class="dungeon-header">
+                    <div class="dungeon-type">
+                        <span class="badge badge-${tipo.cor}">${tipo.icone}</span> ${tipo.nome}
+                    </div>
+                    <div class="dungeon-depth">📊 ${profundidade.nome} | Mod Encontros: ${profundidade.modEncontros >= 0 ? '+' : ''}${profundidade.modEncontros} | Mod Tesouro: ${profundidade.modTesouro >= 0 ? '+' : ''}${profundidade.modTesouro}</div>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>📖 DESCRIÇÃO</h3>
+                        <p>${tipo.descricao}</p>
+                        <p style="margin-top: 10px;"><strong>${profundidade.descricao}</strong></p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>👥 HABITANTES PRINCIPAIS</h3>
+                        <p>${habitantes[tipo.nome]}</p>
+                        <p style="margin-top: 10px;"><strong>🎲 Encontro aleatório:</strong> ${encontro} (Nível ${3 + profundIdx})</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>💰 TESOUROS TÍPICOS</h3>
+                        <p>${tesouros[tipo.nome]}</p>
+                        <p style="margin-top: 10px;"><strong>💎 Sugestão:</strong> ${ouroBase + rolarDado(100)} ouro + ${xpBase + rolarDado(50)} XP</p>
+                    </div>
+                    
+                    <div class="info-card event-special">
+                        <h3>✨ EVENTO ESPECIAL</h3>
+                        <p>${eventos[tipo.nome]}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>⚠️ ARMADILHA COMUM</h3>
+                        <p>${armadilhas[tipo.nome]}</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>🏆 CHEFE SUGERIDO</h3>
+                        <p>${tipo.nome === 'Ofídica' ? 'Dragão Ofídico (Nível 9-12)' : 
+                                  tipo.nome === 'Élfica' ? 'Ariadne (Nível 10)' :
+                                  tipo.nome === 'Ínfera' ? 'Ínfero General (Nível 9)' :
+                                  tipo.nome === 'Anã' ? 'Golem Colosso (Nível 8)' :
+                                  tipo.nome === 'Feral' ? 'Minotauro Ancião (Nível 8)' :
+                                  'Akunashy (Nível 12)'}</p>
+                    </div>
+                </div>
+                
+                <div class="escape-section">
+                    <h3 style="color: #ffd93d; margin-bottom: 10px;">🏃 SISTEMA DE FUGA</h3>
+                    <p style="margin-bottom: 10px;">Se algo der errado, seus heróis podem precisar fugir! A masmorra pode desabar, uma criatura invencível pode surgir, ou a corrupção pode avançar.</p>
+                    <button class="escape-btn" onclick="gerarFuga('${tipo.nome}')">🏃 GERAR EVENTO DE FUGA</button>
+                    <div id="escapeResult" style="margin-top: 15px;"></div>
+                </div>
+            `;
+            
+            document.getElementById('dungeonResult').innerHTML = html;
+        }
+
+        // Função para gerar evento de fuga
+        function gerarFuga(tipo) {
+            const tiposFuga = ['Desmoronamento', 'Enchente', 'Perseguição', 'Corrupção Avançando', 'Explosão Arcana'];
+            const tipoFuga = tiposFuga[rolarDado(tiposFuga.length) - 1];
+            const duracao = rolarDado(6) + 3;
+            
+            let perseguidor = '';
+            if (tipoFuga === 'Perseguição') {
+                const perseguidores = {
+                    'Ofídica': 'Dragão desperto',
+                    'Élfica': 'Ent ancião',
+                    'Ínfera': 'Ínfero General',
+                    'Anã': 'Golem colosso',
+                    'Feral': 'Minotauro ancião',
+                    'Masmorra Viva': 'Akunashy (sombra)'
+                };
+                perseguidor = perseguidores[tipo] || 'Criatura invencível';
+            }
+            
+            const obstaculos = [
+                'Pilar desaba bloqueando passagem (FIS DV 14)',
+                'Areia movediça (DES DV 13)',
+                'Gás tóxico (FIS DV 14)',
+                'Correntes agarram (DES DV 14)',
+                'Paredes se fecham (DES DV 15)',
+                'O perseguidor aparece (ESP DV 16)'
+            ];
+            const obstaculo = obstaculos[rolarDado(obstaculos.length) - 1];
+            
+            const resultado = rolarDado(10);
+            let consequencia = '';
+            if (resultado <= 2) consequencia = '💀 Fuga desastrosa: 2d6 dano, perda de 1d4 itens';
+            else if (resultado <= 4) consequencia = '⚠️ Fuga custosa: 1d6 dano, perda de 1 item';
+            else if (resultado <= 6) consequencia = '😓 Fuga cansativa: -1 em testes por 1 dia';
+            else if (resultado <= 8) consequencia = '✅ Fuga bem-sucedida: escapam com vida';
+            else consequencia = '🌟 Fuga heroica: escapam ilesos +1 Ponto Heroico';
+            
+            const escapeHtml = `
+                <div class="escape-result">
+                    <h4 style="color: #e94560;">🏃 ${tipoFuga}!</h4>
+                    <p><strong>⏱️ Duração:</strong> ${duracao} rodadas para escapar</p>
+                    ${perseguidor ? `<p><strong>👹 Perseguidor:</strong> ${perseguidor}</p>` : ''}
+                    <p><strong>🚧 Obstáculo:</strong> ${obstaculo}</p>
+                    <p><strong>🎲 Resultado (1d10=${resultado}):</strong> ${consequencia}</p>
+                    <p style="margin-top: 10px; font-size:0.85rem;"><em>Para detalhes completos, consulte o Livro 6, Apêndice E (E.17)</em></p>
+                </div>
+            `;
+            
+            document.getElementById('escapeResult').innerHTML = escapeHtml;
+        }
+
+        // Gerar masmorra ao carregar
+        window.onload = function() {
+            gerarMasmorra();
+        };
+    </script>
+</body>
+</html>

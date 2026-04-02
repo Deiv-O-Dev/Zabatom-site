@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Criar Personagem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        /* Grid principal */
+        .creator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Painel de criação */
+        .creation-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        .creation-panel h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffd93d;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #e94560;
+            color: #eee;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ffd93d;
+        }
+
+        /* Botões de ação */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #2a2a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a6a;
+        }
+
+        /* Rolagem de atributos */
+        .attr-roll {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .attr-roll span {
+            width: 40px;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .attr-roll input {
+            flex: 1;
+        }
+
+        .roll-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Ficha do personagem */
+        .sheet-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 20px;
+            border-right: 4px solid #e94560;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sheet-panel h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .character-sheet {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sheet-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e94560;
+        }
+
+        .sheet-name {
+            font-size: 1.5rem;
+            color: #ffd93d;
+            font-weight: bold;
+        }
+
+        .sheet-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sheet-stat {
+            background: #0f0f1f;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .sheet-stat .label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .sheet-stat .value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .sheet-attr {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .attr-card {
+            background: #0f0f1f;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .attr-card .attr-name {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .attr-card .attr-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .attr-card .attr-mod {
+            font-size: 0.8rem;
+            color: #ffd93d;
+        }
+
+        .sheet-section {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+
+        .sheet-section h4 {
+            color: #ffd93d;
+            margin-bottom: 8px;
+        }
+
+        .hp-bar {
+            background: #2a2a4a;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .hp-fill {
+            background: #e94560;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .pur-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .pur-santidade { background: #2a6f3f; color: #fff; }
+        .pur-corrupcao { background: #6f2a2a; color: #fff; }
+
+        .racial-bonus {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 900px) {
+            .creator-grid {
+                grid-template-columns: 1fr;
+            }
+            .sheet-panel {
+                position: static;
+            }
+            .sheet-details {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚔️ ZABATOM 5.2 ⚔️</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="creator-grid">
+            <!-- Painel de Criação -->
+            <div class="creation-panel">
+                <h2>🎭 CRIAR PERSONAGEM</h2>
+                
+                <div class="form-group">
+                    <label>📛 Nome do Personagem</label>
+                    <input type="text" id="charName" placeholder="Ex: Kaelen, Lyra, Gromm..." value="Aventureiro">
+                </div>
+
+                <div class="form-group">
+                    <label>🎲 ATRIBUTOS (3d6)</label>
+                    <div id="atributos">
+                        <div class="attr-roll">
+                            <span>FIS</span>
+                            <input type="number" id="fis" value="10" readonly>
+                            <button class="roll-btn" onclick="rolarAtributo('fis')">🎲</button>
+                        </div>
+                        <div class="attr-roll">
+                            <span>DES</span>
+                            <input type="number" id="des" value="10" readonly>
+                            <button class="roll-btn" onclick="rolarAtributo('des')">🎲</button>
+                        </div>
+                        <div class="attr-roll">
+                            <span>MNT</span>
+                            <input type="number" id="mnt" value="10" readonly>
+                            <button class="roll-btn" onclick="rolarAtributo('mnt')">🎲</button>
+                        </div>
+                        <div class="attr-roll">
+                            <span>ESP</span>
+                            <input type="number" id="esp" value="10" readonly>
+                            <button class="roll-btn" onclick="rolarAtributo('esp')">🎲</button>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" style="margin-top: 8px; width: 100%;" onclick="rolarTodosAtributos()">🎲 ROLAR TODOS ATRIBUTOS</button>
+                </div>
+
+                <div class="form-group">
+                    <label>🧬 Raça</label>
+                    <select id="raca" onchange="atualizarFicha()">
+                        <optgroup label="✨ SANTIDADE">
+                            <option value="Celestial">Celestial (ESP+2, FIS-1)</option>
+                            <option value="Elfo">Elfo (DES+2, ESP+1)</option>
+                        </optgroup>
+                        <optgroup label="⚖️ CORRUPÇÃO">
+                            <option value="Humano">Humano (+1 em todos)</option>
+                            <option value="Anão">Anão (FIS+3, ESP-2)</option>
+                            <option value="Feral">Feral (FIS+3, ESP-2)</option>
+                            <option value="Void">Void (ESP+3, FIS-2)</option>
+                            <option value="Ínfero">Ínfero (FIS+2, ESP+2, DES-1)</option>
+                            <option value="Draconiano">Draconiano (Todos +1)</option>
+                        </optgroup>
+                        <optgroup label="🧬 MONSTRUOSOS (8 sub-raças)">
+                            <option value="Monstruoso (Goblin)">🐀 Goblin (DES+2, FIS-1, MNT-1, ESP-1)</option>
+                            <option value="Monstruoso (Orc)">👹 Orc (FIS+2, DES-1, MNT-1, ESP-1)</option>
+                            <option value="Monstruoso (Hobgoblin)">⚔️ Hobgoblin (FIS+1, DES+1, ESP-1)</option>
+                            <option value="Monstruoso (Troll)">🦧 Troll (FIS+3, DES-2, MNT-2, ESP-1)</option>
+                            <option value="Monstruoso (Vampiro)">🦇 Vampiro (FIS+1, DES+2, MNT+1, ESP+1)</option>
+                            <option value="Monstruoso (Lobisomem)">🐺 Lobisomem (FIS+2, DES+1, MNT-1, ESP-1)</option>
+                            <option value="Monstruoso (Slime)">💧 Slime (FIS-2, DES-3, MNT-3, ESP-2)</option>
+                            <option value="Monstruoso (Minotauro)">🐂 Minotauro (FIS+2, DES-1, MNT-2, ESP-1)</option>
+                        </optgroup>
+                    </select>
+                    <div id="racialBonusInfo" class="racial-bonus"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>⚔️ Classe</label>
+                    <select id="classe" onchange="atualizarFicha()">
+                        <option value="Soldado">Soldado (FIS primário) – Escudo e espada</option>
+                        <option value="Bárbaro">Bárbaro (FIS primário) – Fúria e força bruta</option>
+                        <option value="Ladino">Ladino (DES primário) – Furtividade e precisão</option>
+                        <option value="Espiritualista">Espiritualista (ESP primário) – Milagres e fé</option>
+                        <option value="Especialista">Especialista (MNT primário) – Conhecimento e tática</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🎭 Caráter</label>
+                    <select id="carater" onchange="atualizarFicha()">
+                        <option value="Honesto">Honesto – Valoriza a verdade</option>
+                        <option value="Duvidoso">Duvidoso – Age por conveniência</option>
+                        <option value="Desonesto">Desonesto – Prioriza o próprio benefício</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="gerarPersonagem()">✨ GERAR PERSONAGEM</button>
+                    <button class="btn btn-secondary" onclick="exportarFicha()">📄 EXPORTAR TEXTO</button>
+                </div>
+            </div>
+
+            <!-- Ficha do Personagem -->
+            <div class="sheet-panel">
+                <h2>📜 FICHA DO PERSONAGEM</h2>
+                <div id="fichaContainer" class="character-sheet">
+                    <div style="text-align: center; padding: 40px; color: #888;">
+                        Preencha os dados ao lado e clique em "GERAR PERSONAGEM"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Criador de Personagem | Baseado no Livro 1, Seção 2 | 8 sub-raças monstruosas disponíveis
+        </footer>
+    </div>
+
+    <script>
+        // Função para rolar 3d6
+        function rolar3d6() {
+            return Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+        }
+
+        // Rolar atributo específico
+        function rolarAtributo(attr) {
+            const valor = rolar3d6();
+            document.getElementById(attr).value = valor;
+            atualizarFicha();
+        }
+
+        // Rolar todos os atributos
+        function rolarTodosAtributos() {
+            document.getElementById('fis').value = rolar3d6();
+            document.getElementById('des').value = rolar3d6();
+            document.getElementById('mnt').value = rolar3d6();
+            document.getElementById('esp').value = rolar3d6();
+            atualizarFicha();
+        }
+
+        // Calcular modificador (3-5:-1, 6-8:0, 9-12:+1, 13-15:+2, 16-18:+3)
+        function calcularMod(valor) {
+            if (valor <= 5) return -1;
+            if (valor <= 8) return 0;
+            if (valor <= 12) return 1;
+            if (valor <= 15) return 2;
+            return 3;
+        }
+
+        // Aplicar modificadores raciais (com todas as 8 sub-raças monstruosas)
+        function aplicarModificadoresRaciais(raca, fisBase, desBase, mntBase, espBase) {
+            let fis = fisBase, des = desBase, mnt = mntBase, esp = espBase;
+            
+            switch(raca) {
+                case 'Humano':
+                    fis += 1; des += 1; mnt += 1; esp += 1;
+                    break;
+                case 'Elfo':
+                    des += 2; esp += 1;
+                    break;
+                case 'Anão':
+                    fis += 3; esp -= 2;
+                    break;
+                case 'Celestial':
+                    esp += 2; fis -= 1;
+                    break;
+                case 'Feral':
+                    fis += 3; esp -= 2;
+                    break;
+                case 'Void':
+                    esp += 3; fis -= 2;
+                    break;
+                case 'Ínfero':
+                    fis += 2; esp += 2; des -= 1;
+                    break;
+                case 'Draconiano':
+                    fis += 1; des += 1; mnt += 1; esp += 1;
+                    break;
+                // MONSTRUOSOS (8 sub-raças)
+                case 'Monstruoso (Goblin)':
+                    des += 2; fis -= 1; mnt -= 1; esp -= 1;
+                    break;
+                case 'Monstruoso (Orc)':
+                    fis += 2; des -= 1; mnt -= 1; esp -= 1;
+                    break;
+                case 'Monstruoso (Hobgoblin)':
+                    fis += 1; des += 1; esp -= 1;
+                    break;
+                case 'Monstruoso (Troll)':
+                    fis += 3; des -= 2; mnt -= 2; esp -= 1;
+                    break;
+                case 'Monstruoso (Vampiro)':
+                    fis += 1; des += 2; mnt += 1; esp += 1;
+                    break;
+                case 'Monstruoso (Lobisomem)':
+                    fis += 2; des += 1; mnt -= 1; esp -= 1;
+                    break;
+                case 'Monstruoso (Slime)':
+                    fis -= 2; des -= 3; mnt -= 3; esp -= 2;
+                    break;
+                case 'Monstruoso (Minotauro)':
+                    fis += 2; des -= 1; mnt -= 2; esp -= 1;
+                    break;
+            }
+            return { fis, des, mnt, esp };
+        }
+
+        // Calcular HP (com bônus para todas as raças)
+        function calcularHP(raca, fisMod) {
+            let baseHP = 10.5;
+            let bonus = 0;
+            
+            const hpBonus = {
+                'Celestial': 7, 'Elfo': 6, 'Humano': 4, 'Anão': 6,
+                'Feral': 5, 'Void': 4, 'Ínfero': 5, 'Draconiano': 7,
+                'Monstruoso (Goblin)': 2, 'Monstruoso (Orc)': 6, 'Monstruoso (Hobgoblin)': 4,
+                'Monstruoso (Troll)': 9, 'Monstruoso (Vampiro)': 4, 'Monstruoso (Lobisomem)': 6,
+                'Monstruoso (Slime)': 2, 'Monstruoso (Minotauro)': 6
+            };
+            
+            bonus = hpBonus[raca] || 5;
+            
+            let hpBase = Math.floor(baseHP + bonus);
+            let hpFinal = hpBase + (fisMod > 0 ? fisMod * 2 : fisMod);
+            return Math.max(4, hpFinal);
+        }
+
+        // Calcular ATK
+        function calcularATK(classe, subMod, raca) {
+            let base = 10;
+            switch(classe) {
+                case 'Soldado': base = 12; break;
+                case 'Bárbaro': base = 12; break;
+                case 'Ladino': base = 12; break;
+                case 'Espiritualista': base = 10; break;
+                case 'Especialista': base = 10; break;
+            }
+            let bonusRaca = (raca === 'Draconiano') ? 1 : 0;
+            return base + subMod + bonusRaca;
+        }
+
+        // Calcular DEF
+        function calcularDEF(desMod, raca) {
+            let base = 10 + desMod;
+            if (raca === 'Celestial') base += 2;
+            if (raca === 'Draconiano') base += 1;
+            return base;
+        }
+
+        // Calcular PUR (com todas as raças)
+        function calcularPUR(raca) {
+            const purMap = {
+                'Celestial': 3, 'Elfo': 1, 'Humano': -1, 'Anão': -1, 'Feral': -1,
+                'Void': -2, 'Ínfero': -3, 'Draconiano': -4,
+                'Monstruoso (Goblin)': -2, 'Monstruoso (Orc)': -2, 'Monstruoso (Hobgoblin)': -2,
+                'Monstruoso (Troll)': -2, 'Monstruoso (Vampiro)': -2, 'Monstruoso (Lobisomem)': -2,
+                'Monstruoso (Slime)': -2, 'Monstruoso (Minotauro)': -2
+            };
+            return purMap[raca] || -1;
+        }
+
+        // Habilidade racial
+        function getHabilidadeRacial(raca) {
+            const habilidades = {
+                'Monstruoso (Goblin)': 'Tática de Bando (+1 ATK/aliado adjacente), Fuga Covarde',
+                'Monstruoso (Orc)': 'Fúria (+2 ATK se HP<50%), Tática de Grupo',
+                'Monstruoso (Hobgoblin)': 'Liderança (+1 ATK aliados), Disciplina (imune a medo)',
+                'Monstruoso (Troll)': 'Regeneração (1 HP/rodada fora de combate), Garras 1d6',
+                'Monstruoso (Vampiro)': 'Dreno (mordida 1d4), Olhar Hipnótico, Fraquezas',
+                'Monstruoso (Lobisomem)': 'Forma Híbrida (+2 ATK, +1 DEF), Imunidade a armas comuns',
+                'Monstruoso (Slime)': 'Ácido, Amorfo, Dividir',
+                'Monstruoso (Minotauro)': 'Investida, Labirinto Familiar, Chifres 1d8',
+                'Celestial': 'Voo Sagrado, Santidade, Luz Imaculada',
+                'Elfo': '+2 DEF vs magia',
+                'Anão': '+1 ATK com armas fabricadas',
+                'Feral': 'Fúria Selvagem (+2 ATK se HP<50%)',
+                'Void': 'Drenagem Arcano (ignora 50% DEF física)',
+                'Ínfero': 'Dano ×1.2 se PUR ≤ -8',
+                'Draconiano': 'Escamas do Caos (+1 movimento), Malevolência Draconiana'
+            };
+            return habilidades[raca] || 'Adaptável (+1 atributo a cada 2 níveis)';
+        }
+
+        // Equipamento inicial por classe
+        function getEquipamento(classe) {
+            const equip = {
+                'Soldado': 'Espada Longa + Escudo Pesado + Poção de Cura',
+                'Bárbaro': 'Machado Grande + 3 Rações + Bebida Forte',
+                'Ladino': 'Duas Adagas + Gancho e Corda',
+                'Espiritualista': 'Cajado Mágico + Pergaminho de Cura Maior + Poção',
+                'Especialista': 'Besta + Amuleto de Foco + Mapa + Poção'
+            };
+            return equip[classe] || 'Equipamento básico';
+        }
+
+        // Gerar e exibir ficha
+        function gerarPersonagem() {
+            const nome = document.getElementById('charName').value;
+            const raca = document.getElementById('raca').value;
+            const classe = document.getElementById('classe').value;
+            const carater = document.getElementById('carater').value;
+            
+            const fisBase = parseInt(document.getElementById('fis').value) || 10;
+            const desBase = parseInt(document.getElementById('des').value) || 10;
+            const mntBase = parseInt(document.getElementById('mnt').value) || 10;
+            const espBase = parseInt(document.getElementById('esp').value) || 10;
+            
+            const modificados = aplicarModificadoresRaciais(raca, fisBase, desBase, mntBase, espBase);
+            
+            const fis = modificados.fis;
+            const des = modificados.des;
+            const mnt = modificados.mnt;
+            const esp = modificados.esp;
+            
+            const fisMod = calcularMod(fis);
+            const desMod = calcularMod(des);
+            const mntMod = calcularMod(mnt);
+            const espMod = calcularMod(esp);
+            
+            const hp = calcularHP(raca, fisMod);
+            const atk = calcularATK(classe, fisMod, raca);
+            const def = calcularDEF(desMod, raca);
+            const pur = calcularPUR(raca);
+            const habilidade = getHabilidadeRacial(raca);
+            const equipamento = getEquipamento(classe);
+            
+            const purClasse = pur >= 1 ? 'pur-santidade' : 'pur-corrupcao';
+            const purTexto = pur >= 1 ? 'Santidade' : 'Corrupção';
+            
+            // Exibir bônus raciais no painel
+            const racialBonusText = {
+                'Monstruoso (Goblin)': '🐀 +2 DES, -1 FIS/MNT/ESP | HP: 3d6+2',
+                'Monstruoso (Orc)': '👹 +2 FIS, -1 DES/MNT/ESP | HP: 3d6+6',
+                'Monstruoso (Hobgoblin)': '⚔️ +1 FIS/DES, -1 ESP | HP: 3d6+4',
+                'Monstruoso (Troll)': '🦧 +3 FIS, -2 DES/MNT, -1 ESP | HP: 3d6+9',
+                'Monstruoso (Vampiro)': '🦇 +1 FIS/DES/MNT/ESP | HP: 3d6+4',
+                'Monstruoso (Lobisomem)': '🐺 +2 FIS, +1 DES, -1 MNT/ESP | HP: 3d6+6',
+                'Monstruoso (Slime)': '💧 -2 FIS, -3 DES, -3 MNT, -2 ESP | HP: 3d6+2',
+                'Monstruoso (Minotauro)': '🐂 +2 FIS, -1 DES, -2 MNT, -1 ESP | HP: 3d6+6'
+            };
+            document.getElementById('racialBonusInfo').innerHTML = racialBonusText[raca] || '';
+            
+            const fichaHTML = `
+                <div class="sheet-header">
+                    <div class="sheet-name">${nome}</div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 5px; flex-wrap: wrap;">
+                        <span class="pur-badge ${purClasse}">PUR: ${pur} (${purTexto})</span>
+                        <span class="pur-badge" style="background:#2a2a4a;">🎭 ${carater}</span>
+                    </div>
+                </div>
+                
+                <div class="sheet-details">
+                    <div class="sheet-stat"><div class="label">🧬 RAÇA</div><div class="value">${raca.replace('Monstruoso (', '').replace(')', '')}</div></div>
+                    <div class="sheet-stat"><div class="label">⚔️ CLASSE</div><div class="value">${classe}</div></div>
+                    <div class="sheet-stat"><div class="label">❤️ HP</div><div class="value">${hp}</div></div>
+                    <div class="sheet-stat"><div class="label">⚔️ ATK</div><div class="value">${atk}</div></div>
+                    <div class="sheet-stat"><div class="label">🛡️ DEF</div><div class="value">${def}</div></div>
+                </div>
+                
+                <div class="sheet-attr">
+                    <div class="attr-card"><div class="attr-name">FIS</div><div class="attr-value">${fis}</div><div class="attr-mod">(${fisMod >= 0 ? '+' : ''}${fisMod})</div></div>
+                    <div class="attr-card"><div class="attr-name">DES</div><div class="attr-value">${des}</div><div class="attr-mod">(${desMod >= 0 ? '+' : ''}${desMod})</div></div>
+                    <div class="attr-card"><div class="attr-name">MNT</div><div class="attr-value">${mnt}</div><div class="attr-mod">(${mntMod >= 0 ? '+' : ''}${mntMod})</div></div>
+                    <div class="attr-card"><div class="attr-name">ESP</div><div class="attr-value">${esp}</div><div class="attr-mod">(${espMod >= 0 ? '+' : ''}${espMod})</div></div>
+                </div>
+                
+                <div class="sheet-section">
+                    <h4>❤️ BARRA DE VIDA</h4>
+                    <div class="hp-bar"><div class="hp-fill" style="width: 100%;"></div></div>
+                    <div style="font-size:0.8rem; text-align:center;">${hp} / ${hp} HP</div>
+                </div>
+                
+                <div class="sheet-section">
+                    <h4>✨ HABILIDADE RACIAL</h4>
+                    <div style="font-size:0.85rem;">${habilidade}</div>
+                </div>
+                
+                <div class="sheet-section">
+                    <h4>📜 EQUIPAMENTO INICIAL</h4>
+                    <div style="font-size:0.85rem;">${equipamento}</div>
+                </div>
+                
+                <div class="sheet-section">
+                    <h4>📚 PERÍCIA INICIAL</h4>
+                    <div>Escolha uma perícia: Investigação, Sobrevivência, Furtividade, Alquimia, Diplomacia ou Intimidação</div>
+                </div>
+                
+                <div class="sheet-section">
+                    <h4>📝 NOTAS</h4>
+                    <div style="font-size:0.8rem; color:#aaa;">
+                        • Proeminência: ${raca === 'Humano' ? 'Escolha um atributo' : (raca.includes('Elfo') ? 'DES' : (raca.includes('Anão') ? 'FIS' : (raca.includes('Celestial') ? 'ESP' : '--')))}
+                        <br>• Deficiência: ${raca === 'Humano' ? 'Escolha um atributo' : (raca.includes('Elfo') ? 'FIS' : (raca.includes('Anão') ? 'ESP' : (raca.includes('Celestial') ? 'FIS' : '--')))}
+                        ${raca.includes('Monstruoso') ? '<br>• Monstruoso: Pele Grossa (-1 dano recebido)' : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('fichaContainer').innerHTML = fichaHTML;
+        }
+        
+        // Exportar ficha como texto
+        function exportarFicha() {
+            const nome = document.getElementById('charName').value;
+            const raca = document.getElementById('raca').value;
+            const classe = document.getElementById('classe').value;
+            const carater = document.getElementById('carater').value;
+            const fis = document.getElementById('fis').value;
+            const des = document.getElementById('des').value;
+            const mnt = document.getElementById('mnt').value;
+            const esp = document.getElementById('esp').value;
+            
+            const fisBase = parseInt(fis);
+            const desBase = parseInt(des);
+            const mntBase = parseInt(mnt);
+            const espBase = parseInt(esp);
+            
+            const modificados = aplicarModificadoresRaciais(raca, fisBase, desBase, mntBase, espBase);
+            const hp = calcularHP(raca, calcularMod(modificados.fis));
+            const atk = calcularATK(classe, calcularMod(modificados.fis), raca);
+            const def = calcularDEF(calcularMod(modificados.des), raca);
+            const pur = calcularPUR(raca);
+            
+            const texto = `═══════════════════════════════════════════════
+                  FICHA DE PERSONAGEM - ZABATOM 5.2
+═══════════════════════════════════════════════
+
+NOME: ${nome}
+RAÇA: ${raca.replace('Monstruoso (', '').replace(')', '')}
+CLASSE: ${classe}
+CARÁTER: ${carater}
+
+ATRIBUTOS (base → após raça):
+FIS: ${fisBase} → ${modificados.fis} (${calcularMod(modificados.fis) >= 0 ? '+' : ''}${calcularMod(modificados.fis)})
+DES: ${desBase} → ${modificados.des} (${calcularMod(modificados.des) >= 0 ? '+' : ''}${calcularMod(modificados.des)})
+MNT: ${mntBase} → ${modificados.mnt} (${calcularMod(modificados.mnt) >= 0 ? '+' : ''}${calcularMod(modificados.mnt)})
+ESP: ${espBase} → ${modificados.esp} (${calcularMod(modificados.esp) >= 0 ? '+' : ''}${calcularMod(modificados.esp)})
+
+HP: ${hp} | ATK: ${atk} | DEF: ${def}
+PUR: ${pur} | KAR: 0 | HUMOR: 0
+
+HABILIDADE RACIAL: ${getHabilidadeRacial(raca)}
+
+═══════════════════════════════════════════════`;
+            
+            const blob = new Blob([texto], {type: 'text/plain'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${nome}_ficha.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+        
+        function atualizarFicha() {
+            const raca = document.getElementById('raca').value;
+            const racialBonusText = {
+                'Monstruoso (Goblin)': '🐀 +2 DES, -1 FIS/MNT/ESP | HP: 3d6+2 | Tática de Bando',
+                'Monstruoso (Orc)': '👹 +2 FIS, -1 DES/MNT/ESP | HP: 3d6+6 | Fúria',
+                'Monstruoso (Hobgoblin)': '⚔️ +1 FIS/DES, -1 ESP | HP: 3d6+4 | Liderança',
+                'Monstruoso (Troll)': '🦧 +3 FIS, -2 DES/MNT, -1 ESP | HP: 3d6+9 | Regeneração',
+                'Monstruoso (Vampiro)': '🦇 +1 FIS/DES/MNT/ESP | HP: 3d6+4 | Dreno de Sangue',
+                'Monstruoso (Lobisomem)': '🐺 +2 FIS, +1 DES, -1 MNT/ESP | HP: 3d6+6 | Forma Híbrida',
+                'Monstruoso (Slime)': '💧 -2 FIS, -3 DES, -3 MNT, -2 ESP | HP: 3d6+2 | Ácido, Amorfo',
+                'Monstruoso (Minotauro)': '🐂 +2 FIS, -1 DES, -2 MNT, -1 ESP | HP: 3d6+6 | Investida'
+            };
+            document.getElementById('racialBonusInfo').innerHTML = racialBonusText[raca] || '';
+        }
+        
+        // Inicializar com um personagem exemplo
+        window.onload = function() {
+            rolarTodosAtributos();
+            setTimeout(gerarPersonagem, 100);
+        };
+    </script>
+</body>
+</html>
