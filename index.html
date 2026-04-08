@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* Header com logo */
         .header {
             background: rgba(10, 10, 26, 0.95);
             padding: 20px;
@@ -45,7 +44,6 @@
             letter-spacing: normal;
         }
 
-        /* Menu de botões */
         .nav-menu {
             display: flex;
             flex-wrap: wrap;
@@ -82,14 +80,12 @@
             box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
         }
 
-        /* Container principal */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 30px 20px;
         }
 
-        /* Conteúdo das abas */
         .tab-content {
             display: none;
             background: #0f0f1f;
@@ -108,7 +104,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Títulos */
         h1 {
             color: #e94560;
             margin-bottom: 20px;
@@ -129,7 +124,6 @@
             font-size: 1.1rem;
         }
 
-        /* Tabelas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -148,7 +142,6 @@
             color: #ffd93d;
         }
 
-        /* Cards e blocos */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -174,7 +167,6 @@
             color: #e94560;
         }
 
-        /* Rolador de dados */
         .dice-section {
             background: #1a1a2e;
             border-radius: 12px;
@@ -219,7 +211,6 @@
             border-radius: 8px;
         }
 
-        /* Badges e destaques */
         .badge {
             display: inline-block;
             background: #e94560;
@@ -237,6 +228,17 @@
             margin: 15px 0;
             font-style: italic;
             color: #ccc;
+        }
+
+        .weakness-table {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .weakness-table td:first-child {
+            color: #ffd93d;
+            font-weight: bold;
         }
 
         footer {
@@ -265,17 +267,18 @@
     </div>
 
     <div class="nav-menu">
-    <button class="nav-btn active" onclick="openTab('inicio')">🏠 INÍCIO</button>
-    <button class="nav-btn" onclick="window.location.href='criar-personagem.html'">🎭 CRIAR PERSONAGEM</button>
-    <button class="nav-btn" onclick="window.location.href='gerador-masmorra.html'">🏰 GERAR MASMORRA</button>
-    <button class="nav-btn" onclick="openTab('combate')">⚔️ COMBATE</button>
-    <button class="nav-btn" onclick="openTab('magia')">🔮 MAGIA</button>
-    <button class="nav-btn" onclick="openTab('status')">📊 STATUS</button>
-    <button class="nav-btn" onclick="openTab('progressao')">📈 PROGRESSÃO</button>
-    <button class="nav-btn" onclick="openTab('equipamentos')">🛡️ EQUIPAMENTOS</button>
-    <button class="nav-btn" onclick="openTab('pericias')">📚 PERÍCIAS</button>
-    <button class="nav-btn" onclick="openTab('penalidade')">🩸 PENALIDADE</button>
-</div>
+        <button class="nav-btn active" onclick="openTab('inicio')">🏠 INÍCIO</button>
+        <button class="nav-btn" onclick="window.location.href='criar-personagem.html'">🎭 CRIAR PERSONAGEM</button>
+        <button class="nav-btn" onclick="window.location.href='gerador-masmorra.html'">🏰 GERAR MASMORRA</button>
+        <button class="nav-btn" onclick="openTab('combate')">⚔️ COMBATE</button>
+        <button class="nav-btn" onclick="openTab('magia')">🔮 MAGIA</button>
+        <button class="nav-btn" onclick="openTab('status')">📊 STATUS</button>
+        <button class="nav-btn" onclick="openTab('progressao')">📈 PROGRESSÃO</button>
+        <button class="nav-btn" onclick="openTab('equipamentos')">🛡️ EQUIPAMENTOS</button>
+        <button class="nav-btn" onclick="openTab('pericias')">📚 PERÍCIAS</button>
+        <button class="nav-btn" onclick="openTab('penalidade')">🩸 PENALIDADE</button>
+        <button class="nav-btn" onclick="openTab('fraquezas')">⚠️ FRAQUEZAS</button>
+    </div>
 
     <div class="container">
         <!-- ABA INÍCIO -->
@@ -303,45 +306,8 @@
             </div>
 
             <div class="note">
-                💡 <strong>Dica do Mestre:</strong> Use os botões acima para navegar pelas regras. Consulte a seção de Penalidade por Ferimentos para combates mais realistas.
+                💡 <strong>Dica do Mestre:</strong> Use os botões acima para navegar pelas regras. Consulte a seção de Penalidade por Ferimentos para combates mais realistas e a seção de Fraquezas para explorar vulnerabilidades de criaturas.
             </div>
-        </div>
-
-        <!-- ABA CRIAÇÃO DE PERSONAGEM -->
-        <div id="criacao" class="tab-content">
-            <h1>🎭 CRIAÇÃO DE PERSONAGEM</h1>
-            <p><strong>Ordem obrigatória:</strong> Nome → Atributos (3d6) → Raça → Classe → Perícia → Caráter → Acampamento → Quest</p>
-            
-            <h2>📊 ATRIBUTOS BASE</h2>
-            <table>
-                <tr><th>Atributo</th><th>Função</th><th>Subatributo</th></tr>
-                <tr><td>FIS</td><td>Força, HP, resistência física</td><td>FORÇA</td></tr>
-                <tr><td>DES</td><td>Agilidade, esquiva, percepção física</td><td>FINESSE</td></tr>
-                <tr><td>MNT</td><td>Inteligência, magia, foco</td><td>FOCO</td></tr>
-                <tr><td>ESP</td><td>Vontade, fé, intuição</td><td>FÉ</td></tr>
-            </table>
-            <p><em>Percepção física usa DES. Intuição usa ESP.</em></p>
-
-            <h2>🧬 RAÇAS (11)</h2>
-            <table>
-                <tr><th>Raça</th><th>Mods</th><th>HP</th><th>PUR</th><th>Habilidade Única</th></tr>
-                <tr><td>Celestial</td><td>ESP+2, FIS-1</td><td>3d6+7</td><td>+3</td><td>Voo Sagrado, Santidade</td></tr>
-                <tr><td>Elfo</td><td>DES+2, ESP+1</td><td>3d6+6</td><td>+1</td><td>+2 DEF vs magia</td></tr>
-                <tr><td>Humano</td><td>Todos +1</td><td>3d6+4</td><td>-1</td><td>Adaptável, escolhe Proeminência</td></tr>
-                <tr><td>Anão</td><td>FIS+3, ESP-2</td><td>3d6+6</td><td>-1</td><td>+1 ATK com armas fabricadas</td></tr>
-                <tr><td>Void</td><td>ESP+3, FIS-2</td><td>3d6+4</td><td>-2</td><td>Drenagem Arcano</td></tr>
-                <tr><td>Draconiano</td><td>Todos+1</td><td>3d6+7</td><td>-4</td><td>Escamas do Caos, Malevolência</td></tr>
-            </table>
-
-            <h2>⚔️ CLASSES GENÉRICAS</h2>
-            <table>
-                <tr><th>Classe</th><th>Atributo Primário</th><th>Kit Básico</th></tr>
-                <tr><td>Soldado</td><td>FIS</td><td>Espada Longa + Escudo Pesado</td></tr>
-                <tr><td>Bárbaro</td><td>FIS</td><td>Machado Grande + Rações</td></tr>
-                <tr><td>Ladino</td><td>DES</td><td>Duas Adagas + Gancho e corda</td></tr>
-                <tr><td>Espiritualista</td><td>ESP</td><td>Cajado Mágico + Pergaminho de Cura</td></tr>
-                <tr><td>Especialista</td><td>MNT</td><td>Besta + Amuleto de Foco</td></tr>
-            </table>
         </div>
 
         <!-- ABA COMBATE -->
@@ -372,9 +338,20 @@
             </table>
 
             <h2>🛡️ RESISTÊNCIA (RES)</h2>
-            <p><strong>RES = (HP ÷ 5) + (FOR ÷ 2)</strong> (máx 10)</p>
+            <p><strong>RES = (HP ÷ 5) + (FOR ÷ 2)</strong> (máx 10, nunca negativa)</p>
             <p>• Dano Físico: Dano Final = Dano Base - RES</p>
             <p>• Dano Mágico: Dano Final = Dano Base - (RES ÷ 2)</p>
+            <p>• Bônus em testes físicos: +RES</p>
+            <p>• Bônus em testes mentais: +(RES ÷ 2)</p>
+
+            <h2>🎯 CRÍTICOS POR ATRIBUTO</h2>
+            <table>
+                <tr><th>Atributo</th><th>Dano</th><th>Efeito Especial</th></tr>
+                <tr><td>FIS</td><td>Dano Base ×2</td><td>—</td></tr>
+                <tr><td>DES</td><td>Dano Base ×2 + KAR</td><td>Ignora 50% da RES</td></tr>
+                <tr><td>ESP (Magia)</td><td>Dano Base + FOCO</td><td>Ignora 100% da RES</td></tr>
+                <tr><td>ESP (Milagre)</td><td>Dano Base + FÉ</td><td>Ignora 100% da RES, +1 PUR</td></tr>
+            </table>
         </div>
 
         <!-- ABA MAGIA -->
@@ -392,6 +369,7 @@
                 <tr><td>6º</td><td>-6</td><td>Desejo, Portal Dimensional</td></tr>
                 <tr><td>Milagres</td><td>0</td><td>Todos os milagres</td></tr>
             </table>
+            <p><em>⚠️ NÃO EXISTE PUR 0. Todo personagem está em Santidade (PUR ≥ +1) ou Corrupção (PUR ≤ -1).</em></p>
 
             <h2>⚡ SOBRECARGA ARCANA</h2>
             <table>
@@ -401,6 +379,34 @@
                 <tr><td>3ª</td><td>DV +2</td><td>-2 no teste</td></tr>
                 <tr><td>4ª</td><td>DV +3</td><td>-3 no teste</td></tr>
             </table>
+
+            <h2>✨ FALHAS ARCANAS (1d10)</h2>
+            <table>
+                <tr><td>1</td><td>Explosão Arcana</td><td>2d6 dano em área</td></tr>
+                <tr><td>2</td><td>Corrupção Acelerada</td><td>PUR –1d4 adicional</td></tr>
+                <tr><td>3</td><td>Inversão de Alvo</td><td>Atinge aliado aleatório</td></tr>
+                <tr><td>4</td><td>Eco do Abismo</td><td>-2 testes, -1 Humor</td></tr>
+                <tr><td>5</td><td>Chamas do Sol Negro</td><td>1d6 dano ao conjurador</td></tr>
+                <tr><td>6</td><td>Distorção Temporal</td><td>Perde próximo turno</td></tr>
+                <tr><td>7</td><td>Invocação Indesejada</td><td>Fragmento do Caos surge</td></tr>
+                <tr><td>8</td><td>Dreno de Vida</td><td>-1d6 HP máximo</td></tr>
+                <tr><td>9</td><td>Marca Ofídica</td><td>+1 PUR permanente</td></tr>
+                <tr><td>10</td><td>Portal Efêmero</td><td>Fenda se abre por 1 turno</td></tr>
+            </table>
+
+            <h2>✨ FALHAS DIVINAS (1d10)</h2>
+            <table>
+                <tr><td>1</td><td>Silêncio Divino</td><td>Sem milagres por 1 dia</td></tr>
+                <tr><td>2</td><td>Provação</td><td>PUR –1d4</td></tr>
+                <tr><td>3</td><td>Sinal Contrário</td><td>Atinge alvo oposto</td></tr>
+                <tr><td>4</td><td>Visão Perturbadora</td><td>-2 testes, -1 Humor</td></tr>
+                <tr><td>5</td><td>Dúvida</td><td>Perde 1 milagre preparado</td></tr>
+                <tr><td>6</td><td>Eco da Queda</td><td>-1 Humor</td></tr>
+                <tr><td>7</td><td>Chamado Não Respondido</td><td>Milagre não funciona</td></tr>
+                <tr><td>8</td><td>Fragilidade</td><td>-2 DEF por 1 turno</td></tr>
+                <tr><td>9</td><td>Marca do Peregrino</td><td>+1 PUR</td></tr>
+                <tr><td>10</td><td>Merwerin Aparece</td><td>Conselho enigmático</td></tr>
+            </table>
         </div>
 
         <!-- ABA STATUS -->
@@ -408,34 +414,37 @@
             <h1>📊 STATUS: PUR, KAR, HUMOR E LOUCURA</h1>
             
             <h2>✨ PUREZA (PUR) – Eixo -10 a +10</h2>
+            <p><strong>⚠️ NÃO EXISTE PUR 0.</strong> Você está em Santidade (PUR ≥ +1) ou Corrupção (PUR ≤ -1).</p>
             <table>
                 <tr><th>Valor</th><th>Nome</th><th>Efeito</th></tr>
-                <tr><td>+10 a +6</td><td>Santidade Máxima</td><td>+2 ESP, DEF ×2 (Celestial)</td></tr>
+                <tr><td>+10 a +6</td><td>Santidade Máxima</td><td>+2 ESP, DEF ×2 (Celestial), +5 Clareza</td></tr>
+                <tr><td>+5 a +2</td><td>Abençoado</td><td>+1 ESP</td></tr>
                 <tr><td>+1</td><td>Puro</td><td>—</td></tr>
                 <tr><td>-1</td><td>Corrompido</td><td>-1 ESP</td></tr>
-                <tr><td>-6 a -10</td><td>Caótico</td><td>HP/2, +5 Loucura</td></tr>
+                <tr><td>-2 a -5</td><td>Profano</td><td>-1 HP permanente, NPCs hostis</td></tr>
+                <tr><td>-6 a -10</td><td>Caótico</td><td>HP/2, +5 Loucura, transformação iminente</td></tr>
             </table>
-            <p><em>Não existe PUR 0. Você está em Santidade ou Corrupção.</em></p>
 
-            <h2>🍀 KARMA (Sorte e Azar)</h2>
-            <p>• KAR positivo: melhores drops, rerrolar testes</p>
-            <p>• KAR negativo: +5 em infortúnios, baús viram mímicos</p>
+            <h2>🍀 KARMA (Sorte e Azar) - Eixo -10 a +7</h2>
+            <p>• KAR positivo (+1 a +7): melhores drops, rerrolar testes</p>
+            <p>• KAR negativo (-1 a -10): +5 em infortúnios, baús viram mímicos, inimigos +1 ATK</p>
 
             <h2>😊 HUMOR (Eixo -6 a +3)</h2>
             <table>
-                <tr><th>Valor</th><th>Efeito</th></tr>
-                <tr><td>3 a 0</td><td>Normal</td></tr>
-                <tr><td>-1 a -5</td><td>-1 testes sociais, vícios aparecem</td></tr>
-                <tr><td>-6</td><td>-2 todos testes, vícios forçados</td></tr>
+                <tr><th>Valor</th><th>Nome</th><th>Efeito</th></tr>
+                <tr><td>3 a 0</td><td>Satisfeito</td><td>Normal</td></tr>
+                <tr><td>-1 a -5</td><td>Consternado</td><td>-1 testes sociais, vícios aparecem</td></tr>
+                <tr><td>-6</td><td>Indignado</td><td>-2 todos testes, vícios forçados</td></tr>
             </table>
 
             <h2>🧠 LOUCURA</h2>
             <table>
-                <tr><th>Valor</th><th>Efeito</th></tr>
-                <tr><td>-1 a -3</td><td>Loucura Leve: -1 testes sociais, ilusões</td></tr>
-                <tr><td>-4 a -6</td><td>Loucura Moderada: 1d6: 1 = ataca aliado</td></tr>
-                <tr><td>-7 a -9</td><td>Loucura Grave: ações decididas pelo Mestre</td></tr>
-                <tr><td>-10</td><td>Ruína da Mente: NPC temporário</td></tr>
+                <tr><th>Valor</th><th>Nome</th><th>Efeito</th></tr>
+                <tr><td>+1 a +10</td><td>Clareza</td><td>+1 ESP</td></tr>
+                <tr><td>-1 a -3</td><td>Loucura Leve</td><td>-1 testes sociais</td></tr>
+                <tr><td>-4 a -6</td><td>Loucura Moderada</td><td>1d6: 1 = ataca aliado</td></tr>
+                <tr><td>-7 a -9</td><td>Loucura Grave</td><td>Ações decididas pelo Mestre</td></tr>
+                <tr><td>-10</td><td>Ruína da Mente</td><td>NPC temporário</td></tr>
             </table>
         </div>
 
@@ -447,11 +456,16 @@
             <table>
                 <tr><th>Nível</th><th>XP</th><th>Recompensas</th></tr>
                 <tr><td>1</td><td>0</td><td>—</td></tr>
-                <tr><td>2</td><td>150</td><td>+1 Pt. Hab., Especialização</td></tr>
-                <tr><td>3</td><td>300</td><td>Segunda Classe, Vocação</td></tr>
-                <tr><td>4</td><td>500</td><td>+1 atributo, +1d4 HP</td></tr>
-                <tr><td>5</td><td>800</td><td>Profissões, +1d4 HP</td></tr>
-                <tr><td>6</td><td>1200</td><td>Classe de Raça, +1 Carta</td></tr>
+                <tr><td>2</td><td>150</td><td>+1 Pt. Hab., Escolhe BUILD</td></tr>
+                <tr><td>3</td><td>300</td><td>+1 Pt. Hab., Escolhe VOCAÇÃO</td></tr>
+                <tr><td>4</td><td>500</td><td>+1 atributo, +1d4 HP, Escolhe PROFISSÃO</td></tr>
+                <tr><td>5</td><td>800</td><td>+1d4 HP, Escolhe CLASSE ESPECIAL</td></tr>
+                <tr><td>6</td><td>1200</td><td>+1 Carta, +1d4 HP</td></tr>
+                <tr><td>7</td><td>1700</td><td>+1 atributo, +1d4 HP</td></tr>
+                <tr><td>8</td><td>2300</td><td>+1 Pt. Hab., +1d4 HP</td></tr>
+                <tr><td>9</td><td>3000</td><td>+1 atributo, +1d4 HP</td></tr>
+                <tr><td>10</td><td>3800</td><td>+1 Pt. Hab., +1d4 HP</td></tr>
+                <tr><td>11</td><td>4700</td><td>+1 atributo, +1 Carta, +1d4 HP</td></tr>
                 <tr><td>12</td><td>5700</td><td>+2d4 HP e +1 em todos atributos</td></tr>
             </table>
 
@@ -460,6 +474,12 @@
             <p>• 2 Pt. Hab. = +1 em atributo normal</p>
             <p>• 1 Pt. Hab. = +2 em atributo com Proeminência</p>
             <p>• 4 Pt. Hab. = +1 em atributo com Deficiência</p>
+            <p>• Máximo por atributo: 18</p>
+
+            <h2>💰 XP e MOEDAS</h2>
+            <p>• Conversão: 5 XP = 1 Ouro (Nv2+, Karma ≥ 0, máx 30 XP/dia)</p>
+            <p>• Se converter mais de 10 XP no mesmo dia, teste 1d6: 1-3 = -1 Humor</p>
+            <p>• Mercadores clandestinos em masmorras: 3 XP = 1 Ouro, mas +1 PUR</p>
         </div>
 
         <!-- ABA EQUIPAMENTOS -->
@@ -474,14 +494,26 @@
                 <tr><td>Duas Adagas</td><td>2d4</td><td>Crítico DES +2 e sangramento</td></tr>
                 <tr><td>Besta</td><td>1d8</td><td>Ignora bônus de DEF de armaduras</td></tr>
                 <tr><td>Cajado Mágico</td><td>1d4 + FÉ</td><td>Alcance 6 tiles</td></tr>
+                <tr><td>Arco</td><td>1d6</td><td>Alcance 6 tiles</td></tr>
+                <tr><td>Lança</td><td>1d6</td><td>Ataca de 2 casas</td></tr>
             </table>
 
             <h2>🛡️ ARMADURAS</h2>
             <table>
                 <tr><th>Armadura</th><th>Bônus DEF</th><th>Penalidade DES</th><th>Custo</th></tr>
+                <tr><td>Roupas Acolchoadas</td><td>+0</td><td>0</td><td>5 ouro</td></tr>
                 <tr><td>Couro Batido</td><td>+1</td><td>0</td><td>10 ouro</td></tr>
+                <tr><td>Couro Endurecido</td><td>+2</td><td>0</td><td>20 ouro</td></tr>
                 <tr><td>Cota de Malha</td><td>+4</td><td>-1</td><td>75 ouro</td></tr>
                 <tr><td>Armadura de Placas</td><td>+7</td><td>-3</td><td>1500 ouro</td></tr>
+            </table>
+
+            <h2>🛡️ ESCUDOS</h2>
+            <table>
+                <tr><th>Escudo</th><th>Bônus DEF</th><th>Peso</th><th>Habilidade</th></tr>
+                <tr><td>Leve</td><td>+1</td><td>1</td><td>Pode usar com armas de duas mãos (-1 ATK)</td></tr>
+                <tr><td>Médio</td><td>+2</td><td>2</td><td>Investida com escudo (1d6 + FOR, derruba)</td></tr>
+                <tr><td>Pesado</td><td>+3</td><td>3</td><td>Modo Defesa: +2 DEF como ação bônus</td></tr>
             </table>
         </div>
 
@@ -508,31 +540,97 @@
                     <p>Resistência a Venenos, Sobrevivência, Vontade</p>
                 </div>
             </div>
+
+            <h2>🎲 TABELA DE ROLAGEM DE PERÍCIAS (1d100)</h2>
+            <table>
+                <tr><th>1d100</th><th>Perícia</th><th>1d100</th><th>Perícia</th></tr>
+                <tr><td>1-2</td><td>Acrobacia</td><td>51-52</td><td>Investigação</td></tr>
+                <tr><td>3-4</td><td>Alquimia</td><td>53-54</td><td>Intimidação</td></tr>
+                <tr><td>5-6</td><td>Antropologia</td><td>55-56</td><td>Literatura</td></tr>
+                <tr><td>7-8</td><td>Armas sem Lâmina</td><td>57-58</td><td>Luta Livre</td></tr>
+                <tr><td>9-10</td><td>Arrombamento</td><td>59-60</td><td>Manipulação</td></tr>
+                <tr><td>11-12</td><td>Artes Marciais</td><td>61-62</td><td>Manha</td></tr>
+                <tr><td>13-14</td><td>Atletismo</td><td>63-64</td><td>Medicina</td></tr>
+                <tr><td>15-16</td><td>Briga</td><td>65-66</td><td>Mentir</td></tr>
+                <tr><td>17-18</td><td>Cavalgar</td><td>67-68</td><td>Natação</td></tr>
+                <tr><td>19-20</td><td>Ciências Proibidas</td><td>69-70</td><td>Navegação</td></tr>
+                <tr><td>21-22</td><td>Comércio</td><td>71-72</td><td>Ofícios</td></tr>
+                <tr><td>23-24</td><td>Controle da Respiração</td><td>73-74</td><td>Procurar</td></tr>
+                <tr><td>25-26</td><td>Convencimento</td><td>75-76</td><td>Psicologia</td></tr>
+                <tr><td>27-28</td><td>Criptografia</td><td>77-78</td><td>Rastreio</td></tr>
+                <tr><td>29-30</td><td>Diplomacia</td><td>79-80</td><td>Religião</td></tr>
+                <tr><td>31-32</td><td>Estratégia Militar</td><td>81-82</td><td>Resistência a Venenos</td></tr>
+                <tr><td>33-34</td><td>Falsificação</td><td>83-84</td><td>Sedução</td></tr>
+                <tr><td>35-36</td><td>Ferreiro</td><td>85-86</td><td>Sobrevivência</td></tr>
+                <tr><td>37-38</td><td>Furtividade</td><td>87-88</td><td>Tolerância</td></tr>
+                <tr><td>39-40</td><td>História</td><td>89-90</td><td>Venenos</td></tr>
+                <tr><td>41-42</td><td>Intimidação</td><td>91-92</td><td>Veterinário</td></tr>
+                <tr><td>43-44</td><td>Investigação</td><td>93-94</td><td>Vontade</td></tr>
+                <tr><td>45-46</td><td>Luta Livre</td><td>95-96</td><td>Escolha livre</td></tr>
+                <tr><td>47-48</td><td>Manha</td><td>97-98</td><td>Duas perícias</td></tr>
+                <tr><td>49-50</td><td>Medicina</td><td>99-100</td><td>Perícia rara</td></tr>
+            </table>
+
+            <div class="note">
+                💡 <strong>Perícias Raras (99-100):</strong> Línguas Antigas, Alquimia Avançada, Magia de Sangue, Teurgia, Necromancia, Geometria Sagrada, Fisiologia Monstruosa, Cartografia Mágica, Venenos Raros.
+            </div>
         </div>
 
         <!-- ABA PENALIDADE POR FERIMENTOS -->
         <div id="penalidade" class="tab-content">
-            <h1>🩸 PENALIDADE POR FERIMENTOS (OPCIONAL)</h1>
+            <h1>🩸 PENALIDADE POR FERIMENTOS</h1>
             <p>Quando um personagem está ferido, sua capacidade de lutar diminui. Este sistema adiciona realismo e tensão aos combates.</p>
             
             <h2>📊 TABELA DE PENALIDADE</h2>
             <table>
-                <tr><th>HP Restante</th><th>Dado de Ataque</th><th>Efeito</th></tr>
-                <tr><td>Acima de 90%</td><td>3d6 + ATK</td><td>Força total</td></tr>
-                <tr><td>Entre 50% e 90%</td><td>2d6 + ATK</td><td>Ferido, mas combativo</td></tr>
-                <tr><td>Entre 25% e 50%</td><td>2d6 + ATK (desvantagem*)</td><td>Ferido grave</td></tr>
-                <tr><td>Abaixo de 25%</td><td>1d6 + ATK</td><td>Agonizante</td></tr>
+                <tr><th>HP Restante</th><th>Dado de Ataque</th><th>Média</th><th>Quando Aplica</th></tr>
+                <tr><td>Acima de 75%</td><td>1d12</td><td>6,5</td><td>Saudável</td></tr>
+                <tr><td>50% - 75%</td><td>1d10</td><td>5,5</td><td>Ferido leve</td></tr>
+                <tr><td>25% - 50%</td><td>1d8</td><td>4,5</td><td>Ferido grave</td></tr>
+                <tr><td>Abaixo de 25%</td><td>1d6</td><td>3,5</td><td>Agonizante</td></tr>
             </table>
-            <p><em>*Desvantagem: rola 3d6, descarta o maior resultado.</em></p>
+            <p><em>Rolagem de Ataque = Dado + ATK</em></p>
 
-            <h2>🎯 CRÍTICO</h2>
-            <p>Crítico ocorre quando o <strong>resultado total (dado + ATK) ≥ 20</strong>.</p>
+            <h2>🎯 CRÍTICO E ÚLTIMO SUSPIRO</h2>
+            <p>• <strong>Crítico:</strong> total (dado + ATK) ≥ 20</p>
+            <p>• <strong>Último Suspiro</strong> (HP < 25% + crítico): Dano dobrado + recupera 1d4 HP imediatamente</p>
 
-            <h2>💪 ÚLTIMO SUSPIRO</h2>
-            <p>Uma vez por combate, ao cair para 1d6 (HP ≤ 25%), gaste <strong>1 Ponto Heroico</strong> para manter 2d6 por 1 rodada.</p>
+            <h2>💪 VÁLVULAS DE ESCAPE (1/combate)</h2>
+            <ul>
+                <li>1 Ponto Heroico → mantém 1d8 por 1 rodada</li>
+                <li>1 Ponto Heroico → ignora penalidade por 1 rodada</li>
+                <li>Sacrifício → mantém 1 grau acima, perde 1d4 HP permanente</li>
+                <li>Desespero → mantém 1 grau acima, +2 PUR</li>
+                <li>Adrenalina → mantém 1d12 por 1 ataque, -1 Humor</li>
+            </ul>
 
             <div class="note">
-                🔥 <strong>Dica:</strong> Bárbaros em Fúria ignoram a penalidade. Trolls nunca caem para 1d6.
+                🔥 <strong>Dica:</strong> Bárbaros em Fúria ignoram a penalidade. Trolls nunca caem para 1d6. Soldados com Disciplina ignoram 1x/combate.
+            </div>
+        </div>
+
+        <!-- ABA FRAQUEZAS DE CRIATURAS -->
+        <div id="fraquezas" class="tab-content">
+            <h1>⚠️ FRAQUEZAS DE CRIATURAS</h1>
+            <p>Conheça as vulnerabilidades das criaturas de Zabatom para planejar seus combates.</p>
+            
+            <h2>🔥 FRAQUEZAS ELEMENTAIS</h2>
+            <table class="weakness-table">
+                <tr><th>Criatura</th><th>Fraqueza</th><th>Efeito</th></tr>
+                <tr><td>Troll</td><td>FOGO / ÁCIDO</td><td>Impede regeneração; se reduzido a 0 HP com fogo, morre permanentemente</td></tr>
+                <tr><td>Esqueleto</td><td>IMPACTO</td><td>Dano dobrado de armas de impacto (maças, martelos)</td></tr>
+                <tr><td>Morto-vivo</td><td>LUZ SAGRADA, FOGO</td><td>Milagres de luz causam dano dobrado; purificação causa 1d6</td></tr>
+                <tr><td>Ínferos Menores</td><td>EXORCISMO, PURIFICAÇÃO</td><td>Água benta e unguentos causam 1d6 de dano</td></tr>
+                <tr><td>Ínferos Maiores/Draconianos</td><td>SANTIFICAÇÃO</td><td>Apenas ataques no estado de santificação causam dano normal</td></tr>
+                <tr><td>Slime</td><td>FOGO, GELO</td><td>Divide em pedaços menores; fogo/gelo causam dano dobrado</td></tr>
+                <tr><td>Sombra/Incorpóreo</td><td>LUZ, MILAGRES</td><td>Luz causa dano dobrado; milagres dissipam instantaneamente</td></tr>
+                <tr><td>Dragão</td><td>SANTIDADE</td><td>Ataques de personagens com PUR ≥ +1 causam dano DOBRADO</td></tr>
+                <tr><td>Vampiro</td><td>LUZ SOLAR, UNGUENTOS</td><td>Milagres de luz solar são fatais (4d6); unguentos queimam (1d6)</td></tr>
+                <tr><td>Lobisomem</td><td>PRATA, PURIFICAÇÃO</td><td>Armas de prata causam dano dobrado; purificação de clérigos causa 2d6</td></tr>
+            </table>
+
+            <div class="note">
+                💡 <strong>Dica do Mestre:</strong> Use estas fraquezas para criar encontros estratégicos. Um grupo preparado com as armas certas tem muito mais chance de sobrevivência!
             </div>
         </div>
 
@@ -548,6 +646,7 @@
                 <button class="dice-btn" onclick="rolarDado('d4')">1d4</button>
                 <button class="dice-btn" onclick="rolarDado('3d6')">3d6</button>
                 <button class="dice-btn" onclick="rolarDado('2d10')">2d10</button>
+                <button class="dice-btn" onclick="rolarDado('1d100')">1d100</button>
             </div>
             <div id="dice-result" class="dice-result">Clique em um dado para rolar</div>
         </div>
@@ -559,26 +658,21 @@
     </div>
 
     <script>
-        // Função para alternar abas
         function openTab(tabName) {
             const contents = document.getElementsByClassName('tab-content');
             for (let i = 0; i < contents.length; i++) {
                 contents[i].classList.remove('active');
             }
-            
             const buttons = document.getElementsByClassName('nav-btn');
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].classList.remove('active');
             }
-            
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
         }
 
-        // Função para rolar dados
         function rolarDado(tipo) {
             let resultado, texto;
-            
             switch(tipo) {
                 case 'd20':
                     resultado = Math.floor(Math.random() * 20) + 1;
@@ -617,10 +711,13 @@
                     resultado = d10_1 + d10_2;
                     texto = `🎲 2d10 = ${d10_1} + ${d10_2} = ${resultado}`;
                     break;
+                case '1d100':
+                    resultado = Math.floor(Math.random() * 100) + 1;
+                    texto = `🎲 1d100 = ${resultado}`;
+                    break;
                 default:
                     texto = 'Clique em um dado para rolar';
             }
-            
             document.getElementById('dice-result').innerHTML = texto;
         }
     </script>
