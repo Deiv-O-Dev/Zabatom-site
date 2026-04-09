@@ -24,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             background: rgba(10, 10, 26, 0.95);
             padding: 15px 20px;
@@ -60,7 +59,6 @@
             color: white;
         }
 
-        /* Painel principal */
         .main-panel {
             background: #0f0f1f;
             border-radius: 16px;
@@ -81,7 +79,6 @@
             font-style: italic;
         }
 
-        /* Botão gerar */
         .generate-btn {
             background: #e94560;
             color: white;
@@ -103,7 +100,6 @@
             box-shadow: 0 5px 20px rgba(233, 69, 96, 0.3);
         }
 
-        /* Resultado da masmorra */
         .dungeon-result {
             background: #1a1a2e;
             border-radius: 12px;
@@ -166,26 +162,6 @@
             border-left-color: #ffd93d;
         }
 
-        /* Tabelas */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
-
-        th, td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
-        th {
-            background: #1a1a2e;
-            color: #ffd93d;
-        }
-
-        /* Sistema de fuga */
         .escape-section {
             margin-top: 25px;
             padding-top: 20px;
@@ -214,7 +190,6 @@
             margin-top: 15px;
         }
 
-        /* Badges */
         .badge {
             display: inline-block;
             padding: 3px 8px;
@@ -229,6 +204,14 @@
         .badge-ana { background: #4a3a2a; }
         .badge-feral { background: #3a5a4a; }
         .badge-viva { background: #4a2a5a; }
+
+        .weakness-note {
+            background: #2a1a2a;
+            border-left: 3px solid #e94560;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
 
         footer {
             text-align: center;
@@ -253,7 +236,7 @@
 
         <div class="main-panel">
             <h1>🏰 GERADOR DE MASMORRA</h1>
-            <div class="subtitle">Baseado no Apêndice E do Livro 6 – Gere masmorras ofídicas, élficas, íníferas, anãs, ferais e vivas</div>
+            <div class="subtitle">Baseado no Livro 6 – Gere masmorras ofídicas, élficas, íníferas, anãs, ferais e vivas</div>
 
             <button class="generate-btn" onclick="gerarMasmorra()">🎲 GERAR NOVA MASMORRA</button>
 
@@ -270,7 +253,6 @@
     </div>
 
     <script>
-        // Tipos de masmorra e seus dados
         const tipos = [
             { nome: 'Ofídica', icone: '🐍', cor: 'ofidica', descricao: 'Tumbas egípcias, obeliscos, hieróglifos de magia antiga, dragões adormecidos' },
             { nome: 'Élfica', icone: '🌿', cor: 'elfica', descricao: 'Ruínas élficas, labirintos vegetais, cavernas de elfos sombrios, florestas negras' },
@@ -289,7 +271,6 @@
             { nome: 'Núcleo/Coração', modEncontros: 3, modTesouro: 4, descricao: 'Câmara central, chefe final' }
         ];
 
-        // Habitantes por tipo
         const habitantes = {
             'Ofídica': 'Nagas, constructos ofídicos, escaravelhos gigantes, dragão ofídico adormecido',
             'Élfica': 'Elfos da caverna, fadas, dríades corrompidas, aranhas gigantes, Ariadne',
@@ -299,7 +280,6 @@
             'Masmorra Viva': 'Mojos comuns e agarradores, fungos do caos, íníferos, draconianos'
         };
 
-        // Tesouros por tipo
         const tesouros = {
             'Ofídica': 'Pergaminhos antigos, escamas de dragão, amuletos ofídicos, gemas da lágrima arcana',
             'Élfica': 'Cristais luminescentes, sementes da Árvore Mãe, poeira de fada, arcos élficos',
@@ -309,7 +289,6 @@
             'Masmorra Viva': 'Fragmentos de Abadon, carne viva, sangue corrompido, núcleos pulsantes'
         };
 
-        // Eventos especiais por tipo
         const eventos = {
             'Ofídica': 'Hieróglifos brilham – revelam uma pista sobre o passado',
             'Élfica': 'Flores adormecem – teste ESP DV 13 ou perde 1 rodada',
@@ -319,7 +298,6 @@
             'Masmorra Viva': 'Paredes se movem – role 1d6 para nova direção'
         };
 
-        // Armadilhas por tipo
         const armadilhas = {
             'Ofídica': 'Flechas envenenadas (DV 14, 1d6 dano + veneno)',
             'Élfica': 'Teias mágicas (DES DV 13, preso 1 rodada)',
@@ -329,7 +307,6 @@
             'Masmorra Viva': 'Paredes que se fecham (DES DV 16, 2d6 dano)'
         };
 
-        // Encontros especiais por tipo (1d10)
         const encontrosEspeciais = {
             'Ofídica': ['Escaravelho Gigante', 'Constructo Ofídico', 'Naga', 'Basilisco', 'Múmia Ofídica', 'Yuga Jovem', 'Dragão Ofídico', 'Lich Ofídico', 'Harpias do Deserto', 'Voids Ofídicos'],
             'Élfica': ['Fada', 'Pixie', 'Dríade Corrompida', 'Elfo da Caverna', 'Elfo do Pântano', 'Aranha Gigante', 'Centauro Sombrio', 'Wendigo', 'Elfo Aranha', 'Ariadne'],
@@ -339,19 +316,25 @@
             'Masmorra Viva': ['Mojo Comum', 'Mojo Agarrador', 'Mojo Injetor', 'Fungo Andante', 'Fungo Explosivo', 'Ínfero Soldado', 'Helldog', 'Draconiano Jovem', 'Mojo Ancião', 'Akunashy']
         };
 
-        // Função para rolar dados
+        const fraquezasPorTipo = {
+            'Ofídica': '⚠️ Fraquezas: LUZ SAGRADA, SANTIDADE (ataques de celestiais dobram dano)',
+            'Élfica': '⚠️ Fraquezas: FOGO (queima teias e vegetação), LUZ SOLAR (elfos da caverna)',
+            'Ínfera': '⚠️ Fraquezas: EXORCISMO, PURIFICAÇÃO, SANTIDADE (íníferos maiores só tomam dano normal de santificados)',
+            'Anã': '⚠️ Fraquezas: IMPACTO (contra constructos), FOGO (contra trolls)',
+            'Feral': '⚠️ Fraquezas: PRATA (lobisomens), FOGO (contra criaturas de pelo)',
+            'Masmorra Viva': '⚠️ Fraquezas: LUZ SAGRADA (mojos), FOGO (fungos), MILAGRES (criaturas incorpóreas)'
+        };
+
         function rolarDado(max) {
             return Math.floor(Math.random() * max) + 1;
         }
 
-        // Função para gerar encontro aleatório
         function gerarEncontro(tipo) {
             const lista = encontrosEspeciais[tipo];
             const idx = rolarDado(10) - 1;
             return lista[idx];
         }
 
-        // Função para gerar masmorra
         function gerarMasmorra() {
             const tipoIdx = rolarDado(tipos.length) - 1;
             const tipo = tipos[tipoIdx];
@@ -361,7 +344,6 @@
             
             const encontro = gerarEncontro(tipo.nome);
             
-            // Gerar XP e ouro sugeridos
             const xpBase = 50 + (profundIdx * 25) + (tipoIdx * 10);
             const ouroBase = 30 + (profundIdx * 20) + (tipoIdx * 15);
             
@@ -371,6 +353,10 @@
                         <span class="badge badge-${tipo.cor}">${tipo.icone}</span> ${tipo.nome}
                     </div>
                     <div class="dungeon-depth">📊 ${profundidade.nome} | Mod Encontros: ${profundidade.modEncontros >= 0 ? '+' : ''}${profundidade.modEncontros} | Mod Tesouro: ${profundidade.modTesouro >= 0 ? '+' : ''}${profundidade.modTesouro}</div>
+                </div>
+                
+                <div class="weakness-note">
+                    ${fraquezasPorTipo[tipo.nome]}
                 </div>
                 
                 <div class="info-grid">
@@ -404,12 +390,12 @@
                     
                     <div class="info-card">
                         <h3>🏆 CHEFE SUGERIDO</h3>
-                        <p>${tipo.nome === 'Ofídica' ? 'Dragão Ofídico (Nível 9-12)' : 
-                                  tipo.nome === 'Élfica' ? 'Ariadne (Nível 10)' :
-                                  tipo.nome === 'Ínfera' ? 'Ínfero General (Nível 9)' :
-                                  tipo.nome === 'Anã' ? 'Golem Colosso (Nível 8)' :
-                                  tipo.nome === 'Feral' ? 'Minotauro Ancião (Nível 8)' :
-                                  'Akunashy (Nível 12)'}</p>
+                        <p>${tipo.nome === 'Ofídica' ? 'Dragão Ofídico (Nível 9-12) - Fraco a LUZ SAGRADA' : 
+                                  tipo.nome === 'Élfica' ? 'Ariadne (Nível 10) - Fraco a FOGO' :
+                                  tipo.nome === 'Ínfera' ? 'Ínfero General (Nível 9) - Fraco a SANTIFICAÇÃO' :
+                                  tipo.nome === 'Anã' ? 'Golem Colosso (Nível 8) - Fraco a IMPACTO' :
+                                  tipo.nome === 'Feral' ? 'Minotauro Ancião (Nível 8) - Fraco a PRATA' :
+                                  'Akunashy (Nível 12) - Fraco a SANTIDADE'}</p>
                     </div>
                 </div>
                 
@@ -424,7 +410,6 @@
             document.getElementById('dungeonResult').innerHTML = html;
         }
 
-        // Função para gerar evento de fuga
         function gerarFuga(tipo) {
             const tiposFuga = ['Desmoronamento', 'Enchente', 'Perseguição', 'Corrupção Avançando', 'Explosão Arcana'];
             const tipoFuga = tiposFuga[rolarDado(tiposFuga.length) - 1];
@@ -475,7 +460,6 @@
             document.getElementById('escapeResult').innerHTML = escapeHtml;
         }
 
-        // Gerar masmorra ao carregar
         window.onload = function() {
             gerarMasmorra();
         };
