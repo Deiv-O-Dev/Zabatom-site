@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Monstruário Completo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e94560; }
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        .back-btn:hover { background: #e94560; color: white; }
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1a1a2e;
+            border-radius: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-badge {
+            background: #0f0f1f;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid #e94560;
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #e94560;
+            color: #eee;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+        .filter-select {
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #e94560;
+            color: #eee;
+            border-radius: 8px;
+            font-family: monospace;
+            cursor: pointer;
+        }
+        .monster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .monster-card {
+            background: #0f0f1f;
+            border-radius: 12px;
+            border: 1px solid #e94560;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .monster-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(233, 69, 96, 0.2);
+        }
+        .monster-image {
+            width: 100%;
+            height: 180px;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .monster-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .monster-image .no-image {
+            text-align: center;
+            color: #888;
+            font-size: 0.8rem;
+            padding: 20px;
+        }
+        .monster-info {
+            padding: 12px;
+        }
+        .monster-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffd93d;
+            margin-bottom: 5px;
+        }
+        .monster-type {
+            font-size: 0.65rem;
+            color: #e94560;
+            margin-bottom: 8px;
+        }
+        .monster-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 8px 0;
+            font-size: 0.65rem;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-weight: bold; color: #ffd93d; }
+        .weakness {
+            color: #e94560;
+            font-size: 0.65rem;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #333;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #0f0f1f;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            border: 2px solid #e94560;
+        }
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #e94560;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #0f0f1f;
+        }
+        .modal-header h2 { color: #ffd93d; margin: 0; }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #e94560;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-body { padding: 20px; }
+        .modal-image { text-align: center; margin-bottom: 20px; }
+        .modal-image img { max-width: 100%; border-radius: 12px; max-height: 300px; }
+        .stat-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+        .stat-item { flex: 1; text-align: center; }
+        .stat-label { font-size: 0.7rem; color: #888; }
+        .stat-number { font-size: 1.2rem; font-weight: bold; color: #ffd93d; }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+            border-top: 1px solid #333;
+        }
+        @media (max-width: 768px) {
+            .monster-grid { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; align-items: stretch; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📚 ZABATOM 5.2 – MONSTRUÁRIO COMPLETO</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-badge">🐍 Ofídicos: 16</div>
+            <div class="stat-badge">🌿 Élficos: 12</div>
+            <div class="stat-badge">🔥 Ínferos: 12</div>
+            <div class="stat-badge">⛏️ Anões: 10</div>
+            <div class="stat-badge">🏛️ Ferais: 12</div>
+            <div class="stat-badge">👻 Voids: 18</div>
+            <div class="stat-badge">🌊 Abissais: 12</div>
+            <div class="stat-badge">🐉 Dragões: 28</div>
+            <div class="stat-badge">✨ Celestiais: 8</div>
+            <div class="stat-badge">👹 Monstruosos: 18</div>
+            <div class="stat-badge">🐺 Animais: 10</div>
+            <div class="stat-badge">📊 TOTAL: 156</div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar monstro por nome...">
+            <select id="typeFilter" class="filter-select">
+                <option value="todos">📋 Todos os tipos (156)</option>
+                <option value="Ofídico">🐍 Ofídicos (16)</option>
+                <option value="Élfico">🌿 Élficos (12)</option>
+                <option value="Ínfero">🔥 Ínferos (12)</option>
+                <option value="Anão">⛏️ Anões (10)</option>
+                <option value="Feral">🏛️ Ferais (12)</option>
+                <option value="Void">👻 Voids (18)</option>
+                <option value="Abissal">🌊 Abissais (12)</option>
+                <option value="Dragão">🐉 Dragões (28)</option>
+                <option value="Celestial">✨ Celestiais (8)</option>
+                <option value="Monstruoso">👹 Monstruosos (18)</option>
+                <option value="Animal">🐺 Animais (10)</option>
+            </select>
+        </div>
+
+        <div id="monsterGrid" class="monster-grid"></div>
+
+        <div id="monsterModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Monstro</h2>
+                    <button class="close-btn" onclick="closeModal()">✕</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Monstruário Completo | Livro 8 – Versão 4.4 | Coloque suas imagens na pasta "imagens/monstros/"
+        </footer>
+    </div>
+
+    <script>
+        // ============================================================
+        // MONSTRUÁRIO COMPLETO - 156 MONSTROS
+        // ============================================================
+
+        const monstros = [
+            // ========== OFÍDICOS (16) ==========
+            { nome: "Abrakxas", tipo: "Ofídico", nivel: 12, pv: 209, atk: 18, def: 24, res: 18, fraqueza: "LUZ SAGRADA, SANTIDADE", descricao: "O rei-mago que criou a magia. Agora é uma monstruosidade de seis corpos fundidos.", imagem: "abrakxas.jpg" },
+            { nome: "Yuga Jovem", tipo: "Ofídico", nivel: 6, pv: 60, atk: 7, def: 16, res: 10, fraqueza: "LUZ SAGRADA", descricao: "Criatura com torso humanoide e múltiplas serpentes. Possui sopro elemental.", imagem: "yuga-jovem.jpg" },
+            { nome: "Yuga Adulto", tipo: "Ofídico", nivel: 9, pv: 102, atk: 11, def: 20, res: 14, fraqueza: "LUZ SAGRADA", descricao: "Yuga mais poderoso. Suas serpentes são mais numerosas.", imagem: "yuga-adulto.jpg" },
+            { nome: "Yuga Ancião", tipo: "Ofídico", nivel: 12, pv: 152, atk: 15, def: 24, res: 18, fraqueza: "LUZ SAGRADA", descricao: "O mais poderoso dos yugas. Sua presença impõe medo.", imagem: "yuga-anciao.jpg" },
+            { nome: "Naga", tipo: "Ofídico", nivel: 5, pv: 45, atk: 6, def: 14, res: 8, fraqueza: "LUZ SAGRADA", descricao: "Serpente humanoide com escamas douradas. Usa magia ofídica.", imagem: "naga.jpg" },
+            { nome: "Serpente Alada Jovem", tipo: "Ofídico", nivel: 3, pv: 32, atk: 4, def: 14, res: 7, fraqueza: "FRIO", descricao: "Serpente gigante com asas membranosas. Ataca com constrição.", imagem: "serpente-alada.jpg" },
+            { nome: "Serpente Alada Adulta", tipo: "Ofídico", nivel: 5, pv: 60, atk: 7, def: 16, res: 10, fraqueza: "FRIO", descricao: "Serpente alada adulta, mais rápida e venenosa.", imagem: "serpente-alada-adulta.jpg" },
+            { nome: "Serpente Alada Anciã", tipo: "Ofídico", nivel: 8, pv: 102, atk: 10, def: 18, res: 14, fraqueza: "FRIO", descricao: "Serpente alada anciã, uma lenda dos céus.", imagem: "serpente-alada-anciao.jpg" },
+            { nome: "Basilisco", tipo: "Ofídico", nivel: 4, pv: 39, atk: 5, def: 11, res: 8, fraqueza: "ESPELHO", descricao: "Lagarto colossal com olhar petrificante.", imagem: "basilisco.jpg" },
+            { nome: "Cocatriz", tipo: "Ofídico", nivel: 3, pv: 26, atk: 4, def: 13, res: 6, fraqueza: "ESPELHO", descricao: "Cruzamento entre galo e serpente. Olhar paralisa.", imagem: "cocatriz.jpg" },
+            { nome: "Hidra Jovem", tipo: "Ofídico", nivel: 6, pv: 60, atk: 7, def: 15, res: 10, fraqueza: "FOGO", descricao: "Criatura com múltiplas cabeças. Corte uma, duas nascem.", imagem: "hidra-jovem.jpg" },
+            { nome: "Hidra Anciã", tipo: "Ofídico", nivel: 9, pv: 102, atk: 10, def: 18, res: 14, fraqueza: "FOGO", descricao: "Hidra anciã com nove cabeças. Ameaça lendária.", imagem: "hidra-anciao.jpg" },
+            { nome: "Górgona", tipo: "Ofídico", nivel: 5, pv: 39, atk: 5, def: 14, res: 7, fraqueza: "ESPELHO", descricao: "Figura feminina com serpentes nos cabelos. Olhar petrifica.", imagem: "gorgona.jpg" },
+            { nome: "Lamia", tipo: "Ofídico", nivel: 4, pv: 32, atk: 6, def: 13, res: 6, fraqueza: "LUZ SAGRADA", descricao: "Torso de mulher, corpo de serpente. Usa magia de encantamento.", imagem: "lamia.jpg" },
+            { nome: "Constructo Ofídico Guardião", tipo: "Ofídico", nivel: 4, pv: 45, atk: 6, def: 16, res: 8, fraqueza: "IMPACTO", descricao: "Estátua de pedra com forma de serpente. Guardião de tumbas.", imagem: "constructo-ofidico.jpg" },
+            { nome: "Constructo Ofídico Colosso", tipo: "Ofídico", nivel: 7, pv: 85, atk: 9, def: 20, res: 12, fraqueza: "IMPACTO", descricao: "Colosso de pedra ofídico. Guardião das câmaras profundas.", imagem: "constructo-colosso.jpg" },
+
+            // ========== ÉLFICOS (12) ==========
+            { nome: "Ariadne", tipo: "Élfico", nivel: 10, pv: 127, atk: 12, def: 20, res: 15, fraqueza: "FOGO, LUZ SOLAR", descricao: "Rainha Aranha. Antiga sacerdotisa élfica transformada em aranha colossal.", imagem: "ariadne.jpg" },
+            { nome: "Elfo Guardião", tipo: "Élfico", nivel: 3, pv: 22, atk: 4, def: 12, res: 5, fraqueza: "FERRO", descricao: "Guardião élfico das florestas sagradas. Arqueiro preciso.", imagem: "elfo-guardiao.jpg" },
+            { nome: "Elfo da Caverna", tipo: "Élfico", nivel: 3, pv: 22, atk: 4, def: 12, res: 5, fraqueza: "LUZ SOLAR", descricao: "Elfo recluso das profundezas. Pele pálida e olhos adaptados.", imagem: "elfo-caverna.jpg" },
+            { nome: "Bruxa do Pântano", tipo: "Élfico", nivel: 4, pv: 26, atk: 5, def: 13, res: 6, fraqueza: "FOGO", descricao: "Bruxa élfica dos pântanos. Usa magias de veneno.", imagem: "elfo-bruxa.jpg" },
+            { nome: "Elfo Aranha", tipo: "Élfico", nivel: 4, pv: 30, atk: 6, def: 14, res: 6, fraqueza: "FOGO", descricao: "Elfo corrompido por Ariadne. Metade elfo, metade aranha.", imagem: "elfo-aranha.jpg" },
+            { nome: "Dríade Corrompida", tipo: "Élfico", nivel: 4, pv: 22, atk: 5, def: 13, res: 5, fraqueza: "FOGO", descricao: "Espírito da natureza corrompido. Ligada a uma árvore.", imagem: "driade-corrompida.jpg" },
+            { nome: "Fada", tipo: "Élfico", nivel: 3, pv: 11, atk: 4, def: 14, res: 3, fraqueza: "FERRO", descricao: "Pequena criatura alada que brilha. Caprichosa e mágica.", imagem: "fada.jpg" },
+            { nome: "Pixie", tipo: "Élfico", nivel: 1, pv: 5, atk: 4, def: 15, res: 3, fraqueza: "FERRO", descricao: "Criatura travessa que deixa rastro de estrelas. Adora pregar peças.", imagem: "pixie.jpg" },
+            { nome: "Centauro", tipo: "Élfico", nivel: 4, pv: 37, atk: 6, def: 14, res: 8, fraqueza: "FERRO", descricao: "Metade homem, metade cavalo. Guardião das florestas.", imagem: "centauro.jpg" },
+            { nome: "Centauro Sombrio", tipo: "Élfico", nivel: 5, pv: 45, atk: 7, def: 15, res: 9, fraqueza: "LUZ SAGRADA", descricao: "Centauro corrompido pela escuridão.", imagem: "centauro-sombrio.jpg" },
+            { nome: "Ent Errante", tipo: "Élfico", nivel: 6, pv: 75, atk: 8, def: 16, res: 12, fraqueza: "FOGO", descricao: "Árvore viva que perdeu sua floresta. Vaga lamentando.", imagem: "ent-errante.jpg" },
+            { nome: "Wendigo", tipo: "Élfico", nivel: 6, pv: 67, atk: 9, def: 16, res: 11, fraqueza: "FOGO, SANTIDADE", descricao: "Criatura emaciada das montanhas geladas. Uivo aterrorizante.", imagem: "wendigo.jpg" },
+
+            // ========== ÍNFEROS (12) ==========
+            { nome: "Ínfero Menor", tipo: "Ínfero", nivel: 2, pv: 19, atk: 4, def: 13, res: 5, fraqueza: "EXORCISMO, PURIFICAÇÃO", descricao: "O menor dos caídos. Soldados rasos do exército do Caos.", imagem: "infero-menor.jpg" },
+            { nome: "Ínfero Soldado", tipo: "Ínfero", nivel: 3, pv: 32, atk: 5, def: 14, res: 8, fraqueza: "EXORCISMO, SANTIDADE", descricao: "Soldado disciplinado do exército infernal. Espada flamejante.", imagem: "infero-soldado.jpg" },
+            { nome: "Ínfero Arauto", tipo: "Ínfero", nivel: 5, pv: 39, atk: 7, def: 16, res: 7, fraqueza: "EXORCISMO, SANTIDADE", descricao: "Mensageiro veloz de Akunashy. Adagas flamejantes.", imagem: "infero-arauto.jpg" },
+            { nome: "Ínfero Lorde", tipo: "Ínfero", nivel: 6, pv: 60, atk: 9, def: 18, res: 12, fraqueza: "SANTIDADE", descricao: "Comandante de legiões. Imponente e mortal.", imagem: "infero-lorde.jpg" },
+            { nome: "Ínfero General", tipo: "Ínfero", nivel: 9, pv: 102, atk: 13, def: 20, res: 16, fraqueza: "SANTIFICAÇÃO", descricao: "O mais poderoso dos íníferos. Líder das legiões.", imagem: "infero-general.jpg" },
+            { nome: "Súcubo", tipo: "Ínfero", nivel: 7, pv: 65, atk: 9, def: 16, res: 10, fraqueza: "ÁGUA BENTA, SÍMBOLOS SAGRADOS", descricao: "Criatura metamorfa que seduz vítimas. Beijo mortal.", imagem: "sucubo.jpg" },
+            { nome: "Demônio Risonho", tipo: "Ínfero", nivel: 6, pv: 45, atk: 8, def: 15, res: 9, fraqueza: "SILÊNCIO", descricao: "Criatura que ri incessantemente. Riso contagioso.", imagem: "demonio-risonho.jpg" },
+            { nome: "Helldog", tipo: "Ínfero", nivel: 2, pv: 26, atk: 5, def: 14, res: 6, fraqueza: "ÁGUA, GELO", descricao: "Cão infernal com olhos e boca flamejantes.", imagem: "helldog.jpg" },
+            { nome: "Helldog Alfa", tipo: "Ínfero", nivel: 5, pv: 45, atk: 8, def: 16, res: 10, fraqueza: "ÁGUA, GELO, MILAGRES", descricao: "Líder da matilha. Uivo aterrorizante.", imagem: "helldog-alfa.jpg" },
+            { nome: "Cultista do Caos", tipo: "Ínfero", nivel: 1, pv: 16, atk: 3, def: 11, res: 4, fraqueza: "LUZ SAGRADA", descricao: "Humano corrompido que serve ao Caos.", imagem: "cultista.jpg" },
+            { nome: "Mojo Parasita", tipo: "Ínfero", nivel: 4, pv: 16, atk: 5, def: 14, res: 4, fraqueza: "LUZ SAGRADA, SAL", descricao: "Pequeno verme parasita que controla a mente.", imagem: "mojo-parasita.jpg" },
+            { nome: "Espectro", tipo: "Ínfero", nivel: 4, pv: 22, atk: 4, def: 12, res: 0, fraqueza: "LUZ, MILAGRES", descricao: "Alma perdida incorpórea. Toque congela a alma.", imagem: "espectro.jpg" },
+
+            // ========== ANÕES (10) ==========
+            { nome: "Golem de Pedra", tipo: "Anão", nivel: 7, pv: 85, atk: 9, def: 20, res: 12, fraqueza: "IMPACTO", descricao: "Constructo colossal de pedra. Guardião de salões anões.", imagem: "golem-pedra.jpg" },
+            { nome: "Golem Colosso", tipo: "Anão", nivel: 9, pv: 120, atk: 12, def: 24, res: 16, fraqueza: "IMPACTO", descricao: "Golem gigantesco. Uma montanha de pedra e fúria.", imagem: "golem-colosso.jpg" },
+            { nome: "Constructo Anão", tipo: "Anão", nivel: 4, pv: 45, atk: 6, def: 16, res: 8, fraqueza: "IMPACTO", descricao: "Constructo de bronze forjado por anões.", imagem: "constructo-anao.jpg" },
+            { nome: "Troll das Minas", tipo: "Anão", nivel: 4, pv: 45, atk: 7, def: 14, res: 8, fraqueza: "FOGO", descricao: "Troll adaptado às minas profundas. Regeneração lenta.", imagem: "troll-minas.jpg" },
+            { nome: "Goblin Saqueador", tipo: "Anão", nivel: 1, pv: 11, atk: 4, def: 12, res: 3, fraqueza: "LUZ", descricao: "Goblin que saqueia minas anãs.", imagem: "goblin-saqueador.jpg" },
+            { nome: "Orc Escravizador", tipo: "Anão", nivel: 2, pv: 26, atk: 6, def: 13, res: 6, fraqueza: "LUZ", descricao: "Orc que escraviza anões nas minas.", imagem: "orc-escravizador.jpg" },
+            { nome: "Desmorto Anão", tipo: "Anão", nivel: 4, pv: 32, atk: 3, def: 12, res: 6, fraqueza: "LUZ SAGRADA", descricao: "Anão que morreu em corrupção extrema.", imagem: "desmorto-anao.jpg" },
+            { nome: "Dragão Ancião", tipo: "Anão", nivel: 12, pv: 190, atk: 15, def: 24, res: 20, fraqueza: "SANTIDADE", descricao: "Dragão que dorme nas profundezas das montanhas.", imagem: "dragao-anciao.jpg" },
+            { nome: "Ínfero da Mina", tipo: "Anão", nivel: 3, pv: 32, atk: 5, def: 14, res: 8, fraqueza: "EXORCISMO", descricao: "Ínfero que invadiu as minas anãs.", imagem: "infero-mina.jpg" },
+            { nome: "Verme da Rocha", tipo: "Anão", nivel: 5, pv: 45, atk: 6, def: 14, res: 8, fraqueza: "FRIO", descricao: "Verme que perfura as rochas das montanhas.", imagem: "verme-rocha.jpg" },
+
+            // ========== FERAIS (12) ==========
+            { nome: "Minotauro", tipo: "Feral", nivel: 5, pv: 52, atk: 8, def: 15, res: 9, fraqueza: "PRATA", descricao: "Cabeça de touro, corpo humanoide. Habitante de labirintos.", imagem: "minotauro.jpg" },
+            { nome: "Minotauro Ancião", tipo: "Feral", nivel: 8, pv: 85, atk: 11, def: 18, res: 14, fraqueza: "PRATA", descricao: "Minotauro ancião, mais sábio e mortal.", imagem: "minotauro-anciao.jpg" },
+            { nome: "Ciclope", tipo: "Feral", nivel: 5, pv: 65, atk: 8, def: 14, res: 10, fraqueza: "CEGUEIRA", descricao: "Gigante de um olho só. Força bruta.", imagem: "ciclope.jpg" },
+            { nome: "Grifo", tipo: "Feral", nivel: 5, pv: 52, atk: 7, def: 14, res: 9, fraqueza: "FRIO", descricao: "Metade leão, metade águia. Guardião dos picos.", imagem: "grifo.jpg" },
+            { nome: "Harpia", tipo: "Feral", nivel: 3, pv: 26, atk: 5, def: 13, res: 5, fraqueza: "SILÊNCIO", descricao: "Corpo de ave, cabeça de mulher. Canto hipnótico.", imagem: "harpia.jpg" },
+            { nome: "Esfinge", tipo: "Feral", nivel: 8, pv: 75, atk: 9, def: 17, res: 12, fraqueza: "ENIGMAS", descricao: "Corpo de leão, cabeça humana. Guardiã de enigmas.", imagem: "esfinge.jpg" },
+            { nome: "Quimera", tipo: "Feral", nivel: 7, pv: 85, atk: 10, def: 16, res: 12, fraqueza: "SANTIDADE", descricao: "Cabeça de leão, corpo de cabra, cauda de serpente.", imagem: "quimera.jpg" },
+            { nome: "Basilisco Feral", tipo: "Feral", nivel: 4, pv: 39, atk: 5, def: 11, res: 8, fraqueza: "ESPELHO", descricao: "Versão feral do basilisco, mais agressiva.", imagem: "basilisco-feral.jpg" },
+            { nome: "Cocatriz Feral", tipo: "Feral", nivel: 3, pv: 26, atk: 4, def: 13, res: 6, fraqueza: "ESPELHO", descricao: "Versão feral da cocatriz.", imagem: "cocatriz-feral.jpg" },
+            { nome: "Centauro Sombrio Feral", tipo: "Feral", nivel: 5, pv: 45, atk: 7, def: 15, res: 9, fraqueza: "LUZ SAGRADA", descricao: "Centauro corrompido pela escuridão.", imagem: "centauro-sombrio-feral.jpg" },
+            { nome: "Górgona Feral", tipo: "Feral", nivel: 5, pv: 39, atk: 5, def: 14, res: 7, fraqueza: "ESPELHO", descricao: "Versão feral da górgona.", imagem: "gorgona-feral.jpg" },
+            { nome: "Cavalo Fantasma", tipo: "Feral", nivel: 4, pv: 30, atk: 5, def: 13, res: 6, fraqueza: "LUZ SAGRADA", descricao: "Cavalo espectral que assombra as planícies.", imagem: "cavalo-fantasma.jpg" },
+
+            // ========== VOIDS (18) ==========
+            { nome: "Espectro", tipo: "Void", nivel: 4, pv: 22, atk: 4, def: 12, res: 0, fraqueza: "LUZ, MILAGRES", descricao: "Alma perdida incorpórea. Toque congela a alma.", imagem: "espectro.jpg" },
+            { nome: "Fantasma", tipo: "Void", nivel: 5, pv: 32, atk: 5, def: 13, res: 0, fraqueza: "LUZ, MILAGRES, VÍNCULO", descricao: "Alma ligada a um local. Pode possuir criaturas.", imagem: "fantasma.jpg" },
+            { nome: "Sombra Errante", tipo: "Void", nivel: 5, pv: 27, atk: 5, def: 14, res: 0, fraqueza: "LUZ, MILAGRES", descricao: "Silhueta negra que drena energia vital.", imagem: "sombra-errante.jpg" },
+            { nome: "Desmorto", tipo: "Void", nivel: 4, pv: 32, atk: 3, def: 12, res: 6, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Morto-vivo consciente. Recupera HP com veneno.", imagem: "desmorto.jpg" },
+            { nome: "Void Desmorto", tipo: "Void", nivel: 6, pv: 60, atk: 5, def: 9, res: 10, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Desmorto consumido pelo Vazio. DEF reduzida.", imagem: "void-desmorto.jpg" },
+            { nome: "Void", tipo: "Void", nivel: 3, pv: 32, atk: 3, def: 12, res: 6, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Criatura vazia sem traços faciais.", imagem: "void.jpg" },
+            { nome: "Zumbi", tipo: "Void", nivel: 2, pv: 19, atk: 3, def: 10, res: 5, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Cadáver reanimado lento. Age por último.", imagem: "zumbi.jpg" },
+            { nome: "Ghoul", tipo: "Void", nivel: 3, pv: 26, atk: 5, def: 13, res: 6, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Morto-vivo mais rápido. Mordida paralisante.", imagem: "ghoul.jpg" },
+            { nome: "Carniçal", tipo: "Void", nivel: 2, pv: 19, atk: 5, def: 14, res: 5, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Ghoul em fome extrema. Ataca em matilhas.", imagem: "carnical.jpg" },
+            { nome: "Esqueleto Guerreiro", tipo: "Void", nivel: 2, pv: 19, atk: 4, def: 14, res: 5, fraqueza: "IMPACTO, LUZ SAGRADA", descricao: "Esqueleto com armadura e escudo.", imagem: "esqueleto-guerreiro.jpg" },
+            { nome: "Esqueleto Arqueiro", tipo: "Void", nivel: 2, pv: 19, atk: 5, def: 12, res: 5, fraqueza: "IMPACTO, LUZ SAGRADA", descricao: "Esqueleto ágil com arco longo.", imagem: "esqueleto-arqueiro.jpg" },
+            { nome: "Cavaleiro Esqueleto", tipo: "Void", nivel: 3, pv: 32, atk: 5, def: 16, res: 7, fraqueza: "IMPACTO, LUZ SAGRADA", descricao: "Esqueleto montado em cavalo esquelético.", imagem: "cavaleiro-esqueleto.jpg" },
+            { nome: "Esqueleto Escaldante", tipo: "Void", nivel: 5, pv: 39, atk: 6, def: 14, res: 8, fraqueza: "IMPACTO, ÁGUA, GELO, LUZ SAGRADA", descricao: "Esqueleto banhado em chamas eternas.", imagem: "esqueleto-escaldante.jpg" },
+            { nome: "Lich Menor", tipo: "Void", nivel: 8, pv: 65, atk: 5, def: 15, res: 10, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Esqueleto de mago. Magia de 1º a 4º círculo.", imagem: "lich-menor.jpg" },
+            { nome: "Lich Ancião", tipo: "Void", nivel: 11, pv: 105, atk: 8, def: 17, res: 14, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO", descricao: "Lich milenar. Magia de 1º a 5º círculo.", imagem: "lich-anciao.jpg" },
+            { nome: "Sath'krah", tipo: "Void", nivel: 12, pv: 135, atk: 10, def: 19, res: 16, fraqueza: "LUZ SAGRADA, FOGO, PURIFICAÇÃO, NOME VERDADEIRO", descricao: "Elder Lich. Último arquivista de Abrakxas.", imagem: "sathkrah.jpg" },
+            { nome: "Alma Penada", tipo: "Void", nivel: 3, pv: 20, atk: 3, def: 11, res: 0, fraqueza: "LUZ, MILAGRES", descricao: "Alma que não encontra paz. Grita em agonia.", imagem: "alma-penada.jpg" },
+            { nome: "Aparição", tipo: "Void", nivel: 4, pv: 25, atk: 4, def: 12, res: 0, fraqueza: "LUZ, MILAGRES", descricao: "Manifestação de evento trágico repetido.", imagem: "aparicao.jpg" },
+
+            // ========== ABISSAIS (12) ==========
+            { nome: "Povo Peixe", tipo: "Abissal", nivel: 2, pv: 19, atk: 3, def: 12, res: 5, fraqueza: "FOGO, ELETRICIDADE", descricao: "Humanoides com cabeça de peixe. Usam tridentes.", imagem: "povo-peixe.jpg" },
+            { nome: "Sereia Corrompida", tipo: "Abissal", nivel: 3, pv: 26, atk: 4, def: 13, res: 6, fraqueza: "SILÊNCIO, LUZ SAGRADA", descricao: "Metade mulher, metade peixe. Canto hipnótico.", imagem: "sereia-corrompida.jpg" },
+            { nome: "Carniçal Marinho", tipo: "Abissal", nivel: 3, pv: 19, atk: 4, def: 12, res: 5, fraqueza: "LUZ SAGRADA, FOGO", descricao: "Cadáver inchado coberto de algas.", imagem: "carnical-marinho.jpg" },
+            { nome: "Abissal Profundo", tipo: "Abissal", nivel: 6, pv: 52, atk: 6, def: 13, res: 9, fraqueza: "LUZ SAGRADA, MILAGRES", descricao: "Criatura serpentiforme bioluminescente.", imagem: "abissal-profundo.jpg" },
+            { nome: "Hidra Marinha", tipo: "Abissal", nivel: 8, pv: 85, atk: 9, def: 16, res: 12, fraqueza: "FOGO", descricao: "Hidra adaptada ao ambiente marinho.", imagem: "hidra-marinha.jpg" },
+            { nome: "Tubarão Corrompido", tipo: "Abissal", nivel: 4, pv: 45, atk: 7, def: 14, res: 8, fraqueza: "ELETRICIDADE", descricao: "Tubarão gigante corrompido. Olhos vermelhos.", imagem: "tubarao-corrompido.jpg" },
+            { nome: "Polvo Gigante", tipo: "Abissal", nivel: 5, pv: 52, atk: 7, def: 15, res: 9, fraqueza: "FOGO, ELETRICIDADE", descricao: "Polvo colossal que agarra navios.", imagem: "polvo-gigante.jpg" },
+            { nome: "Kraken", tipo: "Abissal", nivel: 13, pv: 237, atk: 15, def: 18, res: 20, fraqueza: "ELETRICIDADE, MILAGRES", descricao: "Cefalópode colossal. Tentáculos do tamanho de navios.", imagem: "kraken.jpg" },
+            { nome: "Cefalion", tipo: "Abissal", nivel: 12, pv: 209, atk: 14, def: 16, res: 18, fraqueza: "ELETRICIDADE, MILAGRES", descricao: "Lula colossal mais inteligente que o Kraken.", imagem: "cefalion.jpg" },
+            { nome: "Leviatã", tipo: "Abissal", nivel: 15, pv: 315, atk: 18, def: 20, res: 25, fraqueza: "MILAGRES, SANTIDADE", descricao: "Serpente marinha tão colossal quanto uma ilha.", imagem: "leviatan.jpg" },
+            { nome: "Dragão Marinho", tipo: "Abissal", nivel: 10, pv: 120, atk: 12, def: 18, res: 15, fraqueza: "GELO, SANTIDADE", descricao: "Dragão dos oceanos profundos. Sopro de água fervente.", imagem: "dragao-marinho.jpg" },
+            { nome: "Súcubo Marinha", tipo: "Abissal", nivel: 6, pv: 45, atk: 7, def: 14, res: 8, fraqueza: "SILÊNCIO, LUZ SAGRADA", descricao: "Súcubo adaptada ao mar. Seduz marinheiros.", imagem: "sucubo-marinha.jpg" },
+
+            // ========== DRAGÕES (28) ==========
+            { nome: "Dragão Vermelho Jovem", tipo: "Dragão", nivel: 7, pv: 67, atk: 8, def: 18, res: 13, fraqueza: "GELO, SANTIDADE", descricao: "Dragão jovem vermelho. Sopro de fogo devastador.", imagem: "dragao-vermelho-jovem.jpg" },
+            { nome: "Dragão Branco Jovem", tipo: "Dragão", nivel: 4, pv: 39, atk: 6, def: 15, res: 10, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão jovem branco. Sopro de gelo congelante.", imagem: "dragao-branco-jovem.jpg" },
+            { nome: "Dragão Azul Jovem", tipo: "Dragão", nivel: 6, pv: 52, atk: 7, def: 17, res: 12, fraqueza: "TERRA, SANTIDADE", descricao: "Dragão jovem azul. Sopro de eletricidade.", imagem: "dragao-azul-jovem.jpg" },
+            { nome: "Dragão Negro Jovem", tipo: "Dragão", nivel: 5, pv: 45, atk: 6, def: 16, res: 11, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão jovem negro. Sopro de ácido.", imagem: "dragao-negro-jovem.jpg" },
+            { nome: "Dragão Verde Jovem", tipo: "Dragão", nivel: 5, pv: 45, atk: 6, def: 17, res: 11, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão jovem verde. Sopro de ácido e controle mental.", imagem: "dragao-verde-jovem.jpg" },
+            { nome: "Dragão Vermelho Adulto", tipo: "Dragão", nivel: 11, pv: 127, atk: 14, def: 23, res: 19, fraqueza: "GELO, SANTIDADE", descricao: "Dragão adulto vermelho. Ameaça regional.", imagem: "dragao-vermelho-adulto.jpg" },
+            { nome: "Dragão Branco Adulto", tipo: "Dragão", nivel: 8, pv: 90, atk: 12, def: 20, res: 16, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão adulto branco. Tempestades de gelo.", imagem: "dragao-branco-adulto.jpg" },
+            { nome: "Dragão Azul Adulto", tipo: "Dragão", nivel: 10, pv: 105, atk: 13, def: 22, res: 18, fraqueza: "TERRA, SANTIDADE", descricao: "Dragão adulto azul. Controla tempestades.", imagem: "dragao-azul-adulto.jpg" },
+            { nome: "Dragão Negro Adulto", tipo: "Dragão", nivel: 9, pv: 97, atk: 12, def: 21, res: 17, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão adulto negro. Escuridão mágica.", imagem: "dragao-negro-adulto.jpg" },
+            { nome: "Dragão Verde Adulto", tipo: "Dragão", nivel: 9, pv: 97, atk: 12, def: 22, res: 17, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão adulto verde. Mestre em manipulação.", imagem: "dragao-verde-adulto.jpg" },
+            { nome: "Dragão Vermelho Ancião", tipo: "Dragão", nivel: 15, pv: 199, atk: 20, def: 29, res: 25, fraqueza: "GELO, SANTIDADE", descricao: "Dragão ancião vermelho. Ameaça existencial.", imagem: "dragao-vermelho-anciao.jpg" },
+            { nome: "Dragão Branco Ancião", tipo: "Dragão", nivel: 12, pv: 153, atk: 18, def: 26, res: 22, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão ancião branco. Rei das geleiras.", imagem: "dragao-branco-anciao.jpg" },
+            { nome: "Dragão Azul Ancião", tipo: "Dragão", nivel: 14, pv: 170, atk: 19, def: 28, res: 24, fraqueza: "TERRA, SANTIDADE", descricao: "Dragão ancião azul. Senhor das tempestades.", imagem: "dragao-azul-anciao.jpg" },
+            { nome: "Dragão Negro Ancião", tipo: "Dragão", nivel: 13, pv: 161, atk: 18, def: 27, res: 23, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão ancião negro. Corrompe tudo ao redor.", imagem: "dragao-negro-anciao.jpg" },
+            { nome: "Dragão Verde Ancião", tipo: "Dragão", nivel: 13, pv: 161, atk: 18, def: 28, res: 23, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão ancião verde. Controla florestas inteiras.", imagem: "dragao-verde-anciao.jpg" },
+            { nome: "Dragão de Bronze Jovem", tipo: "Dragão", nivel: 6, pv: 52, atk: 7, def: 18, res: 12, fraqueza: "TERRA, SANTIDADE", descricao: "Dragão metálico jovem. Protetor dos mares.", imagem: "dragao-bronze-jovem.jpg" },
+            { nome: "Dragão de Bronze Adulto", tipo: "Dragão", nivel: 10, pv: 105, atk: 13, def: 23, res: 18, fraqueza: "TERRA, SANTIDADE", descricao: "Dragão metálico adulto. Manipulador astuto.", imagem: "dragao-bronze-adulto.jpg" },
+            { nome: "Dragão de Cobre Jovem", tipo: "Dragão", nivel: 5, pv: 45, atk: 6, def: 17, res: 11, fraqueza: "GELO, SANTIDADE", descricao: "Dragão metálico jovem. Gosta de enigmas.", imagem: "dragao-cobre-jovem.jpg" },
+            { nome: "Dragão de Cobre Adulto", tipo: "Dragão", nivel: 9, pv: 97, atk: 12, def: 22, res: 17, fraqueza: "GELO, SANTIDADE", descricao: "Dragão metálico adulto. Mestre em enganação.", imagem: "dragao-cobre-adulto.jpg" },
+            { nome: "Dragão de Latão Jovem", tipo: "Dragão", nivel: 5, pv: 45, atk: 6, def: 16, res: 11, fraqueza: "ÁGUA, SANTIDADE", descricao: "Dragão metálico jovem. Extremamente falante.", imagem: "dragao-latao-jovem.jpg" },
+            { nome: "Dragão de Latão Adulto", tipo: "Dragão", nivel: 9, pv: 97, atk: 12, def: 21, res: 17, fraqueza: "ÁGUA, SANTIDADE", descricao: "Dragão metálico adulto. Coleciona segredos.", imagem: "dragao-latao-adulto.jpg" },
+            { nome: "Dragão de Ouro Jovem", tipo: "Dragão", nivel: 8, pv: 75, atk: 9, def: 20, res: 14, fraqueza: "GELO, SANTIDADE", descricao: "Dragão metálico jovem. O mais poderoso.", imagem: "dragao-ouro-jovem.jpg" },
+            { nome: "Dragão de Ouro Adulto", tipo: "Dragão", nivel: 12, pv: 136, atk: 15, def: 25, res: 20, fraqueza: "GELO, SANTIDADE", descricao: "Dragão metálico adulto. Bênçãos são armadilhas.", imagem: "dragao-ouro-adulto.jpg" },
+            { nome: "Dragão de Prata Jovem", tipo: "Dragão", nivel: 6, pv: 52, atk: 7, def: 19, res: 12, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão metálico jovem. Vive entre mortais.", imagem: "dragao-prata-jovem.jpg" },
+            { nome: "Dragão de Prata Adulto", tipo: "Dragão", nivel: 10, pv: 105, atk: 13, def: 24, res: 18, fraqueza: "FOGO, SANTIDADE", descricao: "Dragão metálico adulto. Manipulador disfarçado.", imagem: "dragao-prata-adulto.jpg" },
+            { nome: "Zah'rak", tipo: "Dragão", nivel: 12, pv: 190, atk: 15, def: 24, res: 20, fraqueza: "SANTIDADE, MAGIAS DE LUZ", descricao: "Dragão guardião das ruínas submersas. Filho de Abrakxas.", imagem: "zahrak.jpg" },
+            { nome: "Draganto-Maquia", tipo: "Dragão", nivel: 14, pv: 367, atk: 18, def: 26, res: 22, fraqueza: "SANTIDADE, MAGIAS DE LUZ, NOME VERDADEIRO", descricao: "Primogênito de Abrakxas. Dragão titânico irracional.", imagem: "draganto-maquia.jpg" },
+            { nome: "Wyvern", tipo: "Dragão", nivel: 5, pv: 52, atk: 8, def: 15, res: 9, fraqueza: "FRIO, ELETRICIDADE", descricao: "Reptil voador com ferrão venenoso.", imagem: "wyvern.jpg" },
+            { nome: "Draconiano Jovem", tipo: "Dragão", nivel: 6, pv: 60, atk: 9, def: 18, res: 12, fraqueza: "SANTIFICAÇÃO, MILAGRES", descricao: "Celestial corrompido em forma humanóide.", imagem: "draconiano-jovem.jpg" },
+            { nome: "Draconiano Ancião", tipo: "Dragão", nivel: 10, pv: 127, atk: 15, def: 24, res: 18, fraqueza: "SANTIFICAÇÃO, MILAGRES", descricao: "General de Akunashy. Forma dragônica poderosa.", imagem: "draconiano-anciao.jpg" },
+
+            // ========== CELESTIAIS (8) ==========
+            { nome: "Celestial", tipo: "Celestial", nivel: 7, pv: 60, atk: 7, def: 16, res: 10, fraqueza: "CORRUPÇÃO", descricao: "Ser de luz com asas e pele dourada. Servem ao Senhor dos Montes.", imagem: "celestial.jpg" },
+            { nome: "Seraphiel", tipo: "Celestial", nivel: 11, pv: 171, atk: 15, def: 24, res: 20, fraqueza: "REDENÇÃO, LUZ SAGRADA", descricao: "Celestial caído, primeiro general de Akunashy. Olhos vendados.", imagem: "seraphiel.jpg" },
+            { nome: "Arcanjo", tipo: "Celestial", nivel: 9, pv: 85, atk: 11, def: 20, res: 15, fraqueza: "CORRUPÇÃO", descricao: "Guerreiro celestial de elite. Espada de luz.", imagem: "arcanjo.jpg" },
+            { nome: "Querubim", tipo: "Celestial", nivel: 6, pv: 50, atk: 6, def: 15, res: 9, fraqueza: "CORRUPÇÃO", descricao: "Sentinela celestial com múltiplas asas.", imagem: "querubim.jpg" },
+            { nome: "Serafim", tipo: "Celestial", nivel: 8, pv: 70, atk: 8, def: 18, res: 12, fraqueza: "CORRUPÇÃO", descricao: "Atalaia celestial que canta salmos.", imagem: "serafim.jpg" },
+            { nome: "Zeráfian Atalaia", tipo: "Celestial", nivel: 5, pv: 40, atk: 5, def: 14, res: 7, fraqueza: "CORRUPÇÃO", descricao: "Guardião da palavra divina. Vigia as fronteiras.", imagem: "zerafian.jpg" },
+            { nome: "Mensageiro Divino", tipo: "Celestial", nivel: 4, pv: 35, atk: 4, def: 13, res: 6, fraqueza: "CORRUPÇÃO", descricao: "Mensageiro celestial que carrega notícias dos deuses.", imagem: "mensageiro-divino.jpg" },
+            { nome: "Neférian Forjador", tipo: "Celestial", nivel: 8, pv: 75, atk: 9, def: 17, res: 13, fraqueza: "CORRUPÇÃO", descricao: "Forjador celestial. O mesmo tipo de Akunashy antes da queda.", imagem: "neferian.jpg" },
+
+            // ========== MONSTRUOSOS (18) ==========
+            { nome: "Goblin", tipo: "Monstruoso", nivel: 1, pv: 11, atk: 4, def: 12, res: 3, fraqueza: "LUZ", descricao: "Pequenos humanoides covardes. Atacam em bando.", imagem: "goblin.jpg" },
+            { nome: "Orc", tipo: "Monstruoso", nivel: 2, pv: 26, atk: 6, def: 13, res: 6, fraqueza: "LUZ", descricao: "Humanoides musculosos. Fúria em batalha.", imagem: "orc.jpg" },
+            { nome: "Hobgoblin", tipo: "Monstruoso", nivel: 2, pv: 26, atk: 5, def: 15, res: 6, fraqueza: "LUZ", descricao: "Soldado disciplinado. Mais organizado que orcs.", imagem: "hobgoblin.jpg" },
+            { nome: "Bugbear", tipo: "Monstruoso", nivel: 4, pv: 37, atk: 7, def: 14, res: 8, fraqueza: "LUZ", descricao: "Parente gigante dos goblins. Ataques surpresa.", imagem: "bugbear.jpg" },
+            { nome: "Gnoll", tipo: "Monstruoso", nivel: 3, pv: 32, atk: 6, def: 13, res: 8, fraqueza: "LUZ", descricao: "Hiena bípede. Fome selvagem.", imagem: "gnoll.jpg" },
+            { nome: "Kobold", tipo: "Monstruoso", nivel: 1, pv: 11, atk: 3, def: 12, res: 3, fraqueza: "LUZ", descricao: "Pequeno reptiliano. Mestre em armadilhas.", imagem: "kobold.jpg" },
+            { nome: "Troll", tipo: "Monstruoso", nivel: 4, pv: 45, atk: 7, def: 14, res: 8, fraqueza: "FOGO", descricao: "Criatura enorme. Regeneração poderosa.", imagem: "troll.jpg" },
+            { nome: "Vampiro", tipo: "Monstruoso", nivel: 5, pv: 52, atk: 9, def: 17, res: 10, fraqueza: "LUZ SOLAR, UNGUENTOS", descricao: "Criatura da noite. Drena sangue.", imagem: "vampiro.jpg" },
+            { nome: "Lobisomem", tipo: "Monstruoso", nivel: 5, pv: 42, atk: 8, def: 15, res: 9, fraqueza: "PRATA, PURIFICAÇÃO", descricao: "Amaldiçoado pela lua. Transforma-se em besta.", imagem: "lobisomem.jpg" },
+            { nome: "Slime", tipo: "Monstruoso", nivel: 1, pv: 11, atk: 2, def: 8, res: 3, fraqueza: "FOGO, GELO", descricao: "Massa amorfa de gelatina corrosiva.", imagem: "slime.jpg" },
+            { nome: "Minotauro", tipo: "Monstruoso", nivel: 5, pv: 52, atk: 8, def: 15, res: 9, fraqueza: "PRATA", descricao: "Cabeça de touro. Habitante de labirintos.", imagem: "minotauro.jpg" },
+            { nome: "Dragarto", tipo: "Monstruoso", nivel: 2, pv: 16, atk: 4, def: 13, res: 5, fraqueza: "FRIO", descricao: "Lagarto alado que cospe fogo.", imagem: "dragarto.jpg" },
+            { nome: "Beija-sangue", tipo: "Monstruoso", nivel: 3, pv: 31, atk: 5, def: 14, res: 4, fraqueza: "FOGO, LUZ", descricao: "Enxame que drena sangue.", imagem: "beija-sangue.jpg" },
+            { nome: "Devorador de Aranhas", tipo: "Monstruoso", nivel: 6, pv: 60, atk: 7, def: 15, res: 10, fraqueza: "FOGO, FRIO", descricao: "Vespa gigante que paralisa vítimas.", imagem: "devorador-aranhas.jpg" },
+            { nome: "Planta Carnívora", tipo: "Monstruoso", nivel: 3, pv: 30, atk: 5, def: 12, res: 7, fraqueza: "FOGO, GELO", descricao: "Planta que se move e ataca.", imagem: "planta-carnivora.jpg" },
+            { nome: "Mímico", tipo: "Monstruoso", nivel: 3, pv: 39, atk: 6, def: 12, res: 8, fraqueza: "FOGO, ÁCIDO", descricao: "Criatura que imita objetos. O baú respira.", imagem: "mimico.jpg" },
+            { nome: "Gárgula", tipo: "Monstruoso", nivel: 3, pv: 37, atk: 5, def: 15, res: 9, fraqueza: "IMPACTO", descricao: "Estátua viva de pedra.", imagem: "gargula.jpg" },
+            { nome: "Wendigo", tipo: "Monstruoso", nivel: 6, pv: 67, atk: 9, def: 16, res: 11, fraqueza: "FOGO, SANTIDADE", descricao: "Criatura emaciada das montanhas geladas.", imagem: "wendigo.jpg" },
+
+            // ========== ANIMAIS CORROMPIDOS (10) ==========
+            { nome: "Lobo Corrompido", tipo: "Animal", nivel: 1, pv: 19, atk: 4, def: 13, res: 5, fraqueza: "LUZ SAGRADA, FOGO", descricao: "Lobo com olhos vermelhos. Infectado pela corrupção.", imagem: "lobo-corrompido.jpg" },
+            { nome: "Lobo Comum", tipo: "Animal", nivel: 1, pv: 13, atk: 3, def: 12, res: 4, fraqueza: "—", descricao: "Lobo cinzento comum. Caça em matilhas.", imagem: "lobo-comum.jpg" },
+            { nome: "Urso Corrompido", tipo: "Animal", nivel: 3, pv: 37, atk: 6, def: 13, res: 8, fraqueza: "LUZ SAGRADA, FOGO", descricao: "Urso com manchas de carne exposta.", imagem: "urso-corrompido.jpg" },
+            { nome: "Urso Comum", tipo: "Animal", nivel: 2, pv: 30, atk: 5, def: 12, res: 6, fraqueza: "—", descricao: "Urso pardo comum. Vive em florestas.", imagem: "urso-comum.jpg" },
+            { nome: "Cão do Abismo", tipo: "Animal", nivel: 2, pv: 26, atk: 5, def: 14, res: 6, fraqueza: "ÁGUA, GELO, MILAGRES", descricao: "Cão infernal flamejante.", imagem: "cao-abismo.jpg" },
+            { nome: "Hellhound Alfa", tipo: "Animal", nivel: 5, pv: 45, atk: 8, def: 16, res: 10, fraqueza: "ÁGUA, GELO, MILAGRES", descricao: "Líder da matilha. Uivo aterrorizante.", imagem: "hellhound-alfa.jpg" },
+            { nome: "Verme da Areia Jovem", tipo: "Animal", nivel: 5, pv: 45, atk: 6, def: 14, res: 8, fraqueza: "FRIO, ÁGUA", descricao: "Verme colossal jovem do deserto.", imagem: "verme-areia-jovem.jpg" },
+            { nome: "Verme da Areia Adulto", tipo: "Animal", nivel: 8, pv: 85, atk: 9, def: 16, res: 12, fraqueza: "FRIO, ÁGUA", descricao: "Verme adulto. Engole criaturas.", imagem: "verme-areia-adulto.jpg" },
+            { nome: "Verme da Areia Ancião", tipo: "Animal", nivel: 11, pv: 133, atk: 12, def: 18, res: 16, fraqueza: "FRIO, ÁGUA", descricao: "Verme ancião. Engole caravanas.", imagem: "verme-areia-anciao.jpg" },
+            { nome: "Enxame de Ratos", tipo: "Animal", nivel: 2, pv: 22, atk: 3, def: 11, res: 3, fraqueza: "FOGO, LUZ SAGRADA", descricao: "Enxame de ratos infectados. Devoram tudo.", imagem: "enxame-ratos.jpg" }
+        ];
+
+        // ============================================================
+        // CÓDIGO DE RENDERIZAÇÃO
+        // ============================================================
+
+        let currentMonsters = [...monstros];
+
+        function updateFilterCounts() {
+            const tipos = {
+                'Ofídico': monstros.filter(m => m.tipo === 'Ofídico').length,
+                'Élfico': monstros.filter(m => m.tipo === 'Élfico').length,
+                'Ínfero': monstros.filter(m => m.tipo === 'Ínfero').length,
+                'Anão': monstros.filter(m => m.tipo === 'Anão').length,
+                'Feral': monstros.filter(m => m.tipo === 'Feral').length,
+                'Void': monstros.filter(m => m.tipo === 'Void').length,
+                'Abissal': monstros.filter(m => m.tipo === 'Abissal').length,
+                'Dragão': monstros.filter(m => m.tipo === 'Dragão').length,
+                'Celestial': monstros.filter(m => m.tipo === 'Celestial').length,
+                'Monstruoso': monstros.filter(m => m.tipo === 'Monstruoso').length,
+                'Animal': monstros.filter(m => m.tipo === 'Animal').length
+            };
+            
+            const select = document.getElementById('typeFilter');
+            for (let i = 0; i < select.options.length; i++) {
+                const opt = select.options[i];
+                const tipo = opt.value;
+                if (tipo !== 'todos' && tipos[tipo]) {
+                    opt.text = `${opt.text.split('(')[0]}(${tipos[tipo]})`;
+                } else if (tipo === 'todos') {
+                    opt.text = `📋 Todos os tipos (${monstros.length})`;
+                }
+            }
+        }
+
+        function renderMonsters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            
+            const filtered = currentMonsters.filter(m => {
+                const matchSearch = m.nome.toLowerCase().includes(searchTerm);
+                const matchType = typeFilter === 'todos' || m.tipo === typeFilter;
+                return matchSearch && matchType;
+            });
+            
+            const grid = document.getElementById('monsterGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">Nenhum monstro encontrado.</div>';
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(m => `
+                <div class="monster-card" onclick="showMonsterDetail('${m.nome.replace(/'/g, "\\'")}')">
+                    <div class="monster-image">
+                        <img src="imagens/monstros/${m.imagem}" alt="${m.nome}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'no-image\'>📷 Sem imagem<br>${m.nome}</div>'">
+                    </div>
+                    <div class="monster-info">
+                        <div class="monster-name">${m.nome}</div>
+                        <div class="monster-type">${m.tipo} | Nível ${m.nivel}</div>
+                        <div class="monster-stats">
+                            <div class="stat"><div>PV</div><div class="stat-value">${m.pv}</div></div>
+                            <div class="stat"><div>ATK</div><div class="stat-value">${m.atk}</div></div>
+                            <div class="stat"><div>DEF</div><div class="stat-value">${m.def}</div></div>
+                            <div class="stat"><div>RES</div><div class="stat-value">${m.res}</div></div>
+                        </div>
+                        <div class="weakness">⚠️ Fraqueza: ${m.fraqueza}</div>
+                        <div class="monster-desc">${m.descricao.substring(0, 80)}${m.descricao.length > 80 ? '...' : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showMonsterDetail(nome) {
+            const monster = currentMonsters.find(m => m.nome === nome);
+            if (!monster) return;
+            
+            const nd = Math.floor(monster.nivel / 2) + 1;
+            const xpSugerido = monster.nivel * 50 + 50;
+            
+            document.getElementById('modalTitle').innerText = monster.nome;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-image">
+                    <img src="imagens/monstros/${monster.imagem}" alt="${monster.nome}" onerror="this.onerror=null; this.src='imagens/monstros/monstro-padrao.jpg'">
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item"><div class="stat-label">📊 Tipo</div><div class="stat-number">${monster.tipo}</div></div>
+                    <div class="stat-item"><div class="stat-label">⭐ Nível</div><div class="stat-number">${monster.nivel}</div></div>
+                    <div class="stat-item"><div class="stat-label">🎯 ND</div><div class="stat-number">${nd}</div></div>
+                    <div class="stat-item"><div class="stat-label">💰 XP</div><div class="stat-number">${xpSugerido}</div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item"><div class="stat-label">❤️ PV</div><div class="stat-number">${monster.pv}</div></div>
+                    <div class="stat-item"><div class="stat-label">⚔️ ATK</div><div class="stat-number">${monster.atk}</div></div>
+                    <div class="stat-item"><div class="stat-label">🛡️ DEF</div><div class="stat-number">${monster.def}</div></div>
+                    <div class="stat-item"><div class="stat-label">🩸 RES</div><div class="stat-number">${monster.res}</div></div>
+                </div>
+                <div style="margin: 15px 0; padding: 10px; background: #2a1a2a; border-radius: 8px;">
+                    <strong>⚠️ FRAQUEZAS:</strong> ${monster.fraqueza}
+                </div>
+                <div style="margin: 15px 0;">
+                    <strong>📖 DESCRIÇÃO COMPLETA:</strong><br>
+                    ${monster.descricao}
+                </div>
+                <div style="margin: 15px 0; padding: 10px; background: #1a1a2e; border-radius: 8px;">
+                    <strong>🎲 ESTATÍSTICAS DE COMBATE:</strong><br>
+                    • Crítico (20+): ${monster.tipo === 'Dragão' ? 'Dano dobrado + efeito especial' : 'Dano máximo'}<br>
+                    • Resistência a Magia: ${monster.res > 15 ? 'Muito Alta' : monster.res > 10 ? 'Alta' : 'Normal'}<br>
+                    • Imunidades: ${monster.tipo === 'Void' ? 'Veneno, doenças, efeitos mentais, críticos' : 'Nenhuma'}
+                </div>
+            `;
+            document.getElementById('monsterModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('monsterModal').style.display = 'none';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderMonsters);
+        document.getElementById('typeFilter').addEventListener('change', renderMonsters);
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('monsterModal');
+            if (event.target === modal) closeModal();
+        };
+        
+        updateFilterCounts();
+        renderMonsters();
+    </script>
+</body>
+</html>
