@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Gerenciador de Mapas ASCII</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        .main-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .map-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .map-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .map-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .map-item {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-left: 3px solid #e94560;
+            transition: all 0.2s;
+        }
+
+        .map-item:hover {
+            background: #2a2a4a;
+            transform: translateX(5px);
+        }
+
+        .map-item.active {
+            background: #2a2a4a;
+            border-left-color: #ffd93d;
+        }
+
+        .map-title {
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .map-ascii {
+            background: #0a0a1a;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            margin: 15px 0;
+            min-height: 400px;
+            max-height: 600px;
+        }
+
+        .map-detail {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #2a2a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a6a;
+        }
+
+        .generate-map {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .bioma-select {
+            background: #0f0f1f;
+            color: #eee;
+            border: 1px solid #e94560;
+            padding: 8px;
+            border-radius: 6px;
+            margin: 10px;
+            font-family: monospace;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #0f0f1f;
+            border-radius: 8px;
+            font-size: 0.65rem;
+        }
+
+        .legend span {
+            display: inline-block;
+            width: 22px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+            border-top: 1px solid #333;
+        }
+
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🗺️ ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="main-panel">
+            <h1>🗺️ GERENCIADOR DE MAPAS ASCII</h1>
+            <div class="subtitle">Mapas temáticos com caminhos garantidos da entrada até a saída</div>
+
+            <div class="two-columns">
+                <div class="map-panel">
+                    <h2>🗺️ MAPAS SALVOS</h2>
+                    <div id="mapList" class="map-list">
+                        <div style="text-align: center; padding: 20px; color: #888;">
+                            Nenhum mapa salvo. Gere um novo mapa!
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="width:100%; margin-top:15px;" onclick="limparMapas()">🗑️ REMOVER TODOS</button>
+                </div>
+
+                <div class="map-panel">
+                    <h2>🔍 VISUALIZAÇÃO</h2>
+                    <div id="mapDetail" class="map-detail">
+                        <div style="text-align: center; padding: 40px; color: #888;">
+                            Selecione um mapa na lista ao lado
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="generate-map">
+                <h2 style="color: #ffd93d; margin-bottom: 15px;">🎲 GERAR NOVO MAPA</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <select id="mapBioma" class="bioma-select">
+                        <option value="aleatorio">🎲 ALEATÓRIO</option>
+                        <option value="floresta">🌲 Floresta (densa)</option>
+                        <option value="bosque">🌳 Bosque (trilhas)</option>
+                        <option value="masmorra">🏰 Masmorra</option>
+                        <option value="ruinas">🏛️ Ruínas</option>
+                        <option value="montanha">⛰️ Montanha</option>
+                        <option value="deserto">🏜️ Deserto</option>
+                        <option value="pantano">💧 Pântano</option>
+                        <option value="caverna">🕯️ Caverna</option>
+                        <option value="cidade">🏙️ Cidade</option>
+                    </select>
+                    <button class="btn" onclick="gerarMapa()">🎲 GERAR MAPA</button>
+                </div>
+                <div id="novoMapaPreview" style="background:#0f0f1f; border-radius:8px; padding:15px; margin-top:10px; text-align:left;">
+                    <em style="color:#888;">Clique em "GERAR MAPA" para criar um novo mapa</em>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Gerenciador de Mapas | Mapas temáticos com caminhos garantidos
+        </footer>
+    </div>
+
+    <script>
+        const STORAGE_KEY_MAPAS = 'zabatom_mapas';
+
+        // ============================================================
+        // CONFIGURAÇÕES DOS BIOMAS
+        // ============================================================
+
+        const biomaConfig = {
+            floresta: {
+                nome: 'Floresta Densa',
+                parede: '🌲',
+                caminho: '·',
+                decoracoes: ['🌳', '🍂', '🌸', '🍄'],
+                chanceDecoracao: 0.12,
+                descricao: 'Uma floresta densa e sombria. As árvores bloqueiam a maior parte da luz solar. Trilhas serpenteiam entre os troncos.',
+                perigos: 'Animais selvagens, armadilhas naturais, elfos hostis'
+            },
+            bosque: {
+                nome: 'Bosque Antigo',
+                parede: '🌳',
+                caminho: '·',
+                decoracoes: ['🌲', '🍂', '💧', '🌸'],
+                chanceDecoracao: 0.10,
+                descricao: 'Um bosque antigo com muitas trilhas bem marcadas. Clareiras e pequenos lagos pontuam a paisagem.',
+                perigos: 'Fadas travessas, centauros, armadilhas élficas'
+            },
+            masmorra: {
+                nome: 'Masmorra Sombria',
+                parede: '█',
+                caminho: '·',
+                decoracoes: ['❌', '🩸', '🕷️', '🕯️'],
+                chanceDecoracao: 0.08,
+                descricao: 'Corredores de pedra escura. O silêncio é perturbador. Armadilhas espreitam em cada esquina.',
+                perigos: 'Armadilhas, ínferos, mojos, corrupção'
+            },
+            ruinas: {
+                nome: 'Ruínas Ancestrais',
+                parede: '🧱',
+                caminho: '·',
+                decoracoes: ['🏛️', '📜', '🗿', '🌿'],
+                chanceDecoracao: 0.10,
+                descricao: 'Construções desmoronadas e colunas quebradas. Labirintos de salas em ruínas.',
+                perigos: 'Espectros, armadilhas antigas, maldições ofídicas'
+            },
+            montanha: {
+                nome: 'Pico Rochoso',
+                parede: '🪨',
+                caminho: '·',
+                decoracoes: ['⛰️', '🗻', '❄️', '🦅'],
+                chanceDecoracao: 0.10,
+                descricao: 'Caminhos estreitos entre rochas íngremes. O vento uiva nas fendas.',
+                perigos: 'Quedas, grifos, avalanches'
+            },
+            deserto: {
+                nome: 'Mar de Areia',
+                parede: '~',
+                caminho: '·',
+                decoracoes: ['🏜️', '🌵', '🦂', '☀️'],
+                chanceDecoracao: 0.08,
+                descricao: 'Um vasto deserto de areias douradas. O sol escaldante castiga os viajantes.',
+                perigos: 'Calor extremo, escorpiões, vermes da areia'
+            },
+            pantano: {
+                nome: 'Pântano de Nyx',
+                parede: '💧',
+                caminho: '·',
+                decoracoes: ['🌿', '🐸', '🦟', '🌫️'],
+                chanceDecoracao: 0.12,
+                descricao: 'Águas escuras e névoa constante. O cheiro de decomposição é forte.',
+                perigos: 'Gás tóxico, trolls, bruxas, wendigos'
+            },
+            caverna: {
+                nome: 'Caverna Profunda',
+                parede: '🪨',
+                caminho: '·',
+                decoracoes: ['💎', '🕯️', '🦇', '🕷️'],
+                chanceDecoracao: 0.10,
+                descricao: 'Estalactites pendem do teto. Cristais brilham na escuridão.',
+                perigos: 'Aranhas gigantes, morcegos, desmoronamentos'
+            },
+            cidade: {
+                nome: 'Cidade de Zyon',
+                parede: '🏠',
+                caminho: '·',
+                decoracoes: ['🏛️', '🏪', '🚪', '🍺'],
+                chanceDecoracao: 0.10,
+                descricao: 'Ruas movimentadas de paralelepípedo. Construções de pedra ladeiam o caminho.',
+                perigos: 'Ladrões, guardas corruptos, cultistas infiltrados'
+            }
+        };
+
+        // ============================================================
+        // ALGORITMO DE LABIRINTO COM CAMINHO GARANTIDO
+        // ============================================================
+
+        // Função para verificar se existe caminho entre dois pontos (BFS)
+        function existeCaminho(grid, startX, startY, endX, endY, largura, altura) {
+            const visited = Array(altura).fill().map(() => Array(largura).fill(false));
+            const queue = [{x: startX, y: startY}];
+            visited[startY][startX] = true;
+            
+            while (queue.length > 0) {
+                const {x, y} = queue.shift();
+                if (x === endX && y === endY) return true;
+                
+                const vizinhos = [[0,1],[1,0],[0,-1],[-1,0]];
+                for (let [dx, dy] of vizinhos) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+                    if (nx >= 0 && nx < largura && ny >= 0 && ny < altura && !visited[ny][nx] && grid[ny][nx] !== '#') {
+                        visited[ny][nx] = true;
+                        queue.push({x: nx, y: ny});
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Gerar labirinto usando DFS com caminho garantido
+        function gerarLabirinto(largura, altura) {
+            // Inicializar grid com paredes
+            let grid = [];
+            for (let y = 0; y < altura; y++) {
+                grid[y] = [];
+                for (let x = 0; x < largura; x++) {
+                    grid[y][x] = '#';
+                }
+            }
+
+            function isValido(x, y) {
+                return x > 0 && x < largura - 1 && y > 0 && y < altura - 1;
+            }
+
+            function dfs(x, y) {
+                const direcoes = [
+                    [0, -2], [2, 0], [0, 2], [-2, 0]
+                ];
+                for (let i = direcoes.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [direcoes[i], direcoes[j]] = [direcoes[j], direcoes[i]];
+                }
+
+                for (let [dx, dy] of direcoes) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+                    if (isValido(nx, ny) && grid[ny][nx] === '#') {
+                        grid[ny][nx] = ' ';
+                        grid[y + dy/2][x + dx/2] = ' ';
+                        dfs(nx, ny);
+                    }
+                }
+            }
+
+            const startX = 1;
+            const startY = 1;
+            grid[startY][startX] = ' ';
+            dfs(startX, startY);
+
+            return grid;
+        }
+
+        // Garantir que existe um caminho da entrada até a saída
+        function garantirCaminho(grid, largura, altura) {
+            const entradaX = 1;
+            const entradaY = 0;
+            const saidaX = largura - 2;
+            const saidaY = altura - 1;
+            
+            // Verificar se já existe caminho
+            if (existeCaminho(grid, entradaX, entradaY + 1, saidaX, saidaY - 1, largura, altura)) {
+                return grid;
+            }
+            
+            // Se não existe caminho, abrir um corredor direto
+            let currentX = entradaX;
+            let currentY = entradaY + 1;
+            const targetX = saidaX;
+            const targetY = saidaY - 1;
+            
+            while (currentX !== targetX || currentY !== targetY) {
+                grid[currentY][currentX] = ' ';
+                
+                if (currentX < targetX) currentX++;
+                else if (currentX > targetX) currentX--;
+                else if (currentY < targetY) currentY++;
+                else if (currentY > targetY) currentY--;
+            }
+            grid[targetY][targetX] = ' ';
+            
+            return grid;
+        }
+
+        // Adicionar decoração ao grid
+        function adicionarDecoracao(grid, bioma, largura, altura) {
+            const config = biomaConfig[bioma];
+            const novaGrid = grid.map(row => [...row]);
+            
+            for (let y = 1; y < altura - 1; y++) {
+                for (let x = 1; x < largura - 1; x++) {
+                    if (novaGrid[y][x] === ' ' && Math.random() < config.chanceDecoracao) {
+                        // Não colocar decoração em cima de caminhos críticos
+                        const vizinhos = [
+                            novaGrid[y-1][x], novaGrid[y+1][x], 
+                            novaGrid[y][x-1], novaGrid[y][x+1]
+                        ];
+                        const caminhosVizinhos = vizinhos.filter(v => v === ' ').length;
+                        if (caminhosVizinhos <= 2) {
+                            continue;
+                        }
+                        novaGrid[y][x] = config.decoracoes[Math.floor(Math.random() * config.decoracoes.length)];
+                    }
+                }
+            }
+            return novaGrid;
+        }
+
+        // Converter grid para ASCII
+        function gridToAscii(grid, bioma, largura, altura) {
+            const config = biomaConfig[bioma];
+            let ascii = '╔' + '═'.repeat(largura * 2) + '╗\n';
+            
+            for (let y = 0; y < altura; y++) {
+                ascii += '║';
+                for (let x = 0; x < largura; x++) {
+                    const cell = grid[y][x];
+                    
+                    if (cell === '#') {
+                        ascii += config.parede + ' ';
+                    } else if (cell === ' ') {
+                        ascii += config.caminho + ' ';
+                    } else {
+                        ascii += cell + ' ';
+                    }
+                }
+                ascii += '║\n';
+            }
+            
+            ascii += '╚' + '═'.repeat(largura * 2) + '╝';
+            
+            // Adicionar entrada e saída
+            const linhas = ascii.split('\n');
+            const entradaX = 1;
+            const saidaX = largura - 2;
+            
+            let topo = linhas[1].split('');
+            topo[entradaX * 2 + 1] = '🚪';
+            linhas[1] = topo.join('');
+            
+            let fundo = linhas[altura].split('');
+            fundo[saidaX * 2 + 1] = '🏁';
+            linhas[altura] = fundo.join('');
+            
+            return linhas.join('\n');
+        }
+
+        function gerarMapaAleatorio(bioma) {
+            const config = biomaConfig[bioma];
+            const largura = Math.floor(Math.random() * 16) + 25; // 25-40
+            const altura = Math.floor(Math.random() * 12) + 20;  // 20-31
+            
+            let grid = gerarLabirinto(largura, altura);
+            grid = garantirCaminho(grid, largura, altura);
+            grid = adicionarDecoracao(grid, bioma, largura, altura);
+            const ascii = gridToAscii(grid, bioma, largura, altura);
+            
+            return {
+                nome: `${config.nome} - ${new Date().toLocaleTimeString()}`,
+                ascii: ascii,
+                descricao: config.descricao,
+                tamanho: `${altura}x${largura}`,
+                perigos: config.perigos,
+                bioma: bioma
+            };
+        }
+
+        // ============================================================
+        // CRUD DE MAPAS (localStorage)
+        // ============================================================
+
+        function carregarMapas() {
+            const salvos = localStorage.getItem(STORAGE_KEY_MAPAS);
+            if (salvos) {
+                return JSON.parse(salvos);
+            }
+            return [];
+        }
+
+        function salvarMapas(mapas) {
+            localStorage.setItem(STORAGE_KEY_MAPAS, JSON.stringify(mapas));
+        }
+
+        function adicionarMapa(mapa) {
+            const mapas = carregarMapas();
+            const novoMapa = {
+                id: Date.now(),
+                ...mapa,
+                dataCriacao: new Date().toLocaleDateString()
+            };
+            mapas.push(novoMapa);
+            salvarMapas(mapas);
+            renderizarListaMapas();
+            return novoMapa;
+        }
+
+        function removerMapa(id) {
+            let mapas = carregarMapas();
+            mapas = mapas.filter(m => m.id !== id);
+            salvarMapas(mapas);
+            renderizarListaMapas();
+            document.getElementById('mapDetail').innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Selecione um mapa na lista ao lado</div>';
+        }
+
+        function limparMapas() {
+            if (confirm('⚠️ Tem certeza que deseja remover TODOS os mapas?')) {
+                localStorage.removeItem(STORAGE_KEY_MAPAS);
+                renderizarListaMapas();
+                document.getElementById('mapDetail').innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Selecione um mapa na lista ao lado</div>';
+            }
+        }
+
+        function renderizarListaMapas() {
+            const mapas = carregarMapas();
+            const container = document.getElementById('mapList');
+            
+            if (mapas.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Nenhum mapa salvo. Gere um novo mapa!</div>';
+                return;
+            }
+            
+            container.innerHTML = mapas.map(m => `
+                <div class="map-item" onclick="selecionarMapa(${m.id})" data-id="${m.id}">
+                    <div><span class="map-title">🗺️ ${m.nome}</span></div>
+                    <div style="font-size:0.7rem; color:#888;">📅 ${m.dataCriacao} | 📏 ${m.tamanho}</div>
+                </div>
+            `).join('');
+        }
+
+        function selecionarMapa(id) {
+            const mapas = carregarMapas();
+            const mapa = mapas.find(m => m.id === id);
+            if (!mapa) return;
+            
+            document.querySelectorAll('.map-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-id') == id) {
+                    el.classList.add('active');
+                }
+            });
+            
+            const config = biomaConfig[mapa.bioma];
+            
+            const detailHtml = `
+                <h3 style="color: #ffd93d;">🗺️ ${mapa.nome}</h3>
+                <div class="map-ascii">${mapa.ascii}</div>
+                <p><strong>📖 Descrição:</strong> ${mapa.descricao}</p>
+                <p><strong>📏 Tamanho:</strong> ${mapa.tamanho}</p>
+                <p><strong>⚠️ Perigos:</strong> ${mapa.perigos}</p>
+                <p><strong>📅 Criado em:</strong> ${mapa.dataCriacao}</p>
+                <div class="btn-group">
+                    <button class="btn" onclick="copiarMapaAscii(${mapa.id})">📋 COPIAR ASCII</button>
+                    <button class="btn btn-secondary" onclick="removerMapa(${mapa.id})">🗑️ REMOVER</button>
+                </div>
+                <div class="legend">
+                    <strong>LEGENDA:</strong>
+                    <span>${config.parede}</span> Obstáculo <span>${config.caminho}</span> Caminho
+                    <span>🚪</span> Entrada <span>🏁</span> Saída
+                    <span>${config.decoracoes.slice(0,3).join(' ')}</span> Decoração
+                </div>
+            `;
+            
+            document.getElementById('mapDetail').innerHTML = detailHtml;
+        }
+
+        function copiarMapaAscii(id) {
+            const mapas = carregarMapas();
+            const mapa = mapas.find(m => m.id === id);
+            if (mapa) {
+                navigator.clipboard.writeText(mapa.ascii);
+                alert('✅ Mapa ASCII copiado para a área de transferência!');
+            }
+        }
+
+        function gerarMapa() {
+            let bioma = document.getElementById('mapBioma').value;
+            
+            if (bioma === 'aleatorio') {
+                const biomas = Object.keys(biomaConfig);
+                bioma = biomas[Math.floor(Math.random() * biomas.length)];
+            }
+            
+            const novoMapa = gerarMapaAleatorio(bioma);
+            const config = biomaConfig[bioma];
+            
+            const previewHtml = `
+                <h3 style="color: #ffd93d; margin-bottom: 10px;">🗺️ MAPA GERADO (${novoMapa.tamanho})</h3>
+                <div class="map-ascii" style="font-size:0.65rem;">${novoMapa.ascii}</div>
+                <p><strong>📖 Descrição:</strong> ${novoMapa.descricao}</p>
+                <p><strong>⚠️ Perigos:</strong> ${novoMapa.perigos}</p>
+                <div class="legend">
+                    <strong>LEGENDA:</strong>
+                    <span>${config.parede}</span> Obstáculo <span>${config.caminho}</span> Caminho
+                    <span>🚪</span> Entrada <span>🏁</span> Saída
+                    <span>${config.decoracoes.slice(0,3).join(' ')}</span> Decoração
+                </div>
+                <div class="btn-group" style="margin-top: 15px;">
+                    <button class="btn" onclick="adicionarMapaGerado()">💾 SALVAR MAPA</button>
+                    <button class="btn btn-secondary" onclick="gerarMapa()">🎲 GERAR OUTRO</button>
+                </div>
+            `;
+            
+            document.getElementById('novoMapaPreview').innerHTML = previewHtml;
+            window.mapaTemp = novoMapa;
+        }
+        
+        function adicionarMapaGerado() {
+            if (window.mapaTemp) {
+                adicionarMapa(window.mapaTemp);
+                document.getElementById('novoMapaPreview').innerHTML = '<em style="color:#888;">Mapa salvo! Clique em "GERAR MAPA" para criar outro.</em>';
+                alert('✅ Mapa salvo com sucesso!');
+                window.mapaTemp = null;
+            }
+        }
+
+        renderizarListaMapas();
+    </script>
+</body>
+</html>

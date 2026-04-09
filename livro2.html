@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Guia do Aventureiro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e94560; }
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        .back-btn:hover { background: #e94560; color: white; }
+        .content {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 4px solid #e94560;
+        }
+        h1 { color: #e94560; margin-bottom: 20px; font-size: 1.8rem; border-left: 3px solid #e94560; padding-left: 15px; }
+        h2 { color: #ffd93d; margin: 20px 0 15px 0; font-size: 1.2rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        h3 { color: #e94560; margin: 15px 0 10px 0; font-size: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85rem; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background: #1a1a2e; color: #ffd93d; }
+        .note { background: #1a1a2e; border-left: 3px solid #ffd93d; padding: 12px; margin: 15px 0; font-style: italic; color: #ccc; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin: 20px 0; }
+        .card { background: #1a1a2e; border-radius: 12px; padding: 15px; border: 1px solid #e94560; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(233, 69, 96, 0.2); }
+        .card h3 { margin-top: 0; color: #e94560; }
+        .badge { display: inline-block; background: #e94560; color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; margin-right: 8px; }
+        footer { text-align: center; margin-top: 30px; padding: 15px; color: #666; font-size: 0.7rem; border-top: 1px solid #333; }
+        @media (max-width: 768px) { th, td { font-size: 0.65rem; padding: 5px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📖 ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="content">
+            <h1>📖 GUIA DO AVENTUREIRO – LIVRO 2</h1>
+            <p>O guia definitivo para iniciar sua jornada em Zabatom. Contém geradores de origem, acampamentos, quests e muito mais.</p>
+
+            <div class="card-grid">
+                <div class="card"><h3>🎲 GERADOR DE ORIGENS</h3><p>Role 1d6 ou 1d10 para definir a origem do seu personagem por raça.</p><span class="badge">10 Raças</span></div>
+                <div class="card"><h3>🏕️ ACAMPAMENTO INICIAL</h3><p>1d8 acampamentos diferentes com NPCs únicos para começar sua aventura.</p><span class="badge">8 Opções</span></div>
+                <div class="card"><h3>⚔️ QUESTS INICIAIS</h3><p>1d12 missões para níveis 1-3, com recompensas em XP e itens.</p><span class="badge">12 Missões</span></div>
+                <div class="card"><h3>👥 COMPANHEIROS</h3><p>Contrate NPCs para ajudar em suas missões. Tabela 1d100 com habilidades especiais.</p><span class="badge">20+ NPCs</span></div>
+            </div>
+
+            <h2>🎲 GERADOR DE ORIGENS</h2>
+            <div class="note">Role 1d6 (Celestial) ou 1d10 (Humano) ou 1d8 (Anão/Feral) para definir sua origem inicial.</div>
+
+            <h3>✨ CELESTIAL (1d6)</h3>
+            <ul><li>1: Exilado por Dúvida</li><li>2: Sonâmbulo do Éter</li><li>3: Guardião Caído</li><li>4: Peregrino da Luz</li><li>5: Desperto em Ruínas</li><li>6: Mensageiro Perdido</li></ul>
+
+            <h3>🧝 ELFO (1d8 + 1d6)</h3>
+            <p><strong>Sub-raça (1d8):</strong> 1-4: Floresta, 5-6: Cavernas, 7-8: Pântano</p>
+            <p><strong>Evento (1d6):</strong> Mapa antigo, pergaminho misterioso, segredo de fada, sonho profético, ajuda anã, símbolo marcado</p>
+
+            <h3>👤 HUMANO (1d10)</h3>
+            <ul><li>1: Refugiado</li><li>2: Mercador Arruinado</li><li>3: Soldado Desertor</li><li>4: Caçador de Relíquias</li><li>5: Pirata Aposentado</li><li>6: Escravo Liberto</li><li>7: Alquimista Amador</li><li>8: Bardo Viajante</li><li>9: Herdeiro Perdido</li><li>10: Escolhido pelo Sonho</li></ul>
+
+            <h2>🏕️ ACAMPAMENTO INICIAL (1d8)</h2>
+            <table>
+                <tr><th>1d8</th><th>Acampamento</th><th>NPC Principal</th></tr>
+                <tr><td>1</td><td>Refugiados de Edenésia</td><td>Yara, a anciã</td></tr>
+                <tr><td>2</td><td>Mercadores Itinerantes</td><td>Brom, o ferreiro</td></tr>
+                <tr><td>3</td><td>Caçadores de Relíquias</td><td>Elara, a caçadora</td></tr>
+                <tr><td>4</td><td>Cultistas Arrependidos</td><td>Yura, a ex-cultista</td></tr>
+                <tr><td>5</td><td>Assentamento Anão</td><td>Osvark, o guardião</td></tr>
+                <tr><td>6</td><td>Posto da Guilda</td><td>Mirethiel, a clériga</td></tr>
+                <tr><td>7</td><td>Acampamento Feral</td><td>Kael, o caçador</td></tr>
+                <tr><td>8</td><td>Caravana Élfica</td><td>Theron, o guia</td></tr>
+            </table>
+
+            <h2>⚔️ QUESTS INICIAIS (1d12)</h2>
+            <table>
+                <tr><th>1d12</th><th>Quest</th><th>Recompensa</th></tr>
+                <tr><td>1</td><td>Ratos Apodrecidos</td><td>15 XP, Boina de Couro (+1 DEF)</td></tr>
+                <tr><td>2</td><td>Goblins no Caminho</td><td>10 XP, Escudo de Madeira (+1 DEF)</td></tr>
+                <tr><td>3</td><td>Slime no Tanque</td><td>5 XP, Antídoto</td></tr>
+                <tr><td>4</td><td>Lobos Corrompidos</td><td>15 XP, Cinto de Pele (+1 ATK)</td></tr>
+                <tr><td>5</td><td>Mercador Desaparecido</td><td>20 XP, Mapa da Região</td></tr>
+                <tr><td>6</td><td>Ferramentas Roubadas</td><td>10 XP, Poção de Cura</td></tr>
+                <tr><td>7</td><td>Símbolo na Árvore</td><td>25 XP, Fragmento de Símbolo</td></tr>
+                <tr><td>8</td><td>Pergaminho Perdido</td><td>30 XP, Pergaminho de Cura</td></tr>
+                <tr><td>9</td><td>Prisioneiro dos Goblins</td><td>40 XP, Chave de Ferro</td></tr>
+                <tr><td>10</td><td>Luzes na Floresta</td><td>50 XP, Símbolo de Proteção</td></tr>
+                <tr><td>11</td><td>O Mago Merwerin</td><td>100 XP, Runa do Regresso</td></tr>
+                <tr><td>12</td><td>O Livro Proibido</td><td>80 XP, Pergaminho do Ritual</td></tr>
+            </table>
+
+            <h2>👥 COMPANHEIROS (1d100)</h2>
+            <div class="note">Consulte a tabela completa no sistema para gerar companheiros com habilidades especiais.</div>
+
+            <footer>Zabatom 5.2 – Guia do Aventureiro | Versão 4.0</footer>
+        </div>
+    </div>
+</body>
+</html>

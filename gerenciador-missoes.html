@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Gerenciador de Missões</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        .main-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .mission-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .mission-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .mission-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .mission-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .mission-item {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid #e94560;
+        }
+
+        .mission-item:hover {
+            background: #2a2a4a;
+            transform: translateX(5px);
+        }
+
+        .mission-item.active {
+            background: #2a2a4a;
+            border-left-color: #ffd93d;
+        }
+
+        .mission-title {
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .mission-status {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .status-pendente { background: #6f2a2a; }
+        .status-andamento { background: #2a6f3f; }
+        .status-concluida { background: #2a2a6f; }
+
+        .mission-detail {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .mission-detail h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .mission-detail p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .btn-mission {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 15px;
+            font-family: monospace;
+        }
+
+        .btn-mission:hover {
+            background: #ff6b6b;
+        }
+
+        .btn-secondary {
+            background: #2a2a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a6a;
+        }
+
+        .generate-mission {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .generate-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .generate-btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .reward-display {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reward-item {
+            background: #0f0f1f;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 900px) {
+            .mission-control {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📋 ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="main-panel">
+            <h1>📋 GERENCIADOR DE MISSÕES</h1>
+            <div class="subtitle">Gerencie suas missões, acompanhe o progresso e gere novas aventuras</div>
+
+            <div class="mission-control">
+                <!-- Lista de Missões -->
+                <div class="mission-panel">
+                    <h2>📜 MISSÕES ATIVAS</h2>
+                    <div id="missionList" class="mission-list">
+                        <!-- Missões serão carregadas aqui -->
+                    </div>
+                    <button class="btn-mission btn-secondary" style="width:100%; margin-top:15px;" onclick="limparConcluidas()">🗑️ REMOVER CONCLUÍDAS</button>
+                </div>
+
+                <!-- Detalhes da Missão -->
+                <div class="mission-panel">
+                    <h2>🔍 DETALHES DA MISSÃO</h2>
+                    <div id="missionDetail" class="mission-detail">
+                        <div style="text-align: center; padding: 40px; color: #888;">
+                            Selecione uma missão na lista ao lado
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerador de Missões -->
+            <div class="generate-mission">
+                <h2 style="color: #ffd93d; margin-bottom: 15px;">🎲 GERAR NOVA MISSÃO</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <select id="missionArco" style="background:#0f0f1f; color:#eee; border:1px solid #e94560; padding:8px; border-radius:6px;">
+                        <option value="1">Arco 1 – Celestia (Níveis 1-5)</option>
+                        <option value="2">Arco 2 – Elementia (Níveis 3-7)</option>
+                        <option value="3">Arco 3 – Minastor (Níveis 5-9)</option>
+                        <option value="4">Arco 4 – Edenezer (Níveis 8-10)</option>
+                        <option value="5">Arco 5 – Zeol (Níveis 10-11)</option>
+                        <option value="6">Arco 6 – Dantesdaemon (Níveis 11-12)</option>
+                        <option value="7">Arco 7 – Final (Nível 12)</option>
+                    </select>
+                    <button class="generate-btn" onclick="gerarMissao()">🎲 GERAR MISSÃO ALEATÓRIA</button>
+                </div>
+                <div id="novaMissaoPreview" style="background:#0f0f1f; border-radius:8px; padding:15px; margin-top:10px; text-align:left;">
+                    <em style="color:#888;">Clique em "GERAR MISSÃO" para criar uma nova aventura</em>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Gerenciador de Missões | Baseado no Livro 5, Seção 2 (Tabela Central de Missões)
+        </footer>
+    </div>
+
+    <script>
+        // Storage key
+        const STORAGE_KEY = 'zabatom_missoes';
+
+        // Tabelas de missões por arco (baseado no Livro 5)
+        const missoesPorArco = {
+            1: [
+                { titulo: "O Sussurro nas Forjas", descricao: "Investigar mudanças estranhas nas forjas de Akunashy.", xp: 15, ouro: 30, local: "As Forjas de Akunashy", antagonista: "Constructos Corrompidos" },
+                { titulo: "O Olho que Não Dorme", descricao: "Um fragmento do Olho de Abadon foi encontrado. Recupere-o antes que os cultistas.", xp: 20, ouro: 40, local: "Shalaín", antagonista: "Cultistas do Caos" },
+                { titulo: "O Peregrino Perdido", descricao: "Um celestial mensageiro não retornou. Encontre-o antes que seja tarde.", xp: 25, ouro: 50, local: "Planície de Shalaín", antagonista: "Caçadores de Relíquias" },
+                { titulo: "O Símbolo Proibido", descricao: "Símbolos ofídicos estão aparecendo nos templos. Investigue a origem.", xp: 30, ouro: 60, local: "Templos de Shalaín", antagonista: "Cultistas Ofídicos" },
+                { titulo: "A Queda de Edenera", descricao: "Ajudar os refugiados a escapar da cidade em colapso.", xp: 50, ouro: 80, local: "Edenera", antagonista: "Akunashy (aparição)" }
+            ],
+            2: [
+                { titulo: "O Fruto Podre", descricao: "Investigar árvores que estão morrendo na floresta de Lumen-Mor.", xp: 60, ouro: 100, local: "Floresta de Lumen-Mor", antagonista: "Animais Corrompidos" },
+                { titulo: "A Teia de Ariadne", descricao: "Infiltrar o domínio da Rainha Aranha e descobrir seus planos.", xp: 80, ouro: 120, local: "Pântano de Nyx", antagonista: "Ariadne" },
+                { titulo: "O Pacto com as Fadas", descricao: "A Rainha das Fadas pede um favor em troca de informações.", xp: 70, ouro: 110, local: "Bosque Sagrado", antagonista: "Bruxas do Pântano" },
+                { titulo: "A Fuga de Lumen-Mor", descricao: "Escapar com os refugiados enquanto a cidade-árvore cai.", xp: 100, ouro: 150, local: "Lumen-Mor", antagonista: "Elfos Aranha" },
+                { titulo: "O Pergaminho Ofídico", descricao: "Um fragmento do pergaminho de Abrakxas foi encontrado.", xp: 90, ouro: 140, local: "Ruínas Ofídicas", antagonista: "Cultistas" }
+            ],
+            3: [
+                { titulo: "A Ganância dos Reis", descricao: "Participar da expedição que encontrará o baú de Akunashy.", xp: 120, ouro: 180, local: "Gehênia", antagonista: "Guardiões do Baú" },
+                { titulo: "O Despertar nas Profundezas", descricao: "Algo foi despertado nas minas. Investigue o que está acontecendo.", xp: 100, ouro: 150, local: "Salões de Minastor", antagonista: "Ínferos" },
+                { titulo: "A Guerra nas Montanhas", descricao: "Defender os salões anões contra o exército de ínferos.", xp: 140, ouro: 200, local: "Minastor", antagonista: "Ínferos Soldados" },
+                { titulo: "O Ferreiro Cego", descricao: "Encontrar um lendário ferreiro anão que pode forjar armas lendárias.", xp: 110, ouro: 160, local: "Forja Abandonada", antagonista: "Constructos" },
+                { titulo: "O Êxodo dos Anões", descricao: "Liderar os sobreviventes através das montanhas.", xp: 180, ouro: 250, local: "Passagem das Montanhas", antagonista: "Ínferos" }
+            ],
+            4: [
+                { titulo: "O Navio Negreiro", descricao: "Libertar prisioneiros de um navio do Capitão Viken.", xp: 100, ouro: 150, local: "Porto de Zyon", antagonista: "Capitão Viken" },
+                { titulo: "O Encontro com Zah'rak", descricao: "Acessar ruínas ofídicas submersas e encontrar o dragão.", xp: 120, ouro: 180, local: "Ruínas Submersas", antagonista: "Zah'rak" },
+                { titulo: "A Invasão de Arafel", descricao: "Invadir o covil dos cultistas e derrotar Viken.", xp: 200, ouro: 300, local: "Arafel", antagonista: "Cultistas do Caos" },
+                { titulo: "A Profecia das Águas", descricao: "Descobrir como evitar o colapso do porto.", xp: 150, ouro: 220, local: "Vantoril", antagonista: "Abissais" },
+                { titulo: "O Coração do Mar", descricao: "Recuperar um artefato ofídico submerso.", xp: 200, ouro: 280, local: "Ruínas Submersas", antagonista: "Dragão Marinho" }
+            ],
+            5: [
+                { titulo: "O Deserto Silencioso", descricao: "Atravessar o deserto de Zeol e encontrar as ruínas ofídicas.", xp: 150, ouro: 200, local: "Deserto de Zeol", antagonista: "Sombras" },
+                { titulo: "A Biblioteca de Arkamor", descricao: "Infiltrar a biblioteca onde Sath'krah guarda o fragmento.", xp: 200, ouro: 300, local: "Ruínas da Grande Biblioteca", antagonista: "Lichs" },
+                { titulo: "O Último Arquivo", descricao: "Confrontar Sath'krah e recuperar o fragmento.", xp: 250, ouro: 400, local: "A Câmara do Silêncio", antagonista: "Sath'krah" },
+                { titulo: "O Códice do Nome", descricao: "Recuperar o verdadeiro nome de Abrakxas.", xp: 220, ouro: 350, local: "Biblioteca de Arkamor", antagonista: "Esqueletos Guardiões" },
+                { titulo: "O Perdão de Abrakxas", descricao: "Descobrir se o rei-mago pode ser redimido.", xp: 200, ouro: 300, local: "Câmara do Silêncio", antagonista: "Sath'krah" }
+            ],
+            6: [
+                { titulo: "A Masmorra Viva", descricao: "Entrar na masmorra viva e chegar ao primeiro santuário.", xp: 200, ouro: 300, local: "Dantesdaemon", antagonista: "Ínferos" },
+                { titulo: "O Altar Principal", descricao: "Atravessar os salões interiores e enfrentar os generais.", xp: 300, ouro: 500, local: "Dantesdaemon", antagonista: "Generais de Akunashy" },
+                { titulo: "O Núcleo de Abadon", descricao: "Chegar ao coração da masmorra e selar Abadon.", xp: 500, ouro: 800, local: "Núcleo de Abadon", antagonista: "Akunashy" },
+                { titulo: "O Selo dos Antigos", descricao: "Reativar o selo que prendeu Abadon.", xp: 400, ouro: 600, local: "Santuário da Luz", antagonista: "Ínferos Elite" },
+                { titulo: "A Escolha Final", descricao: "Decidir o destino de Abadon e de Zabatom.", xp: 600, ouro: 1000, local: "Núcleo de Abadon", antagonista: "Akunashy" }
+            ],
+            7: [
+                { titulo: "O Selo de Abadon", descricao: "Encontrar o selo ancestral que pode conter Abadon.", xp: 800, ouro: 1200, local: "Santuário Perdido", antagonista: "Guardiões Ancestrais" },
+                { titulo: "A Redenção de Akunashy", descricao: "Tentar redimir o forjador caído antes do fim.", xp: 1000, ouro: 1500, local: "Coração de Dantesdaemon", antagonista: "Akunashy" },
+                { titulo: "O Sacrifício Final", descricao: "Alguém precisa se sacrificar para salvar Zabatom.", xp: 1200, ouro: 2000, local: "Núcleo de Abadon", antagonista: "Abadon (manifestação)" }
+            ]
+        };
+
+        // Carregar missões do localStorage
+        function carregarMissoes() {
+            const salvas = localStorage.getItem(STORAGE_KEY);
+            if (salvas) {
+                return JSON.parse(salvas);
+            }
+            return [];
+        }
+
+        // Salvar missões no localStorage
+        function salvarMissoes(missoes) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(missoes));
+        }
+
+        // Adicionar nova missão
+        function adicionarMissao(missao) {
+            const missoes = carregarMissoes();
+            const novaMissao = {
+                id: Date.now(),
+                ...missao,
+                status: 'pendente',
+                dataCriacao: new Date().toLocaleDateString()
+            };
+            missoes.push(novaMissao);
+            salvarMissoes(missoes);
+            renderizarLista();
+            return novaMissao;
+        }
+
+        // Atualizar status da missão
+        function atualizarStatus(id, novoStatus) {
+            const missoes = carregarMissoes();
+            const index = missoes.findIndex(m => m.id === id);
+            if (index !== -1) {
+                missoes[index].status = novoStatus;
+                salvarMissoes(missoes);
+                renderizarLista();
+                if (missoes[index].status === 'concluida') {
+                    alert(`✅ Missão "${missoes[index].titulo}" concluída! Recompensa: ${missoes[index].xp} XP, ${missoes[index].ouro} ouro`);
+                }
+            }
+        }
+
+        // Remover missão
+        function removerMissao(id) {
+            let missoes = carregarMissoes();
+            missoes = missoes.filter(m => m.id !== id);
+            salvarMissoes(missoes);
+            renderizarLista();
+            document.getElementById('missionDetail').innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Selecione uma missão na lista ao lado</div>';
+        }
+
+        // Limpar missões concluídas
+        function limparConcluidas() {
+            let missoes = carregarMissoes();
+            missoes = missoes.filter(m => m.status !== 'concluida');
+            salvarMissoes(missoes);
+            renderizarLista();
+        }
+
+        // Renderizar lista de missões
+        function renderizarLista() {
+            const missoes = carregarMissoes();
+            const container = document.getElementById('missionList');
+            
+            if (missoes.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Nenhuma missão ativa. Gere uma nova missão!</div>';
+                return;
+            }
+            
+            container.innerHTML = missoes.map(m => `
+                <div class="mission-item" onclick="selecionarMissao(${m.id})" data-id="${m.id}">
+                    <div>
+                        <span class="mission-title">${m.titulo}</span>
+                        <span class="mission-status status-${m.status}">${m.status === 'pendente' ? '⏳ Pendente' : m.status === 'andamento' ? '⚔️ Em andamento' : '✅ Concluída'}</span>
+                    </div>
+                    <div style="font-size:0.7rem; color:#888;">🎯 ${m.local} | ⭐ ${m.xp} XP | 💰 ${m.ouro} ouro</div>
+                </div>
+            `).join('');
+        }
+
+        // Selecionar missão e mostrar detalhes
+        function selecionarMissao(id) {
+            const missoes = carregarMissoes();
+            const missao = missoes.find(m => m.id === id);
+            
+            if (!missao) return;
+            
+            // Destacar item selecionado
+            document.querySelectorAll('.mission-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-id') == id) {
+                    el.classList.add('active');
+                }
+            });
+            
+            const detailHtml = `
+                <h3>📜 ${missao.titulo}</h3>
+                <p><strong>📖 Descrição:</strong> ${missao.descricao}</p>
+                <p><strong>📍 Local:</strong> ${missao.local}</p>
+                <p><strong>👹 Antagonista:</strong> ${missao.antagonista}</p>
+                <div class="reward-display">
+                    <div class="reward-item">⭐ XP: ${missao.xp}</div>
+                    <div class="reward-item">💰 Ouro: ${missao.ouro}</div>
+                    <div class="reward-item">📅 Criada: ${missao.dataCriacao}</div>
+                </div>
+                <p><strong>📊 Status:</strong> ${missao.status === 'pendente' ? '⏳ Pendente' : missao.status === 'andamento' ? '⚔️ Em andamento' : '✅ Concluída'}</p>
+                <div style="margin-top: 15px;">
+                    ${missao.status !== 'concluida' ? `<button class="btn-mission" onclick="atualizarStatus(${missao.id}, 'andamento')">▶️ INICIAR MISSÃO</button>` : ''}
+                    ${missao.status === 'andamento' ? `<button class="btn-mission" onclick="atualizarStatus(${missao.id}, 'concluida')">✅ CONCLUIR MISSÃO</button>` : ''}
+                    ${missao.status !== 'concluida' ? `<button class="btn-mission btn-secondary" onclick="removerMissao(${missao.id})">🗑️ REMOVER</button>` : ''}
+                </div>
+            `;
+            
+            document.getElementById('missionDetail').innerHTML = detailHtml;
+        }
+
+        // Gerar missão aleatória
+        function gerarMissao() {
+            const arcoSelecionado = parseInt(document.getElementById('missionArco').value);
+            const missoesDisponiveis = missoesPorArco[arcoSelecionado] || missoesPorArco[1];
+            const missaoAleatoria = missoesDisponiveis[Math.floor(Math.random() * missoesDisponiveis.length)];
+            
+            const previewHtml = `
+                <h3 style="color: #ffd93d; margin-bottom: 10px;">🎲 MISSÃO GERADA</h3>
+                <p><strong>📜 Título:</strong> ${missaoAleatoria.titulo}</p>
+                <p><strong>📖 Descrição:</strong> ${missaoAleatoria.descricao}</p>
+                <p><strong>📍 Local:</strong> ${missaoAleatoria.local}</p>
+                <p><strong>👹 Antagonista:</strong> ${missaoAleatoria.antagonista}</p>
+                <div class="reward-display">
+                    <div class="reward-item">⭐ XP: ${missaoAleatoria.xp}</div>
+                    <div class="reward-item">💰 Ouro: ${missaoAleatoria.ouro}</div>
+                </div>
+                <button class="btn-mission" style="margin-top: 15px;" onclick="adicionarMissaoGerada(${JSON.stringify(missaoAleatoria).replace(/"/g, '&quot;')})">➕ ADICIONAR À LISTA</button>
+            `;
+            
+            document.getElementById('novaMissaoPreview').innerHTML = previewHtml;
+            window.missaoTemp = missaoAleatoria;
+        }
+        
+        function adicionarMissaoGerada(missao) {
+            adicionarMissao(missao);
+            document.getElementById('novaMissaoPreview').innerHTML = '<em style="color:#888;">Missão adicionada! Clique em "GERAR MISSÃO" para criar outra.</em>';
+            alert(`✅ Missão "${missao.titulo}" adicionada à sua lista!`);
+        }
+
+        // Inicializar
+        renderizarLista();
+    </script>
+</body>
+</html>
+📁 ARQUIVO 5 – GERENCIADOR-MAPAS.HTML
+html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Gerenciador de Mapas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        .main-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .map-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .map-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .map-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .map-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .map-item {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid #e94560;
+        }
+
+        .map-item:hover {
+            background: #2a2a4a;
+            transform: translateX(5px);
+        }
+
+        .map-item.active {
+            background: #2a2a4a;
+            border-left-color: #ffd93d;
+        }
+
+        .map-title {
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .map-detail {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .map-detail h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .map-ascii {
+            background: #0a0a1a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.8rem;
+            border: 1px solid #e94560;
+        }
+
+        .btn-map {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 15px;
+            font-family: monospace;
+        }
+
+        .btn-map:hover {
+            background: #ff6b6b;
+        }
+
+        .btn-secondary {
+            background: #2a2a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a6a;
+        }
+
+        .generate-map {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .generate-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .generate-btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .bioma-select {
+            background: #0f0f1f;
+            color: #eee;
+            border: 1px solid #e94560;
+            padding: 8px;
+            border-radius: 6px;
+            margin: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 900px) {
+            .map-control {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🗺️ ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="main-panel">
+            <h1>🗺️ GERENCIADOR DE MAPAS</h1>
+            <div class="subtitle">Crie e gerencie mapas ASCII para suas aventuras em Zabatom</div>
+
+            <div class="map-control">
+                <!-- Lista de Mapas -->
+                <div class="map-panel">
+                    <h2>🗺️ MAPAS SALVOS</h2>
+                    <div id="mapList" class="map-list">
+                        <!-- Mapas serão carregados aqui -->
+                    </div>
+                    <button class="btn-map btn-secondary" style="width:100%; margin-top:15px;" onclick="limparMapas()">🗑️ REMOVER TODOS</button>
+                </div>
+
+                <!-- Visualização do Mapa -->
+                <div class="map-panel">
+                    <h2>🔍 VISUALIZAÇÃO</h2>
+                    <div id="mapDetail" class="map-detail">
+                        <div style="text-align: center; padding: 40px; color: #888;">
+                            Selecione um mapa na lista ao lado
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerador de Mapas -->
+            <div class="generate-map">
+                <h2 style="color: #ffd93d; margin-bottom: 15px;">🎲 GERAR NOVO MAPA</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <select id="mapBioma" class="bioma-select">
+                        <option value="floresta">🌲 Floresta</option>
+                        <option value="montanha">⛰️ Montanha</option>
+                        <option value="deserto">🏜️ Deserto</option>
+                        <option value="pantano">💧 Pântano</option>
+                        <option value="masmorra">🏰 Masmorra</option>
+                        <option value="cidade">🏙️ Cidade</option>
+                        <option value="caverna">🕯️ Caverna</option>
+                        <option value="ruinas">🏛️ Ruínas</option>
+                    </select>
+                    <button class="generate-btn" onclick="gerarMapa()">🎲 GERAR MAPA ALEATÓRIO</button>
+                </div>
+                <div id="novoMapaPreview" style="background:#0f0f1f; border-radius:8px; padding:15px; margin-top:10px; text-align:left;">
+                    <em style="color:#888;">Clique em "GERAR MAPA" para criar um novo mapa ASCII</em>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Gerenciador de Mapas | Mapas ASCII para combates táticos e exploração
+        </footer>
+    </div>
+
+    <script>
+        const STORAGE_KEY_MAPAS = 'zabatom_mapas';
+
+        // Mapas ASCII pré-definidos por bioma
+        const mapasPorBioma = {
+            floresta: {
+                nome: "Clareira na Floresta",
+                ascii: `┌─────────────────────────────┐
+│       🌲        🌲          │
+│          🐺                 │
+│              💧(fonte)      │
+│    🐺               🐺      │
+│          🌲                 │
+│                             │
+│    [PJ]    [COMPANHEIRO]    │
+└─────────────────────────────┘`,
+                descricao: "Uma clareira iluminada por raios de sol. Árvores altas cercam o local. Uma fonte de água cristalina brilha no centro.",
+                tamanho: "8x25",
+                perigos: "Lobos corrompidos, armadilhas naturais"
+            },
+            montanha: {
+                nome: "Pico da Montanha",
+                ascii: `┌─────────────────────────────┐
+│         ⛰️⛰️              │
+│       🦅  ⛰️               │
+│     🏔️                    │
+│         🐺                │
+│              🧗(passagem)  │
+│                             │
+│    [PJ]                    │
+└─────────────────────────────┘`,
+                descricao: "Um pico montanhoso coberto de neve. O vento uiva forte. Uma passagem estreita leva ao outro lado.",
+                tamanho: "8x25",
+                perigos: "Quedas, grifos, avalanches"
+            },
+            deserto: {
+                nome: "Mar de Areia",
+                ascii: `┌─────────────────────────────┐
+│         ☀️☀️☀️             │
+│      🏜️🏜️🏜️              │
+│         🐪                 │
+│              🦂            │
+│         🌵                 │
+│                             │
+│    [PJ]    [COMPANHEIRO]    │
+└─────────────────────────────┘`,
+                descricao: "Um vasto deserto de areias douradas. O sol escaldante castiga os viajantes. Cactos esparsos pontuam a paisagem.",
+                tamanho: "8x25",
+                perigos: "Calor extremo, escorpiões, vermes da areia"
+            },
+            pantano: {
+                nome: "Pântano de Nyx",
+                ascii: `┌─────────────────────────────┐
+│         💧💧💧             │
+│      🌿🌿🌿🌿              │
+│         🐸                 │
+│              🧟            │
+│         🌫️🌫️              │
+│                             │
+│    [PJ]                    │
+└─────────────────────────────┘`,
+                descricao: "Um pântano sombrio coberto de névoa. Águas escuras escondem perigos. Árvores retorcidas emergem da lama.",
+                tamanho: "8x25",
+                perigos: "Gás tóxico, trolls, criaturas do pântano"
+            },
+            masmorra: {
+                nome: "Masmorra Viva",
+                ascii: `┌─────────────────────────────┐
+│         🧱🧱🧱             │
+│      🩸🩸🩸               │
+│         👁️                 │
+│              🕷️            │
+│         🕯️                 │
+│                             │
+│    [PJ]    [COMPANHEIRO]    │
+└─────────────────────────────┘`,
+                descricao: "Uma masmorra pulsante de carne e pedra. As paredes respiram. Olhos espreitam das sombras.",
+                tamanho: "8x25",
+                perigos: "Mojos, corrupção, armadilhas vivas"
+            },
+            cidade: {
+                nome: "Cidade de Zyon",
+                ascii: `┌─────────────────────────────┐
+│         🏛️🏛️🏛️            │
+│      🏠🏠🏠🏠              │
+│         🚪                 │
+│              🧙            │
+│         🍺(taverna)        │
+│                             │
+│    [PJ]    [COMPANHEIRO]    │
+└─────────────────────────────┘`,
+                descricao: "As ruas movimentadas de Zyon. Mercadores gritam suas ofertas. A taverna do Orc Caído fica à esquerda.",
+                tamanho: "8x25",
+                perigos: "Ladrões, guardas corruptos, cultistas infiltrados"
+            },
+            caverna: {
+                nome: "Caverna Profunda",
+                ascii: `┌─────────────────────────────┐
+│         🕯️🕯️🕯️            │
+│      🪨🪨🪨🪨             │
+│         🦇                 │
+│              💎            │
+│         🕷️                 │
+│                             │
+│    [PJ]                    │
+└─────────────────────────────┘`,
+                descricao: "Uma caverna escura e úmida. Estalactites pendem do teto. Cristais brilham nas paredes.",
+                tamanho: "8x25",
+                perigos: "Aranhas gigantes, morcegos, desmoronamentos"
+            },
+            ruinas: {
+                nome: "Ruínas Ofídicas",
+                ascii: `┌─────────────────────────────┐
+│         🏛️🏚️🏛️            │
+│      🐍🐍🐍🐍             │
+│         📜                 │
+│              👑            │
+│         🗿🗿               │
+│                             │
+│    [PJ]    [COMPANHEIRO]    │
+└─────────────────────────────┘`,
+                descricao: "Ruínas antigas de uma civilização ofídica. Hieróglifos cobrem as paredes. Estátuas de guardiões observam.",
+                tamanho: "8x25",
+                perigos: "Armadilhas antigas, nagas, maldições"
+            }
+        };
+
+        function carregarMapas() {
+            const salvos = localStorage.getItem(STORAGE_KEY_MAPAS);
+            if (salvos) {
+                return JSON.parse(salvos);
+            }
+            return [];
+        }
+
+        function salvarMapas(mapas) {
+            localStorage.setItem(STORAGE_KEY_MAPAS, JSON.stringify(mapas));
+        }
+
+        function adicionarMapa(mapa) {
+            const mapas = carregarMapas();
+            const novoMapa = {
+                id: Date.now(),
+                ...mapa,
+                dataCriacao: new Date().toLocaleDateString()
+            };
+            mapas.push(novoMapa);
+            salvarMapas(mapas);
+            renderizarListaMapas();
+            return novoMapa;
+        }
+
+        function removerMapa(id) {
+            let mapas = carregarMapas();
+            mapas = mapas.filter(m => m.id !== id);
+            salvarMapas(mapas);
+            renderizarListaMapas();
+            document.getElementById('mapDetail').innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Selecione um mapa na lista ao lado</div>';
+        }
+
+        function limparMapas() {
+            if (confirm('⚠️ Tem certeza que deseja remover TODOS os mapas? Esta ação não pode ser desfeita.')) {
+                localStorage.removeItem(STORAGE_KEY_MAPAS);
+                renderizarListaMapas();
+                document.getElementById('mapDetail').innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Selecione um mapa na lista ao lado</div>';
+            }
+        }
+
+        function renderizarListaMapas() {
+            const mapas = carregarMapas();
+            const container = document.getElementById('mapList');
+            
+            if (mapas.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Nenhum mapa salvo. Gere um novo mapa!</div>';
+                return;
+            }
+            
+            container.innerHTML = mapas.map(m => `
+                <div class="map-item" onclick="selecionarMapa(${m.id})" data-id="${m.id}">
+                    <div>
+                        <span class="map-title">🗺️ ${m.nome}</span>
+                    </div>
+                    <div style="font-size:0.7rem; color:#888;">📅 ${m.dataCriacao}</div>
+                </div>
+            `).join('');
+        }
+
+        function selecionarMapa(id) {
+            const mapas = carregarMapas();
+            const mapa = mapas.find(m => m.id === id);
+            
+            if (!mapa) return;
+            
+            document.querySelectorAll('.map-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-id') == id) {
+                    el.classList.add('active');
+                }
+            });
+            
+            const detailHtml = `
+                <h3>🗺️ ${mapa.nome}</h3>
+                <div class="map-ascii">${mapa.ascii}</div>
+                <p><strong>📖 Descrição:</strong> ${mapa.descricao}</p>
+                <p><strong>📏 Tamanho:</strong> ${mapa.tamanho}</p>
+                <p><strong>⚠️ Perigos:</strong> ${mapa.perigos}</p>
+                <p><strong>📅 Criado em:</strong> ${mapa.dataCriacao}</p>
+                <button class="btn-map" onclick="copiarMapaAscii('${mapa.id}')">📋 COPIAR ASCII</button>
+                <button class="btn-map btn-secondary" onclick="removerMapa(${mapa.id})">🗑️ REMOVER</button>
+            `;
+            
+            document.getElementById('mapDetail').innerHTML = detailHtml;
+        }
+
+        function copiarMapaAscii(id) {
+            const mapas = carregarMapas();
+            const mapa = mapas.find(m => m.id === id);
+            if (mapa) {
+                navigator.clipboard.writeText(mapa.ascii);
+                alert('✅ Mapa ASCII copiado para a área de transferência!');
+            }
+        }
+
+        function gerarMapa() {
+            const bioma = document.getElementById('mapBioma').value;
+            const mapaBase = mapasPorBioma[bioma];
+            
+            // Adicionar elementos aleatórios
+            const elementos = ['🩸', '⚔️', '🔮', '📜', '💰', '🗝️', '🕯️', '🧪'];
+            const elementoAleatorio = elementos[Math.floor(Math.random() * elementos.length)];
+            
+            let asciiModificado = mapaBase.ascii;
+            const posicao = Math.floor(Math.random() * 200);
+            if (posicao < asciiModificado.length) {
+                asciiModificado = asciiModificado.substring(0, posicao) + elementoAleatorio + asciiModificado.substring(posicao + 1);
+            }
+            
+            const novoMapa = {
+                nome: `${mapaBase.nome} (${new Date().toLocaleTimeString()})`,
+                ascii: asciiModificado,
+                descricao: mapaBase.descricao,
+                tamanho: mapaBase.tamanho,
+                perigos: mapaBase.perigos
+            };
+            
+            const previewHtml = `
+                <h3 style="color: #ffd93d; margin-bottom: 10px;">🗺️ MAPA GERADO</h3>
+                <div class="map-ascii" style="font-size:0.7rem;">${novoMapa.ascii}</div>
+                <p><strong>📖 Descrição:</strong> ${novoMapa.descricao}</p>
+                <p><strong>⚠️ Perigos:</strong> ${novoMapa.perigos}</p>
+                <button class="btn-map" style="margin-top: 15px;" onclick="adicionarMapaGerado()">💾 SALVAR MAPA</button>
+            `;
+            
+            document.getElementById('novoMapaPreview').innerHTML = previewHtml;
+            window.mapaTemp = novoMapa;
+        }
+        
+        function adicionarMapaGerado() {
+            if (window.mapaTemp) {
+                adicionarMapa(window.mapaTemp);
+                document.getElementById('novoMapaPreview').innerHTML = '<em style="color:#888;">Mapa salvo! Clique em "GERAR MAPA" para criar outro.</em>';
+                alert('✅ Mapa salvo com sucesso!');
+                window.mapaTemp = null;
+            }
+        }
+
+        renderizarListaMapas();
+    </script>
+</body>
+</html>

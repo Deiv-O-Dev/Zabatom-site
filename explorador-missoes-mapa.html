@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabatom 5.2 – Explorador de Missões com Mapa ASCII</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(10, 10, 26, 0.95);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .back-btn {
+            background: #0f0f1f;
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        .main-panel {
+            background: #0f0f1f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e94560;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        /* Layout de três colunas */
+        .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Layout de duas colunas para telas menores */
+        @media (max-width: 1200px) {
+            .three-columns {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .three-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Painel do Mapa */
+        .map-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .map-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .map-ascii {
+            background: #0a0a1a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            min-height: 400px;
+        }
+
+        /* Painel de Missões */
+        .missions-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .missions-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .mission-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .mission-item {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-left: 3px solid #e94560;
+            transition: all 0.2s;
+        }
+
+        .mission-item:hover {
+            background: #2a2a4a;
+            transform: translateX(5px);
+        }
+
+        .mission-item.active {
+            background: #2a2a4a;
+            border-left-color: #ffd93d;
+        }
+
+        .mission-title {
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .mission-status {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .status-pendente { background: #6f2a2a; }
+        .status-andamento { background: #2a6f3f; }
+        .status-concluida { background: #2a2a6f; }
+
+        .mission-detail {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        /* Painel de Controle */
+        .control-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e94560;
+        }
+
+        .control-panel h2 {
+            color: #ffd93d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .info-box {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            color: #ffd93d;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #2a2a4a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a6a;
+        }
+
+        .btn-success {
+            background: #2a6f3f;
+        }
+
+        .btn-success:hover {
+            background: #3a8f4f;
+        }
+
+        .btn-danger {
+            background: #6f2a2a;
+        }
+
+        .btn-danger:hover {
+            background: #8a3a3a;
+        }
+
+        .event-log {
+            background: #0f0f1f;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+
+        .event-log p {
+            margin: 5px 0;
+            border-left: 2px solid #e94560;
+            padding-left: 10px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            font-size: 0.7rem;
+        }
+
+        .legend span {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+
+        .reward-display {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .reward-item {
+            background: #0f0f1f;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.7rem;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🗺️ ZABATOM 5.2</div>
+            <button class="back-btn" onclick="window.location.href='index.html'">← VOLTAR PARA O LIVRO</button>
+        </div>
+
+        <div class="main-panel">
+            <h1>🗺️ EXPLORADOR DE MISSÕES COM MAPA ASCII</h1>
+            <div class="subtitle">Explore o mundo de Zabatom – complete missões enquanto constrói o mapa dinamicamente</div>
+
+            <div class="three-columns">
+                <!-- Painel do Mapa -->
+                <div class="map-panel">
+                    <h2>🗺️ MAPA DO CAMINHO</h2>
+                    <div id="mapDisplay" class="map-ascii">
+                        ╔════════════════════════════════════════════════════════════════╗
+                        ║                                                               ║
+                        ║                         🌲 🌲 🌲                               ║
+                        ║                           🏁                                 ║
+                        ║                          [PJ]                                ║
+                        ║                                                               ║
+                        ║                    Início da jornada...                       ║
+                        ║                                                               ║
+                        ╚════════════════════════════════════════════════════════════════╝
+                    </div>
+                    <div class="legend">
+                        <strong>LEGENDA:</strong>
+                        <span>🌲</span> Floresta <span>⛰️</span> Montanha <span>🏜️</span> Deserto
+                        <span>💧</span> Pântano <span>🏰</span> Ruínas <span>🩸</span> Masmorra
+                        <span>🏙️</span> Cidade <span>👻</span> Evento <span>💰</span> Tesouro
+                        <span>🏁</span> Início <span>[PJ]</span> Posição Atual <span>⭐</span> Missão
+                    </div>
+                </div>
+
+                <!-- Painel de Missões -->
+                <div class="missions-panel">
+                    <h2>📋 MISSÕES ATIVAS</h2>
+                    <div id="missionList" class="mission-list">
+                        <div style="text-align: center; padding: 20px; color: #888;">
+                            Clique em "GERAR MISSÃO" para começar
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="gerarMissao()">🎲 GERAR NOVA MISSÃO</button>
+                        <button class="btn btn-secondary" onclick="limparConcluidas()">🗑️ REMOVER CONCLUÍDAS</button>
+                    </div>
+                    <div id="missionDetail" class="mission-detail">
+                        <div style="text-align: center; color: #888;">
+                            Selecione uma missão para ver detalhes
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Controle -->
+                <div class="control-panel">
+                    <h2>🎮 CONTROLE DE EXPLORAÇÃO</h2>
+                    
+                    <div class="info-box">
+                        <p><strong>📊 INFORMAÇÕES DA VIAGEM</strong></p>
+                        <p>📍 Posição: <span id="posX" class="stat">0</span>, <span id="posY" class="stat">0</span></p>
+                        <p>🚶 Passos dados: <span id="steps" class="stat">0</span></p>
+                        <p>🌍 Bioma atual: <span id="currentBiome" class="stat">🌲 Floresta</span></p>
+                        <p>⏰ Ciclos gastos: <span id="cycles" class="stat">0</span> / 18 (dia)</p>
+                        <p>🍞 Rações: <span id="rations" class="stat">5</span></p>
+                        <p>⭐ XP Total: <span id="totalXP" class="stat">0</span></p>
+                        <p>💰 Ouro Total: <span id="totalGold" class="stat">50</span></p>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="avancar()">🚶 AVANÇAR (1 mini-hex)</button>
+                        <button class="btn" onclick="avancarLote()">🚶‍♂️ AVANÇAR 3 mini-hex</button>
+                        <button class="btn btn-secondary" onclick="investigar()">🔍 INVESTIGAR ÁREA</button>
+                        <button class="btn btn-secondary" onclick="coletarRecursos()">🌿 COLETAR RECURSOS</button>
+                        <button class="btn btn-danger" onclick="resetar()">🔄 RESETAR</button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="setBioma('floresta')">🌲 Floresta</button>
+                        <button class="btn" onclick="setBioma('montanha')">⛰️ Montanha</button>
+                        <button class="btn" onclick="setBioma('deserto')">🏜️ Deserto</button>
+                        <button class="btn" onclick="setBioma('pantano')">💧 Pântano</button>
+                        <button class="btn" onclick="setBioma('ruinas')">🏰 Ruínas</button>
+                        <button class="btn" onclick="setBioma('masmorra')">🩸 Masmorra</button>
+                        <button class="btn" onclick="setBioma('cidade')">🏙️ Cidade</button>
+                    </div>
+
+                    <div class="event-log" id="eventLog">
+                        <p>🎲 Clique em "GERAR MISSÃO" para começar sua aventura!</p>
+                        <p>💡 Complete missões para ganhar XP e ouro enquanto explora.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Zabatom 5.2 – Explorador de Missões com Mapa ASCII | Integra Livro 2 (Exploração) e Livro 5 (Missões)
+        </footer>
+    </div>
+
+    <script>
+        // ============================================================
+        // SISTEMA DE MAPA (baseado no Livro 2, Seção 11.1)
+        // ============================================================
+
+        const MAP_WIDTH = 50;
+        const MAP_HEIGHT = 30;
+        let map = [];
+        let posX = 25;
+        let posY = 15;
+        let steps = 0;
+        let cycles = 0;
+        let rations = 5;
+        let totalXP = 0;
+        let totalGold = 50;
+        let currentBiome = 'floresta';
+        let currentMission = null;
+        
+        // Storage key para missões
+        const STORAGE_KEY = 'zabatom_missoes_explorador';
+        
+        const biomeSymbols = {
+            floresta: '🌲',
+            montanha: '⛰️',
+            deserto: '🏜️',
+            pantano: '💧',
+            ruinas: '🏰',
+            masmorra: '🩸',
+            cidade: '🏙️'
+        };
+
+        const biomeNames = {
+            floresta: 'Floresta',
+            montanha: 'Montanha',
+            deserto: 'Deserto',
+            pantano: 'Pântano',
+            ruinas: 'Ruínas',
+            masmorra: 'Masmorra',
+            cidade: 'Cidade'
+        };
+
+        // Tabela de construção de caminho (1d14)
+        const caminhos = [
+            { nome: "Linha reta", dx: 0, dy: -1, descricao: "Prossegue normalmente", ciclos: 1 },
+            { nome: "Desvio à direita", dx: 1, dy: -1, descricao: "Desvia para a direita", ciclos: 2 },
+            { nome: "Desvio à direita e subida", dx: 1, dy: -2, descricao: "Sobe e desvia", ciclos: 3 },
+            { nome: "Desvio à direita e descida", dx: 1, dy: 0, descricao: "Desce e desvia", ciclos: 3 },
+            { nome: "Desvio à esquerda", dx: -1, dy: -1, descricao: "Desvia para a esquerda", ciclos: 2 },
+            { nome: "Desvio à esquerda e subida", dx: -1, dy: -2, descricao: "Sobe e desvia", ciclos: 3 },
+            { nome: "Desvio à esquerda e descida", dx: -1, dy: 0, descricao: "Desce e desvia", ciclos: 3 },
+            { nome: "Bifurcação", dx: 0, dy: -1, descricao: "Escolha entre dois caminhos", ciclos: 1, bifurcacao: true },
+            { nome: "Volta com desvio à direita", dx: 1, dy: 0, descricao: "Retorna 1 hex e desvia", ciclos: 2 },
+            { nome: "Volta com desvio à esquerda", dx: -1, dy: 0, descricao: "Retorna 1 hex e desvia", ciclos: 2 },
+            { nome: "Volta mesmo caminho", dx: 0, dy: 1, descricao: "Retorna 1 hex", ciclos: 1 },
+            { nome: "Encruzilhada", dx: 0, dy: -1, descricao: "3+ caminhos", ciclos: 1, encruzilhada: true },
+            { nome: "Fim de caminho", dx: 0, dy: -1, descricao: "Chegou a um ponto de interesse", ciclos: 1, fim: true },
+            { nome: "Livre escolha", dx: 0, dy: -1, descricao: "Jogador decide a direção", ciclos: 1, livre: true }
+        ];
+
+        // ============================================================
+        // SISTEMA DE MISSÕES (baseado no Livro 5)
+        // ============================================================
+
+        const missoesPorArco = {
+            1: [
+                { titulo: "O Sussurro nas Forjas", descricao: "Investigar mudanças estranhas nas forjas de Akunashy.", xp: 15, ouro: 30, local: "As Forjas de Akunashy", antagonista: "Constructos Corrompidos" },
+                { titulo: "O Olho que Não Dorme", descricao: "Um fragmento do Olho de Abadon foi encontrado. Recupere-o.", xp: 20, ouro: 40, local: "Shalaín", antagonista: "Cultistas do Caos" },
+                { titulo: "O Peregrino Perdido", descricao: "Um celestial mensageiro não retornou. Encontre-o.", xp: 25, ouro: 50, local: "Planície de Shalaín", antagonista: "Caçadores de Relíquias" }
+            ],
+            2: [
+                { titulo: "O Fruto Podre", descricao: "Investigar árvores que estão morrendo na floresta.", xp: 60, ouro: 100, local: "Floresta de Lumen-Mor", antagonista: "Animais Corrompidos" },
+                { titulo: "A Teia de Ariadne", descricao: "Infiltrar o domínio da Rainha Aranha.", xp: 80, ouro: 120, local: "Pântano de Nyx", antagonista: "Ariadne" },
+                { titulo: "A Fuga de Lumen-Mor", descricao: "Escapar com os refugiados enquanto a cidade-árvore cai.", xp: 100, ouro: 150, local: "Lumen-Mor", antagonista: "Elfos Aranha" }
+            ],
+            3: [
+                { titulo: "A Ganância dos Reis", descricao: "Participar da expedição que encontrará o baú de Akunashy.", xp: 120, ouro: 180, local: "Gehênia", antagonista: "Guardiões do Baú" },
+                { titulo: "A Guerra nas Montanhas", descricao: "Defender os salões anões contra o exército de ínferos.", xp: 140, ouro: 200, local: "Minastor", antagonista: "Ínferos Soldados" },
+                { titulo: "O Êxodo dos Anões", descricao: "Liderar os sobreviventes através das montanhas.", xp: 180, ouro: 250, local: "Passagem das Montanhas", antagonista: "Ínferos" }
+            ],
+            4: [
+                { titulo: "O Navio Negreiro", descricao: "Libertar prisioneiros de um navio do Capitão Viken.", xp: 100, ouro: 150, local: "Porto de Zyon", antagonista: "Capitão Viken" },
+                { titulo: "O Encontro com Zah'rak", descricao: "Acessar ruínas ofídicas submersas e encontrar o dragão.", xp: 120, ouro: 180, local: "Ruínas Submersas", antagonista: "Zah'rak" },
+                { titulo: "A Invasão de Arafel", descricao: "Invadir o covil dos cultistas e derrotar Viken.", xp: 200, ouro: 300, local: "Arafel", antagonista: "Cultistas do Caos" }
+            ],
+            5: [
+                { titulo: "O Deserto Silencioso", descricao: "Atravessar o deserto de Zeol e encontrar as ruínas ofídicas.", xp: 150, ouro: 200, local: "Deserto de Zeol", antagonista: "Sombras" },
+                { titulo: "A Biblioteca de Arkamor", descricao: "Infiltrar a biblioteca onde Sath'krah guarda o fragmento.", xp: 200, ouro: 300, local: "Ruínas da Grande Biblioteca", antagonista: "Lichs" },
+                { titulo: "O Último Arquivo", descricao: "Confrontar Sath'krah e recuperar o fragmento.", xp: 250, ouro: 400, local: "A Câmara do Silêncio", antagonista: "Sath'krah" }
+            ]
+        };
+
+        function carregarMissoes() {
+            const salvas = localStorage.getItem(STORAGE_KEY);
+            if (salvas) {
+                return JSON.parse(salvas);
+            }
+            return [];
+        }
+
+        function salvarMissoes(missoes) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(missoes));
+        }
+
+        function adicionarMissao(missao) {
+            const missoes = carregarMissoes();
+            const novaMissao = {
+                id: Date.now(),
+                ...missao,
+                status: 'pendente',
+                dataCriacao: new Date().toLocaleDateString()
+            };
+            missoes.push(novaMissao);
+            salvarMissoes(missoes);
+            renderizarListaMissoes();
+            addLog(`📋 Nova missão: ${missao.titulo} (${missao.xp} XP, ${missao.ouro} ouro)`);
+            return novaMissao;
+        }
+
+        function atualizarStatusMissao(id, novoStatus) {
+            const missoes = carregarMissoes();
+            const index = missoes.findIndex(m => m.id === id);
+            if (index !== -1) {
+                missoes[index].status = novoStatus;
+                salvarMissoes(missoes);
+                renderizarListaMissoes();
+                if (novoStatus === 'concluida') {
+                    const missao = missoes[index];
+                    totalXP += missao.xp;
+                    totalGold += missao.ouro;
+                    addLog(`✅ MISSÃO CONCLUÍDA: ${missao.titulo}! +${missao.xp} XP, +${missao.ouro} ouro`);
+                    updateUI();
+                }
+            }
+        }
+
+        function removerMissao(id) {
+            let missoes = carregarMissoes();
+            missoes = missoes.filter(m => m.id !== id);
+            salvarMissoes(missoes);
+            renderizarListaMissoes();
+            if (currentMission && currentMission.id === id) {
+                currentMission = null;
+                document.getElementById('missionDetail').innerHTML = '<div style="text-align: center; color: #888;">Selecione uma missão para ver detalhes</div>';
+            }
+        }
+
+        function limparConcluidas() {
+            let missoes = carregarMissoes();
+            missoes = missoes.filter(m => m.status !== 'concluida');
+            salvarMissoes(missoes);
+            renderizarListaMissoes();
+            addLog(`🗑️ Missões concluídas removidas da lista.`);
+        }
+
+        function renderizarListaMissoes() {
+            const missoes = carregarMissoes();
+            const container = document.getElementById('missionList');
+            
+            if (missoes.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Nenhuma missão ativa. Clique em "GERAR MISSÃO"</div>';
+                return;
+            }
+            
+            container.innerHTML = missoes.map(m => `
+                <div class="mission-item" onclick="selecionarMissao(${m.id})" data-id="${m.id}">
+                    <div>
+                        <span class="mission-title">${m.titulo}</span>
+                        <span class="mission-status status-${m.status}">${m.status === 'pendente' ? '⏳ Pendente' : m.status === 'andamento' ? '⚔️ Em andamento' : '✅ Concluída'}</span>
+                    </div>
+                    <div style="font-size:0.7rem; color:#888;">🎯 ${m.local} | ⭐ ${m.xp} XP | 💰 ${m.ouro} ouro</div>
+                </div>
+            `).join('');
+        }
+
+        function selecionarMissao(id) {
+            const missoes = carregarMissoes();
+            const missao = missoes.find(m => m.id === id);
+            if (!missao) return;
+            
+            currentMission = missao;
+            
+            document.querySelectorAll('.mission-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-id') == id) {
+                    el.classList.add('active');
+                }
+            });
+            
+            const detailHtml = `
+                <h3 style="color: #ffd93d; margin-bottom: 10px;">📜 ${missao.titulo}</h3>
+                <p><strong>📖 Descrição:</strong> ${missao.descricao}</p>
+                <p><strong>📍 Local:</strong> ${missao.local}</p>
+                <p><strong>👹 Antagonista:</strong> ${missao.antagonista}</p>
+                <div class="reward-display">
+                    <div class="reward-item">⭐ XP: ${missao.xp}</div>
+                    <div class="reward-item">💰 Ouro: ${missao.ouro}</div>
+                    <div class="reward-item">📅 Criada: ${missao.dataCriacao}</div>
+                </div>
+                <p><strong>📊 Status:</strong> ${missao.status === 'pendente' ? '⏳ Pendente' : missao.status === 'andamento' ? '⚔️ Em andamento' : '✅ Concluída'}</p>
+                <div style="margin-top: 15px;">
+                    ${missao.status !== 'concluida' ? `<button class="btn" onclick="atualizarStatusMissao(${missao.id}, 'andamento')">▶️ INICIAR MISSÃO</button>` : ''}
+                    ${missao.status === 'andamento' ? `<button class="btn btn-success" onclick="atualizarStatusMissao(${missao.id}, 'concluida')">✅ CONCLUIR MISSÃO</button>` : ''}
+                    ${missao.status !== 'concluida' ? `<button class="btn btn-secondary" onclick="removerMissao(${missao.id})">🗑️ REMOVER</button>` : ''}
+                </div>
+            `;
+            
+            document.getElementById('missionDetail').innerHTML = detailHtml;
+        }
+
+        function gerarMissao() {
+            const arco = Math.floor(Math.random() * 5) + 1;
+            const missoesDisponiveis = missoesPorArco[arco] || missoesPorArco[1];
+            const missaoAleatoria = missoesDisponiveis[Math.floor(Math.random() * missoesDisponiveis.length)];
+            adicionarMissao(missaoAleatoria);
+        }
+
+        // ============================================================
+        // FUNÇÕES DO MAPA
+        // ============================================================
+
+        function initMap() {
+            map = [];
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                map[y] = [];
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    map[y][x] = ' ';
+                }
+            }
+            map[posY][posX] = '🏁';
+        }
+
+        function addLog(message, isError = false) {
+            const logDiv = document.getElementById('eventLog');
+            const p = document.createElement('p');
+            p.innerHTML = isError ? `⚠️ ${message}` : `🎲 ${message}`;
+            if (isError) p.style.color = '#e94560';
+            logDiv.appendChild(p);
+            p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            while (logDiv.children.length > 30) {
+                logDiv.removeChild(logDiv.firstChild);
+            }
+        }
+
+        function updateMapDisplay() {
+            let display = '';
+            display += '╔' + '═'.repeat(MAP_WIDTH * 2) + '╗\n';
+            
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                display += '║';
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    let cell = map[y][x];
+                    if (cell === ' ') {
+                        display += '· ';
+                    } else {
+                        display += cell + ' ';
+                    }
+                }
+                display += '║\n';
+            }
+            
+            display += '╚' + '═'.repeat(MAP_WIDTH * 2) + '╝';
+            document.getElementById('mapDisplay').innerHTML = '<pre>' + display + '</pre>';
+        }
+
+        function updateUI() {
+            document.getElementById('posX').innerText = posX - 25;
+            document.getElementById('posY').innerText = 15 - posY;
+            document.getElementById('steps').innerText = steps;
+            document.getElementById('cycles').innerText = cycles;
+            document.getElementById('rations').innerText = rations;
+            document.getElementById('totalXP').innerText = totalXP;
+            document.getElementById('totalGold').innerText = totalGold;
+            document.getElementById('currentBiome').innerHTML = biomeSymbols[currentBiome] + ' ' + biomeNames[currentBiome];
+        }
+
+        function consumirRacao() {
+            if (cycles >= 18) {
+                cycles = 0;
+                rations--;
+                addLog(`Um dia se passou! Você consumiu 1 ração. Restam ${rations} rações.`);
+                if (rations <= 0) {
+                    addLog(`⚠️ VOCÊ FICOU SEM RAÇÕES! -1 Humor e -1 em todos testes.`, true);
+                }
+            }
+        }
+
+        function gerarEventoBioma() {
+            const eventos = {
+                floresta: ['Animais selvagens', 'Planta carnívora', 'Elfos', 'Fada amigável', 'Centauro', 'Dríade'],
+                montanha: ['Desmoronamento', 'Harpias', 'Grifos', 'Dragão sobrevoa', 'Gigante', 'Túmulo antigo'],
+                deserto: ['Tempestade de areia', 'Escorpiões', 'Viajantes', 'Verme da areia', 'Oásis ilusório', 'Ruínas ofídicas'],
+                pantano: ['Gás tóxico', 'Troll', 'Bruxa', 'Wendigo', 'Covil de aranha', 'Altar corrompido'],
+                ruinas: ['Armadilha', 'Espectros', 'Gárgulas', 'Lich Menor', 'Mímico', 'Pergaminho antigo'],
+                masmorra: ['Corrupção', 'Ínferos', 'Mojos', 'Draconiano', 'Portal para Caos', 'Núcleo pulsante'],
+                cidade: ['Ladrões', 'Guardas corruptos', 'Informantes', 'Vampiro', 'Cultista infiltrado', 'Loja secreta']
+            };
+            
+            const lista = eventos[currentBiome];
+            const idx = Math.floor(Math.random() * lista.length);
+            const evento = lista[idx];
+            
+            addLog(`🌍 EVENTO DO BIOMA (${biomeNames[currentBiome]}): ${evento}`);
+            
+            if (evento === 'Desmoronamento' || evento === 'Tempestade de areia') {
+                addLog(`⚠️ Você sofreu 1d6 = ${Math.floor(Math.random() * 6) + 1} de dano!`, true);
+            } else if (evento === 'Armadilha') {
+                addLog(`⚠️ Você ativou uma armadilha! Teste de DES (DV 13) para evitar dano.`, true);
+            } else if (evento === 'Pergaminho antigo' || evento === 'Oásis ilusório') {
+                const xpGanho = 25;
+                totalXP += xpGanho;
+                addLog(`💰 Você encontrou um tesouro! +${xpGanho} XP!`);
+                updateUI();
+            } else if (evento === 'Fada amigável') {
+                addLog(`✨ Uma fada concede uma bênção! +1 em todos testes por 1 dia.`);
+            }
+            
+            return evento;
+        }
+
+        function gerarProximaDirecao() {
+            const roll = Math.floor(Math.random() * 14) + 1;
+            const caminho = caminhos[roll - 1];
+            
+            addLog(`🎲 Rolagem de caminho (1d14): ${roll} → ${caminho.nome}`);
+            addLog(`📝 ${caminho.descricao} (+${caminho.ciclos} ciclos)`);
+            
+            cycles += caminho.ciclos;
+            consumirRacao();
+            
+            if (caminho.fim) {
+                const eventoRoll = Math.floor(Math.random() * 5) + 1;
+                addLog(`🏁 FIM DE CAMINHO! (1d5 = ${eventoRoll})`);
+                if (eventoRoll === 1) {
+                    const xpGanho = 50;
+                    totalXP += xpGanho;
+                    addLog(`💰 Você encontrou um baú escondido! +${xpGanho} XP!`);
+                    updateUI();
+                } else if (eventoRoll === 3) {
+                    addLog(`📦 Você encontrou um item: Poção de Cura!`);
+                }
+            }
+            
+            if (caminho.encruzilhada) {
+                addLog(`🔄 ENCRUZILHADA! Escolha um caminho.`);
+            }
+            
+            if (caminho.bifurcacao) {
+                const escolha = Math.random() < 0.5 ? 'esquerda' : 'direita';
+                addLog(`🔀 BIFURCAÇÃO! Você escolheu o caminho da ${escolha}.`);
+            }
+            
+            if (Math.random() < 0.1) {
+                gerarEventoBioma();
+            }
+            
+            return caminho;
+        }
+
+        function avancar() {
+            if (map[posY][posX] !== '🏁') {
+                map[posY][posX] = biomeSymbols[currentBiome];
+            }
+            
+            const caminho = gerarProximaDirecao();
+            
+            let newX = posX + caminho.dx;
+            let newY = posY + caminho.dy;
+            
+            newX = Math.max(1, Math.min(MAP_WIDTH - 2, newX));
+            newY = Math.max(1, Math.min(MAP_HEIGHT - 2, newY));
+            
+            posX = newX;
+            posY = newY;
+            steps++;
+            
+            if (map[posY][posX] === ' ' || map[posY][posX] === biomeSymbols[currentBiome]) {
+                map[posY][posX] = '[PJ]';
+            } else {
+                map[posY][posX] = '[PJ]';
+            }
+            
+            updateMapDisplay();
+            updateUI();
+            
+            if (Math.random() < 0.15) {
+                addLog(`🔍 Você encontrou algo no chão! Teste de Investigação (DV 12) para identificar.`);
+            }
+        }
+
+        function avancarLote() {
+            addLog(`🚶‍♂️ AVANÇANDO 3 MINI-HEX...`);
+            for (let i = 0; i < 3; i++) {
+                avancar();
+            }
+        }
+
+        function investigar() {
+            const roll = Math.floor(Math.random() * 20) + 1;
+            addLog(`🔍 INVESTIGAÇÃO (1d20 = ${roll})`);
+            
+            if (roll >= 15) {
+                const xpGanho = 25;
+                totalXP += xpGanho;
+                addLog(`✅ Sucesso! Você encontrou uma pista importante! +${xpGanho} XP`);
+                updateUI();
+            } else if (roll >= 10) {
+                addLog(`📝 Você encontrou vestígios de passagem recente.`);
+            } else {
+                addLog(`❌ Nada de interessante foi encontrado.`);
+            }
+            cycles++;
+            consumirRacao();
+            updateUI();
+        }
+
+        function coletarRecursos() {
+            const roll = Math.floor(Math.random() * 20) + 1;
+            addLog(`🌿 COLETA DE RECURSOS (1d20 = ${roll})`);
+            
+            if (roll >= 15) {
+                const encontrado = Math.random() < 0.5 ? 'Ervas raras' : 'Cogumelos medicinais';
+                addLog(`✅ Você encontrou ${encontrado}! +1d4 poções de cura (${Math.floor(Math.random() * 4) + 1})`);
+            } else if (roll >= 10) {
+                addLog(`🍄 Você encontrou algumas frutas silvestres. +1 ração`);
+                rations++;
+            } else {
+                addLog(`❌ Não encontrou nada útil.`);
+            }
+            cycles += 2;
+            consumirRacao();
+            updateUI();
+        }
+
+        function setBioma(bioma) {
+            currentBiome = bioma;
+            addLog(`🌍 BIOMA ALTERADO: ${biomeNames[bioma]}`);
+            updateUI();
+        }
+
+        function resetar() {
+            if (confirm('⚠️ Tem certeza que deseja resetar? Todo o progresso do mapa será perdido.')) {
+                initMap();
+                posX = 25;
+                posY = 15;
+                steps = 0;
+                cycles = 0;
+                rations = 5;
+                currentBiome = 'floresta';
+                map[posY][posX] = '🏁';
+                updateMapDisplay();
+                updateUI();
+                addLog(`🔄 CAMINHO RESETADO! Você voltou ao ponto de partida.`);
+                
+                const logDiv = document.getElementById('eventLog');
+                logDiv.innerHTML = '<p>🔄 Caminho resetado! Clique em "GERAR MISSÃO" para começar uma nova jornada.</p>';
+            }
+        }
+
+        // Inicializar
+        initMap();
+        map[posY][posX] = '🏁';
+        updateMapDisplay();
+        updateUI();
+        renderizarListaMissoes();
+    </script>
+</body>
+</html>
